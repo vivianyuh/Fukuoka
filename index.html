@@ -323,17 +323,37 @@
             background: linear-gradient(135deg, var(--primary) 0%, #1D3557 100%);
             color: white;
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 16px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(44, 94, 138, 0.25);
         }
 
         .expense-summary-total {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 8px 0;
+            margin: 4px 0;
             color: #FFD166;
+        }
+
+        .split-card {
+            background: #FFFDF5;
+            border: 1px solid #FFEAA7;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #2B2D42;
+        }
+
+        .split-card-title {
+            font-weight: bold;
+            color: #D63031;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .expense-form {
@@ -351,7 +371,7 @@
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             outline: none;
             width: 100%;
         }
@@ -394,6 +414,16 @@
             border-radius: 6px;
             background: var(--primary-light);
             color: var(--primary);
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .payer-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #E8F5E9;
+            color: #2E7D32;
             font-weight: bold;
             margin-right: 6px;
         }
@@ -896,26 +926,39 @@
         </div>
     </main>
 
-    <!-- ================= 頁面 4：旅遊記帳 ================= -->
+    <!-- ================= 頁面 4：旅遊記帳 & 拆帳算帳 ================= -->
     <main id="page-expense" class="page-content">
         <!-- 總花費統計面板 -->
         <div class="expense-summary">
             <div style="font-size: 0.85rem; opacity: 0.9;">旅途總支出</div>
             <div class="expense-summary-total">¥ <span id="total-jpy">0</span></div>
-            <div style="font-size: 0.8rem; opacity: 0.85;">約新台幣 NT$ <span id="total-twd">0</span> (匯率 0.21)</div>
+            <div style="font-size: 0.8rem; opacity: 0.85;">約 NT$ <span id="total-twd">0</span> (匯率 0.21)</div>
+            
+            <!-- 拆帳結果顯示區 -->
+            <div class="split-card">
+                <div class="split-card-title"><i class="fa-solid fa-calculator"></i> 最終分帳結算 (均分)</div>
+                <div id="split-result" style="line-height: 1.6; font-size: 0.85rem;">
+                    目前尚無拆帳資料
+                </div>
+            </div>
         </div>
 
         <!-- 新增記帳表單 -->
         <div class="card">
             <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-pen-to-square"></i> 新增消費</div>
             <form class="expense-form" id="expense-form" onsubmit="addExpense(event)">
-                <!-- 加入日期選擇欄位 -->
                 <div class="form-row">
                     <input type="date" id="exp-date" class="form-control" style="width: 130px;" required>
-                    <input type="text" id="exp-item" class="form-control" placeholder="項目名稱 (如: 一蘭拉麵)" required>
+                    <input type="text" id="exp-item" class="form-control" placeholder="項目 (如: 拉麵)" required>
                 </div>
                 <div class="form-row">
                     <input type="number" id="exp-amount" class="form-control" placeholder="金額 (日幣 ¥)" required>
+                    <select id="exp-payer" class="form-control" style="width: 120px;">
+                        <option value="我">👤 我先出</option>
+                        <option value="同行夥伴">👥 夥伴先出</option>
+                    </select>
+                </div>
+                <div class="form-row">
                     <select id="exp-category" class="form-control">
                         <option value="餐飲">🍱 餐飲美食</option>
                         <option value="購物">🛍️ 購物採買</option>
@@ -958,7 +1001,7 @@
         </button>
         <button class="nav-item" onclick="switchPage('expense')">
             <i class="fa-solid fa-wallet"></i>
-            <span>記帳消費</span>
+            <span>記帳分帳</span>
         </button>
     </nav>
 
@@ -999,7 +1042,7 @@
             document.querySelectorAll('.day-btn')[dayNum - 1].classList.add('active');
         }
 
-        // --- 記帳功能邏輯 ---
+        // --- 記帳與分帳邏輯 ---
         let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses')) || [];
 
         function renderExpenses() {
@@ -1007,17 +1050,28 @@
             listEl.innerHTML = '';
 
             let totalJpy = 0;
+            let myPaidJpy = 0;      // 我先出的錢
+            let partnerPaidJpy = 0; // 夥伴先出的錢
 
             if (expenses.length === 0) {
                 listEl.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 20px 0; font-size: 0.85rem;">目前還沒有消費紀錄喔！</div>`;
             } else {
                 expenses.forEach((item, index) => {
-                    totalJpy += Number(item.amount);
+                    const amt = Number(item.amount);
+                    totalJpy += amt;
+
+                    if (item.payer === '同行夥伴') {
+                        partnerPaidJpy += amt;
+                    } else {
+                        myPaidJpy += amt; // 預設我出
+                    }
+
                     const el = document.createElement('div');
                     el.className = 'expense-item';
                     el.innerHTML = `
                         <div>
                             <div>
+                                <span class="payer-badge">${item.payer || '我'}出</span>
                                 <span class="expense-tag">${item.category}</span>
                                 <b>${item.item}</b>
                             </div>
@@ -1026,7 +1080,7 @@
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="expense-amount">¥${Number(item.amount).toLocaleString()}</span>
+                            <span class="expense-amount">¥${amt.toLocaleString()}</span>
                             <button class="btn-delete" onclick="deleteExpense(${index})"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     `;
@@ -1034,8 +1088,30 @@
                 });
             }
 
+            // 更新總金額
             document.getElementById('total-jpy').innerText = totalJpy.toLocaleString();
             document.getElementById('total-twd').innerText = Math.round(totalJpy * 0.21).toLocaleString();
+
+            // 算拆帳 (兩人均分)
+            const splitEl = document.getElementById('split-result');
+            const fairShare = totalJpy / 2; // 每人應負擔金額
+            const diffJpy = myPaidJpy - fairShare; // 我多出的金額
+
+            if (totalJpy === 0) {
+                splitEl.innerHTML = `尚無消費數據，請先新增記帳。`;
+            } else {
+                let text = `• 總花費：<b>¥${totalJpy.toLocaleString()}</b>（每人應負擔 ¥${Math.round(fairShare).toLocaleString()}）<br>`;
+                text += `• 我付了：¥${myPaidJpy.toLocaleString()} ｜ 夥伴付了：¥${partnerPaidJpy.toLocaleString()}<br>`;
+
+                if (diffJpy > 0) {
+                    text += `<span style="color: #2E7D32; font-weight: bold;">👉 最終：夥伴需給 你 ¥${Math.round(diffJpy).toLocaleString()} （約 NT$ ${Math.round(diffJpy * 0.21).toLocaleString()}）</span>`;
+                } else if (diffJpy < 0) {
+                    text += `<span style="color: #D63031; font-weight: bold;">👉 最終：你 需給 夥伴 ¥${Math.round(Math.abs(diffJpy)).toLocaleString()} （約 NT$ ${Math.round(Math.abs(diffJpy) * 0.21).toLocaleString()}）</span>`;
+                } else {
+                    text += `<span style="color: var(--primary); font-weight: bold;">👉 最終：雙方剛好平手，互不相欠！</span>`;
+                }
+                splitEl.innerHTML = text;
+            }
         }
 
         function addExpense(e) {
@@ -1043,12 +1119,13 @@
             const date = document.getElementById('exp-date').value;
             const item = document.getElementById('exp-item').value;
             const amount = document.getElementById('exp-amount').value;
+            const payer = document.getElementById('exp-payer').value;
             const category = document.getElementById('exp-category').value;
             const payment = document.getElementById('exp-payment').value;
 
             if (!item || !amount || !date) return;
 
-            expenses.unshift({ date, item, amount, category, payment });
+            expenses.unshift({ date, item, amount, payer, category, payment });
             localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
 
             // 重設表單，並將日期預設重設為今天
@@ -1066,7 +1143,7 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 預設記帳日期欄位為今天 (YYYY-MM-DD)
+            // 預設記帳日期欄位為今天
             const dateInput = document.getElementById('exp-date');
             if (dateInput) {
                 dateInput.value = new Date().toISOString().split('T')[0];
