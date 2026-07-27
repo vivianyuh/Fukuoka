@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* 1. 主分頁導覽列 (按指定順序) */
+        /* 1. 主分頁導覽列 */
         .main-nav {
             display: flex;
             gap: 8px;
@@ -91,6 +91,45 @@
             display: block;
         }
 
+        /* Day 1 - Day 5 子按鈕排版 */
+        .day-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .day-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-sub);
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .day-btn.active {
+            background-color: var(--accent-warm);
+            color: #ffffff;
+            border-color: var(--accent-warm);
+        }
+
+        .day-tab {
+            display: none;
+        }
+
+        .day-tab.active {
+            display: block;
+        }
+
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -109,7 +148,40 @@
             margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .day-date {
+            font-size: 13px;
+            color: var(--accent-warm);
+            font-weight: normal;
+        }
+
+        /* 行程細項排版 */
+        .plan-box {
+            background-color: #faf9f6;
+            border-left: 4px solid var(--accent-green);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+        }
+
+        .plan-title {
+            font-weight: bold;
+            color: var(--primary-morandi);
+            margin-bottom: 4px;
+        }
+
+        .ps-box {
+            background-color: #fdfbf7;
+            border: 1px dashed var(--accent-warm);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-sub);
+            white-space: pre-line;
+            margin-top: 15px;
         }
 
         /* 勾選清單樣式 */
@@ -231,31 +303,6 @@
             font-size: 14px;
         }
 
-        /* 表格排版 (PDF 還原) */
-        .pdf-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-
-        .pdf-table th, .pdf-table td {
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            font-size: 13px;
-            vertical-align: top;
-        }
-
-        .pdf-table th {
-            background-color: #f0f2f5;
-            color: var(--primary-morandi);
-        }
-
-        .ps-text {
-            font-size: 12px;
-            color: var(--text-sub);
-            white-space: pre-line;
-        }
-
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -274,7 +321,7 @@
         <h1>福岡自由行 隨身手冊</h1>
     </header>
 
-    <!-- 主頁籤（完全按指定順序） -->
+    <!-- 主頁籤 -->
     <div class="main-nav">
         <button class="nav-btn active" onclick="switchTab('prep', event)">📋 行程準備</button>
         <button class="nav-btn" onclick="switchTab('packing', event)">🧳 行李清單</button>
@@ -288,34 +335,34 @@
             <div class="card-title">🔹 交通預訂</div>
             <ul class="checklist">
                 <li class="check-item">
-                    <input type="checkbox" id="prep_1" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_1">
                     <div class="item-label">
                         由布院之森 / 由布號 特急指定席預約 (11/8) <span class="badge-must">必辦</span>
                         <div class="sub-desc">熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。</div>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_2" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_2">
                     <div class="item-label">
                         確認太宰府觀光列車「旅人 tabito」最新時刻 (11/7)
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_3" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_3">
                     <div class="item-label">
                         評估是否購買 JR Kyushu Mobile Pass 福岡廣域版 (11/9 門司港・皿倉山)
                         <div class="sub-desc">若當天會搭多段 JR，可比較單程票與周遊券何者劃算。</div>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_4" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_4">
                     <div class="item-label">
                         確認 11/6 昭和巴士 (West Coast Liner) 最新去回程時刻
                         <div class="sub-desc">Plan A／Plan B 皆需再核對，避免錯過末班車。</div>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_5" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_5">
                     <div class="item-label">
                         IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC
                         <div class="sub-desc">巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。</div>
@@ -328,33 +375,33 @@
             <div class="card-title">🔹 證件與金錢</div>
             <ul class="checklist">
                 <li class="check-item">
-                    <input type="checkbox" id="prep_6" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_6">
                     <div class="item-label">
                         護照效期確認 (建議 6 個月以上) <span class="badge-must">必辦</span>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_7" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_7">
                     <div class="item-label">
                         護照、機票、訂房證明各留一份電子備份
                         <div class="sub-desc">存雲端或手機相簿，遺失時方便處理。</div>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_8" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_8">
                     <div class="item-label">
                         兌換日圓現金
                         <div class="sub-desc">郊區小店、巴士、神社香油錢等常僅收現金。</div>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_9" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_9">
                     <div class="item-label">
                         確認信用卡海外刷卡與提款功能已開通
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_10" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_10">
                     <div class="item-label">
                         購買旅遊不便險／海外突發疾病險
                     </div>
@@ -366,25 +413,25 @@
             <div class="card-title">🔹 通訊與 App</div>
             <ul class="checklist">
                 <li class="check-item">
-                    <input type="checkbox" id="prep_11" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_11">
                     <div class="item-label">
                         預訂網路分享機或 eSIM／實體 SIM 卡 <span class="badge-must">必辦</span>
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_12" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_12">
                     <div class="item-label">
                         下載 Google 地圖離線地圖 (福岡・北九州・由布院一帶)
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_13" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_13">
                     <div class="item-label">
                         下載乘換案內類 App (Yahoo!乘換案內 或 Google Maps 皆可查日本電車巴士)
                     </div>
                 </li>
                 <li class="check-item">
-                    <input type="checkbox" id="prep_14" onchange="saveCheckState()">
+                    <input type="checkbox" id="prep_14">
                     <div class="item-label">
                         下載翻譯 App (Google 翻譯拍照翻譯功能)
                     </div>
@@ -434,103 +481,163 @@
         </div>
     </div>
 
-    <!-- ================= 3. 行程規劃 (按 PDF 檔案一字不差還原) ================= -->
+    <!-- ================= 3. 行程規劃 (按日頁籤動態切換) ================= -->
     <div id="itinerary" class="page-content">
-        <div class="card">
-            <div class="card-title">📅 福岡行程總覽 (PDF對照)</div>
-            <table class="pdf-table">
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">日期</th>
-                        <th style="width: 55%;">行程內容</th>
-                        <th style="width: 30%;">PS / 備註</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>11/6 (五)</b></td>
-                        <td>長榮BR106 TPE 08:00 ➔ FUK 11:15</td>
-                        <td>在3樓32號月台搭巴士</td>
-                    </tr>
-                    <tr>
-                        <td><b>11/7 (六)</b></td>
-                        <td>
-                            <b>去程: West Coast Liner 昭和巴士(直達)</b><br>
-                            <u>Plan A</u><br>
-                            13:28 博多巴士總站(博多站)<br>
-                            14:37 二見浦 PALMBEACH前<br>
-                            14:38 二見浦・月與太陽糸島茶房前(夫妻岩)<br><br>
-                            <u>Plan B</u><br>
-                            14:28 博多巴士總站(博多站)<br>
-                            15:37 二見浦 PALMBEACH前<br>
-                            15:38 二見浦・月與太陽糸島茶房前(夫妻岩)<br><br>
-                            <b>回程: West Coast Liner 昭和巴士(直達)</b><br>
-                            <u>Plan A 最晚直達車</u><br>
-                            17:32 二見浦 PALMBEACH前<br>
-                            18:35 博多巴士總站(博多站)<br><br>
-                            <u>Plan B: 西之浦線+地鐵(最晚班次)</u><br>
-                            18:21 二見浦・月與太陽糸島茶房前<br>
-                            19:01 九大學研都市<br>
-                            轉地鐵筑肥線(天神・中洲川端・博多・福岡空港)到博多(大概20:00)<br><br>
-                            <hr style="border:0; border-top:1px dashed #ccc;">
-                            <b>博多站 ➔ 天神站 ➔ 太宰府</b><br>
-                            09:48 西鐵天神站 (太宰府觀光列車旅人tabito)<br>
-                            10:17 太宰府站<br><br>
-                            <i>(若未搭上旅人號)</i><br>
-                            走到西鐵福岡天神站 (西鐵天神大牟田線急行或特急) ➔ 二日市站 ➔ 走到對面搭西鐵太宰府線到太宰府
-                        </td>
-                        <td class="ps-text">去程:巴士時刻表
-回程:巴士時刻表
-
-IC卡直達: 1,150YEN(去) / 1,150YEN(回)
-IC卡回程轉車: 730YEN(公車) / 570YEN(地鐵)
-
-旅人時刻表：可以提早出門的話就不用搭旅人號但還要再查一下車次</td>
-                    </tr>
-                    <tr>
-                        <td><b>11/8 (日)</b></td>
-                        <td>
-                            <b>去程 (預約/JR預約):</b><br>
-                            • 由布院之森1號: 09:17 博多 ➔ 11:31 由布院<br>
-                            • 由布院之森3號: 10:11 博多 ➔ 12:27 由布院<br>
-                            • 由布號: 12:14 博多 ➔ 14:33 由布院<br><br>
-                            <b>回程:</b><br>
-                            • 由布院之森6號: 17:17 由布院 ➔ 19:27 博多<br>
-                            • 由布號6號: 19:27 由布院 ➔ 21:34 博多
-                        </td>
-                        <td class="ps-text">去程預約
-JR預約</td>
-                    </tr>
-                    <tr>
-                        <td><b>11/9 (一)</b></td>
-                        <td>
-                            <b>門司港 + 皿倉山</b><br>
-                            09:00 博多 (JR Sonic)<br>
-                            09:37 小倉<br>
-                            09:45 小倉發車 (搭鹿兒島本線,對面月台直接換車)<br>
-                            09:50 門司港<br><br>
-                            坐地鐵到八幡站坐接駁車到皿倉山<br>
-                            (首班車17:05 末班車20:15) 5分和25分各有一班車
-                        </td>
-                        <td class="ps-text">可以考慮買 JR Kyushu mobile pass (福岡廣域)
-只需花皿倉山入場費
-
-時刻表
-皿倉山接駁巴士</td>
-                    </tr>
-                    <tr>
-                        <td><b>11/10 (二)</b></td>
-                        <td>購物</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td><b>11/11 (三)</b></td>
-                        <td>返台</td>
-                        <td>-</td>
-                    </tr>
-                </tbody>
-            </table>
+        
+        <!-- Day 1 ~ Day 5 切換按鈕 -->
+        <div class="day-nav">
+            <button class="day-btn active" onclick="switchDay('day1', event)">Day 1</button>
+            <button class="day-btn" onclick="switchDay('day2', event)">Day 2</button>
+            <button class="day-btn" onclick="switchDay('day3', event)">Day 3</button>
+            <button class="day-btn" onclick="switchDay('day4', event)">Day 4</button>
+            <button class="day-btn" onclick="switchDay('day5', event)">Day 5 / 6</button>
         </div>
+
+        <!-- Day 1 -->
+        <div id="day1" class="day-tab active">
+            <div class="card">
+                <div class="card-title">
+                    <span> Day 1：抵達福岡</span>
+                    <span class="day-date">11/6 (五)</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-title">🛫 長榮 BR106</div>
+                    TPE 08:00 ➔ FUK 11:15
+                </div>
+                <div class="ps-box">
+💡 <b>備註：</b>
+在 3 樓 32 號月台搭巴士
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div id="day2" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span> Day 2：糸島 & 太宰府</span>
+                    <span class="day-date">11/7 (六)</span>
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🚌 去程：West Coast Liner 昭和巴士 (直達)</div>
+                    <b>Plan A</b><br>
+                    • 13:28 博多巴士總站(博多站)<br>
+                    • 14:37 二見浦 PALMBEACH前<br>
+                    • 14:38 二見浦・月與太陽糸島茶房前(夫妻岩)<br><br>
+                    <b>Plan B</b><br>
+                    • 14:28 博多巴士總站(博多站)<br>
+                    • 15:37 二見浦 PALMBEACH前<br>
+                    • 15:38 二見浦・月與太陽糸島茶房前(夫妻岩)
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🚌 回程：West Coast Liner 昭和巴士</div>
+                    <b>Plan A 最晚直達車</b><br>
+                    • 17:32 二見浦 PALMBEACH前<br>
+                    • 18:35 博多巴士總站(博多站)<br><br>
+                    <b>Plan B：西之浦線+地鐵(最晚班次)</b><br>
+                    • 18:21 二見浦・月與太陽糸島茶房前<br>
+                    • 19:01 九大學研都市 ➔ 轉地鐵筑肥線(天神・中洲川端・博多・福岡空港)到博多 (大概20:00)
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">⛩️ 博多站 ➔ 天神站 ➔ 太宰府</div>
+                    • 09:48 西鐵天神站 (太宰府觀光列車旅人 tabito)<br>
+                    • 10:17 太宰府站<br><br>
+                    <i>(若未搭上旅人號)</i><br>
+                    走到西鐵福岡天神站 (西鐵天神大牟田線急行或特急) ➔ 二日市站 ➔ 走到對面搭西鐵太宰府線到太宰府
+                </div>
+
+                <div class="ps-box">
+💡 <b>備註 & 票價資訊：</b>
+去程: 巴士時刻表 / 回程: 巴士時刻表
+IC卡直達: 1,150YEN (去) / 1,150YEN (回)
+IC卡回程轉車: 730YEN (公車) / 570YEN (地鐵)
+
+旅人時刻表：可以提早出門的話就不用搭旅人號，但還要再查一下車次。
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div id="day3" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span> Day 3：由布院之旅</span>
+                    <span class="day-date">11/8 (日)</span>
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🚆 去程 (預約/JR預約)</div>
+                    • 由布院之森1號: 09:17 博多 ➔ 11:31 由布院<br>
+                    • 由布院之森3號: 10:11 博多 ➔ 12:27 由布院<br>
+                    • 由布號: 12:14 博多 ➔ 14:33 由布院
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🚆 回程</div>
+                    • 由布院之森6號: 17:17 由布院 ➔ 19:27 博多<br>
+                    • 由布號6號: 19:27 由布院 ➔ 21:34 博多
+                </div>
+
+                <div class="ps-box">
+💡 <b>備註：</b>
+去程預約 / JR預約
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div id="day4" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span> Day 4：門司港 & 皿倉山夜景</span>
+                    <span class="day-date">11/9 (一)</span>
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">⚓ 門司港行程</div>
+                    • 09:00 博多 (JR Sonic)<br>
+                    • 09:37 小倉<br>
+                    • 09:45 小倉發車 (搭鹿兒島本線,對面月台直接換車)<br>
+                    • 09:50 門司港
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🌃 皿倉山行程</div>
+                    坐地鐵到八幡站坐接駁車到皿倉山<br>
+                    (首班車17:05 末班車20:15) 5分和25分各有一班車
+                </div>
+
+                <div class="ps-box">
+💡 <b>備註：</b>
+可以考慮買 JR Kyushu mobile pass (福岡廣域)，只需花皿倉山入場費。
+時刻表：皿倉山接駁巴士。
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 5 / 6 -->
+        <div id="day5" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span> Day 5 & 6：購物與返台</span>
+                    <span class="day-date">11/10 (二) ~ 11/11 (三)</span>
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">🛍️ 11/10 (二)</div>
+                    市區自由逛街購物
+                </div>
+
+                <div class="plan-box">
+                    <div class="plan-title">✈️ 11/11 (三)</div>
+                    打包行李，前往機場返台
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ================= 4. 記帳分帳 (動態計算功能) ================= -->
@@ -588,7 +695,18 @@ function switchTab(tabId, event) {
     pages.forEach(p => p.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
 
-    const btns = document.querySelectorAll('.nav-btn');
+    const btns = document.querySelectorAll('.main-nav .nav-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+// 切換 Day 1 ~ Day 5 頁籤
+function switchDay(dayId, event) {
+    const tabs = document.querySelectorAll('.day-tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    document.getElementById(dayId).classList.add('active');
+
+    const btns = document.querySelectorAll('.day-btn');
     btns.forEach(b => b.classList.remove('active'));
     event.currentTarget.classList.add('active');
 }
@@ -613,32 +731,11 @@ function renderPackingList() {
             const id = `pack_${category}_${idx}`;
             return `
                 <li class="check-item">
-                    <input type="checkbox" id="${id}" onchange="saveCheckState()">
+                    <input type="checkbox" id="${id}">
                     <label for="${id}" class="item-label">${item}</label>
                 </li>
             `;
         }).join('');
-    }
-}
-
-// 自動儲存勾選狀態 (LocalStorage)
-function saveCheckState() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    const state = {};
-    checkboxes.forEach(cb => {
-        state[cb.id] = cb.checked;
-    });
-    localStorage.setItem('fukuoka_check_state', JSON.stringify(state));
-}
-
-// 載入勾選狀態
-function loadCheckState() {
-    const saved = localStorage.getItem('fukuoka_check_state');
-    if (!saved) return;
-    const state = JSON.parse(saved);
-    for (let id in state) {
-        const cb = document.getElementById(id);
-        if (cb) cb.checked = state[id];
     }
 }
 
@@ -699,7 +796,6 @@ function saveAndRenderExpenses() {
 // 初始化
 window.onload = function() {
     renderPackingList();
-    loadCheckState();
     saveAndRenderExpenses();
 };
 </script>
