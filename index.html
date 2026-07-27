@@ -363,25 +363,6 @@
             line-height: 1.7;
         }
 
-        .member-tag {
-            display: inline-flex;
-            align-items: center;
-            background: #e0e2db;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            margin: 3px;
-        }
-
-        .member-tag button {
-            background: none;
-            border: none;
-            color: #d9534f;
-            font-weight: bold;
-            margin-left: 6px;
-            cursor: pointer;
-        }
-
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -573,10 +554,8 @@
         </div>
     </div>
 
-    <!-- ================= 3. 行程規劃 ( Day 1 為糸島 ) ================= -->
+    <!-- ================= 3. 行程規劃 ================= -->
     <div id="itinerary" class="page-content">
-        
-        <!-- Day 按鈕切換 (Day 1 從糸島開始) -->
         <div class="day-nav">
             <button class="day-btn active" onclick="switchDay('day1', event)">Day 1 (糸島)</button>
             <button class="day-btn" onclick="switchDay('day2', event)">Day 2 (太宰府)</button>
@@ -586,219 +565,42 @@
             <button class="day-btn" onclick="switchDay('day6', event)">Day 6 (返台)</button>
         </div>
 
-        <!-- Day 1: 抵達 + 糸島 -->
         <div id="day1" class="day-tab active">
             <div class="card">
                 <div class="card-title">
                     <span> Day 1：抵達福岡 ➔ 糸島一日遊</span>
                     <span class="day-date">11/6 (五)</span>
                 </div>
-
                 <div class="plan-box">
                     <div class="plan-header">
                         <span class="plan-title">🛫 航班資訊</span>
                         <a href="https://maps.google.com/?q=Fukuoka+Airport" target="_blank" class="map-btn">📍 福岡機場</a>
                     </div>
-                    長榮 BR106 TPE 08:00 ➔ FUK 11:15<br>
-                    <i>(抵達後前往國際線 3 樓 32 號月台搭巴士或接駁車前往市區/飯店Check-in)</i>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🚌 去程：West Coast Liner 昭和巴士(直達)</span>
-                        <a href="https://maps.google.com/?q=Hakata+Bus+Terminal" target="_blank" class="map-btn">📍 博多巴士總站</a>
-                    </div>
-                    <b>Plan A</b><br>
-                    • 13:28 博多巴士總站(博多站)<br>
-                    • 14:37 PALMBEACH 前 <a href="https://maps.google.com/?q=PALM+BEACH+Itoshima" target="_blank" class="map-btn">📍 PALM BEACH</a><br>
-                    • 14:38 二見浦・月與太陽糸島茶房前(夫妻岩) <a href="https://maps.google.com/?q=Sakurai+Futamigaura+Couples+Stones" target="_blank" class="map-btn">📍 夫妻岩</a><br><br>
-                    <b>Plan B</b><br>
-                    • 14:28 博多巴士總站(博多站) ➔ 15:37 PALMBEACH 前 ➔ 15:38 夫妻岩
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🚌 回程：West Coast Liner 昭和巴士</span>
-                    </div>
-                    <b>Plan A (最晚直達車)</b><br>
-                    • 17:32 二見浦 PALMBEACH 前 ➔ 18:35 博多巴士總站<br><br>
-                    <b>Plan B (西之浦線+地鐵最晚班次)</b><br>
-                    • 18:21 二見浦・月與太陽糸島茶房前 ➔ 19:01 九大學研都市站 <a href="https://maps.google.com/?q=Kyudai-Gakkentoshi+Station" target="_blank" class="map-btn">📍 九大學研都市站</a><br>
-                    • 轉地鐵筑肥線到博多 (約 20:00 抵達)
-                </div>
-
-                <div class="ps-box">
-💡 <b>車資預算參考：</b>
-• IC卡直達：1,150 YEN (單程)
-• IC卡回程轉車：730 YEN (公車) + 570 YEN (地鐵)
+                    長榮 BR106 TPE 08:00 ➔ FUK 11:15
                 </div>
             </div>
         </div>
-
-        <!-- Day 2: 太宰府 -->
-        <div id="day2" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span> Day 2：太宰府天滿宮一日遊</span>
-                    <span class="day-date">11/7 (六)</span>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">⛩️ 博多 ➔ 天神 ➔ 太宰府</span>
-                        <a href="https://maps.google.com/?q=Dazaifu+Tenmangu" target="_blank" class="map-btn">📍 太宰府天滿宮</a>
-                    </div>
-                    • 09:48 西鐵天神站 <a href="https://maps.google.com/?q=Nishitetsu-Fukuoka+(Tenjin)+Station" target="_blank" class="map-btn">📍 西鐵天神站</a> (搭乘太宰府觀光列車「旅人 tabito」)<br>
-                    • 10:17 抵達太宰府站<br><br>
-                    <i>(若未搭上旅人號)</i><br>
-                    西鐵福岡天神站 (急行/特急) ➔ 二日市站 ➔ 換乘西鐵太宰府線到太宰府
-                </div>
-
-                <div class="ps-box">
-💡 <b>備註：</b>
-旅人號觀光列車班次較固定，若提早出門可搭乘一般急行列車至二日市轉乘。
-                </div>
-            </div>
-        </div>
-
-        <!-- Day 3: 由布院 -->
-        <div id="day3" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span> Day 3：由布院夢幻小鎮溫泉之旅</span>
-                    <span class="day-date">11/8 (日)</span>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🚆 去程 (需提前預約指定席)</span>
-                        <a href="https://maps.google.com/?q=Yufuin+Station" target="_blank" class="map-btn">📍 由布院車站</a>
-                    </div>
-                    • 由布院之森 1 號: 09:17 博多 ➔ 11:31 由布院<br>
-                    • 由布院之森 3 號: 10:11 博多 ➔ 12:27 由布院<br>
-                    • 特急由布號: 12:14 博多 ➔ 14:33 由布院
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🏞️ 由布院周邊景點</span>
-                        <a href="https://maps.google.com/?q=Kinrin+Lake" target="_blank" class="map-btn">📍 金鱗湖</a>
-                    </div>
-                    由布院湯之坪街道、金鱗湖散策、特色美食甜點體驗。
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🚆 回程</span>
-                        <a href="https://maps.google.com/?q=Hakata+Station" target="_blank" class="map-btn">📍 博多車站</a>
-                    </div>
-                    • 由布院之森 6 號: 17:17 由布院 ➔ 19:27 博多<br>
-                    • 特急由布號 6 號: 19:27 由布院 ➔ 21:34 博多
-                </div>
-            </div>
-        </div>
-
-        <!-- Day 4: 門司港 & 皿倉山 -->
-        <div id="day4" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span> Day 4：門司港懷舊復古 ➔ 皿倉山新日本三大夜景</span>
-                    <span class="day-date">11/9 (一)</span>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">⚓ 門司港懷舊區</span>
-                        <a href="https://maps.google.com/?q=Mojiko+Station" target="_blank" class="map-btn">📍 門司港車站</a>
-                    </div>
-                    • 09:00 博多站搭乘 JR Sonic ➔ 09:37 小倉站<br>
-                    • 09:45 小倉站發車 (鹿兒島本線，對面月台換車) ➔ 09:50 抵達門司港
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🌃 皿倉山夜景</span>
-                        <a href="https://maps.google.com/?q=Sarakurayama+Cable+Car" target="_blank" class="map-btn">📍 皿倉山纜車</a>
-                    </div>
-                    搭 JR 至八幡站 <a href="https://maps.google.com/?q=Yahata+Station" target="_blank" class="map-btn">📍 八幡站</a> 轉乘免費接駁巴士至皿倉山纜車站。<br>
-                    <i>(接駁車首班 17:05、末班 20:15，每小時約 5 分與 25 分發車)</i>
-                </div>
-
-                <div class="ps-box">
-💡 <b>票券建議：</b>
-可評估購買 JR Kyushu Mobile Pass (福岡廣域版)，僅需另付皿倉山纜車門票。
-                </div>
-            </div>
-        </div>
-
-        <!-- Day 5: 購物 -->
-        <div id="day5" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span> Day 5：福岡市區熱門商圈購物一日遊</span>
-                    <span class="day-date">11/10 (二)</span>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🛍️ 天神地下街 & 天神商圈</span>
-                        <a href="https://maps.google.com/?q=Tenjin+Underground+Shopping+Mall" target="_blank" class="map-btn">📍 天神地下街</a>
-                    </div>
-                    流行服飾、藥妝、雜貨買齊。
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🏬 博多運河城 / LaLaport</span>
-                        <a href="https://maps.google.com/?q=Canal+City+Hakata" target="_blank" class="map-btn">📍 博多運河城</a>
-                    </div>
-                    逛街購物、欣賞噴水秀，也可前往 LaLaport 看 1:1 實體大鋼彈 <a href="https://maps.google.com/?q=Mitsui+Shopping+Park+LaLaport+FUKUOKA" target="_blank" class="map-btn">📍 LaLaport</a>。
-                </div>
-            </div>
-        </div>
-
-        <!-- Day 6: 返台 -->
-        <div id="day6" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span> Day 6：最後採買與返台</span>
-                    <span class="day-date">11/11 (三)</span>
-                </div>
-
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">✈️ 安全賦歸</span>
-                        <a href="https://maps.google.com/?q=Fukuoka+Airport+International+Terminal" target="_blank" class="map-btn">📍 福岡機場國際線</a>
-                    </div>
-                    整理戰利品與行李 Check-out，前往福岡機場免稅店採買伴手禮搭機返台。
-                </div>
-            </div>
-        </div>
-
+        <div id="day2" class="day-tab"><div class="card"><div class="card-title"><span>Day 2：太宰府</span></div></div></div>
+        <div id="day3" class="day-tab"><div class="card"><div class="card-title"><span>Day 3：由布院</span></div></div></div>
+        <div id="day4" class="day-tab"><div class="card"><div class="card-title"><span>Day 4：門司港</span></div></div></div>
+        <div id="day5" class="day-tab"><div class="card"><div class="card-title"><span>Day 5：購物</span></div></div></div>
+        <div id="day6" class="day-tab"><div class="card"><div class="card-title"><span>Day 6：返台</span></div></div></div>
     </div>
 
-    <!-- ================= 4. 記帳分帳 (自由新增成員 + 日圓為主換算台幣) ================= -->
+    <!-- ================= 4. 記帳分帳 (自由填寫名字 + 日圓/台幣換算) ================= -->
     <div id="accounting" class="page-content">
-        <!-- 1. 成員與匯率設定 -->
-        <div class="card">
-            <div class="card-title">⚙️ 成員管理與換算匯率</div>
-            <div style="margin-bottom: 12px;">
-                <label style="font-size: 13px; font-weight: bold;">目前同行成員：</label>
-                <div id="member_tags_container" style="margin-top: 5px;"></div>
-            </div>
-            <div class="grid-2">
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="new_member_name" class="input-box" placeholder="輸入新成員名字" style="margin-bottom:0;">
-                    <button class="add-btn" onclick="addMember()" style="width: auto; white-space: nowrap;">+ 新增成員</button>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <label style="font-size: 13px; white-space: nowrap;">日圓匯率 (JPY➔TWD):</label>
-                    <input type="number" id="jpy_rate" class="input-box" value="0.21" step="0.005" style="margin-bottom:0;" onchange="saveRateAndRender()">
-                </div>
+        
+        <!-- 匯率設定 -->
+        <div class="card" style="padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="font-size: 13px; font-weight: bold; color: var(--primary-morandi);">💰 匯率設定 (日圓 ➔ 台幣)</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <label style="font-size: 13px;">1 JPY =</label>
+                <input type="number" id="jpy_rate" class="input-box" value="0.21" step="0.005" style="width: 90px; margin-bottom:0; text-align:center;" onchange="saveRateAndRender()">
+                <label style="font-size: 13px;">TWD</label>
             </div>
         </div>
 
-        <!-- 2. 新增花費 -->
+        <!-- 新增花費 -->
         <div class="card">
             <div class="card-title">➕ 新增花費項目</div>
             
@@ -820,20 +622,22 @@
 
             <div class="grid-2">
                 <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">先付款的人</label>
-                    <select id="acc_payer" class="input-box"></select>
+                    <label style="font-size: 11px; color: var(--text-sub);">先付錢的人 (直接打名字)</label>
+                    <input type="text" id="acc_payer" class="input-box" placeholder="例：小明 / Amy">
                 </div>
 
-                <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">費用性質 / 誰負擔</label>
-                    <select id="acc_type" class="input-box"></select>
+                <div style="display: flex; align-items: center; padding-top: 18px;">
+                    <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="acc_is_split" checked style="width: 18px; height: 18px; cursor: pointer;">
+                        <b>👥 這筆是大家一起平分的共同花費</b>
+                    </label>
                 </div>
             </div>
 
-            <button class="add-btn" onclick="addExpense()">+ 存入記帳本</button>
+            <button class="add-btn" style="margin-top: 10px;" onclick="addExpense()">+ 存入記帳本</button>
         </div>
 
-        <!-- 3. 記帳明細與結算 -->
+        <!-- 記帳明細與結算 -->
         <div class="card">
             <div class="card-title">🧾 記帳明細列表</div>
             <div class="table-responsive">
@@ -845,7 +649,7 @@
                             <th>日圓 (JPY)</th>
                             <th>折合台幣 (TWD)</th>
                             <th>付款人</th>
-                            <th>分攤對象</th>
+                            <th>性質</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -864,201 +668,122 @@
 </div>
 
 <script>
-// 切換主頁籤
+// 主頁籤切換
 function switchTab(tabId, event) {
-    const pages = document.querySelectorAll('.page-content');
-    pages.forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-
-    const btns = document.querySelectorAll('.main-nav .nav-btn');
-    btns.forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.main-nav .nav-btn').forEach(b => b.classList.remove('active'));
     event.currentTarget.classList.add('active');
 }
 
-// 切換 Day 1 ~ Day 6 頁籤
+// Day 頁籤切換
 function switchDay(dayId, event) {
-    const tabs = document.querySelectorAll('.day-tab');
-    tabs.forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
     document.getElementById(dayId).classList.add('active');
-
-    const btns = document.querySelectorAll('.day-btn');
-    btns.forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
     event.currentTarget.classList.add('active');
 }
 
-// 整理自 TXT 檔案的行李清單資料
+// 行李清單資料
 const packingData = {
     passport: ["護照", "信用卡", "現金", "網卡"],
-    clothes: ["內衣／褲（5件）", "上衣、背心（5件）", "褲子、裙子（5件）", "薄外套／襯衫（1件）", "睡衣（1套）", "襪子（5雙）", "鞋子（1-2雙）", "拖鞋（1雙）"],
-    hygiene: ["牙刷、牙膏、牙線", "牙套", "洗面乳", "梳子", "衛生棉", "沐浴乳", "洗髮精", "護髮素", "護髮油", "保養品", "化妝品", "香水", "卸妝巾／水", "防曬用品", "止汗劑", "乳液", "電棒", "隱形眼鏡(5天+1備用）", "生理食鹽水", "人工淚液", "眼鏡", "面膜", "休足時間", "鯊魚夾"],
-    electronics: ["手機充電器、線", "相機、電池（隨身行李）、相機充電器、記憶卡", "耳機", "插座轉換器", "行動電源（隨身行李）、行動電源充電線", "延長線"],
-    medicine: ["常用藥品 (感冒藥、止痛藥、暈機藥、腸胃藥、濕疹藥）", "保健食品(益生菌、酵素、葉黃素、維他命）", "維他命c", "長期處方藥品", "防蚊液"],
-    other: ["雨傘（最好託運比較保險）", "手機掛繩", "帽子", "太陽眼鏡", "口罩", "酒精", "衛生紙（必備）", "濕紙巾（必備）", "購物袋（必備）", "壓縮袋", "手提行李帶"],
-    carryon: ["護照", "信用卡", "交通卡", "現金", "購物袋", "衛生紙", "濕紙巾", "涼感巾", "帽子", "太陽眼鏡", "雨傘", "水", "行動電源+線", "手機背帶", "相機", "人工淚液", "防曬用品", "隨身藥品", "薄外套／襯衫", "衛生棉"]
+    clothes: ["內衣／褲", "上衣、外衣", "褲子、裙子", "外套", "睡衣", "襪子", "鞋子", "拖鞋"],
+    hygiene: ["牙刷、牙膏", "洗面乳", "保養品、化妝品", "防曬用品", "面膜", "常備個人用品"],
+    electronics: ["手機充電器", "行動電源", "轉接頭", "相機"],
+    medicine: ["常備藥品 (感冒/止痛/腸胃)"],
+    other: ["雨傘", "購物袋", "濕紙巾"],
+    carryon: ["護照", "錢包", "網卡", "行動電源", "雨傘"]
 };
 
-// 渲染行李清單
 function renderPackingList() {
     for (let category in packingData) {
         const container = document.getElementById(`list_${category}`);
         if (!container) continue;
-        container.innerHTML = packingData[category].map((item, idx) => {
-            const id = `pack_${category}_${idx}`;
-            return `
-                <li class="check-item">
-                    <input type="checkbox" id="${id}">
-                    <label for="${id}" class="item-label">${item}</label>
-                </li>
-            `;
-        }).join('');
+        container.innerHTML = packingData[category].map((item, idx) => `
+            <li class="check-item">
+                <input type="checkbox" id="pack_${category}_${idx}">
+                <label for="pack_${category}_${idx}" class="item-label">${item}</label>
+            </li>
+        `).join('');
     }
 }
 
-// ==================== 記帳分帳系統核心邏輯 ====================
-let members = JSON.parse(localStorage.getItem('fukuoka_members')) || ['成員A', '成員B'];
-let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v2')) || [];
-let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate')) || 0.21;
+// ==================== 輕量記帳系統核心 ====================
+let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v3')) || [];
+let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate_v3')) || 0.21;
 
-// 儲存匯率並刷新
 function saveRateAndRender() {
     jpyRate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
-    localStorage.setItem('fukuoka_jpy_rate', jpyRate);
+    localStorage.setItem('fukuoka_jpy_rate_v3', jpyRate);
     updateTwdPreview();
-    saveAndRenderExpenses();
+    renderExpenses();
 }
 
-// 即時預覽金額換算台幣
 function updateTwdPreview() {
     const val = parseFloat(document.getElementById('acc_amount').value) || 0;
-    const rate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
-    const twd = Math.round(val * rate);
+    const twd = Math.round(val * jpyRate);
     document.getElementById('twd_preview').innerText = `約 NT$ ${twd.toLocaleString()}`;
 }
 
-// 管理成員：新增
-function addMember() {
-    const nameInput = document.getElementById('new_member_name');
-    const name = nameInput.value.trim();
-    if (!name) return;
-    if (members.includes(name)) {
-        alert('成員名稱已存在！');
-        return;
-    }
-    members.push(name);
-    nameInput.value = '';
-    saveAndRenderMembers();
-}
-
-// 管理成員：刪除
-function removeMember(name) {
-    if (members.length <= 1) {
-        alert('至少需保留一名成員！');
-        return;
-    }
-    members = members.filter(m => m !== name);
-    saveAndRenderMembers();
-}
-
-// 儲存並渲染成員與下拉選單
-function saveAndRenderMembers() {
-    localStorage.setItem('fukuoka_members', JSON.stringify(members));
-    
-    // 渲染成員標籤
-    const tagsDiv = document.getElementById('member_tags_container');
-    tagsDiv.innerHTML = members.map(m => `
-        <span class="member-tag">
-            👤 ${m}
-            <button onclick="removeMember('${m}')">✕</button>
-        </span>
-    `).join('');
-
-    // 更新付款人下拉選單
-    const payerSelect = document.getElementById('acc_payer');
-    payerSelect.innerHTML = `<option value="公費錢包">👛 公費錢包 付款</option>` +
-        members.map(m => `<option value="${m}">👤 ${m} 先墊</option>`).join('');
-
-    // 更新分攤類型下拉選單
-    const typeSelect = document.getElementById('acc_type');
-    typeSelect.innerHTML = `<option value="ALL">👥 全體成員平分 (共 ${members.length} 人)</option>` +
-        members.map(m => `<option value="SELF_${m}">👤 ${m} 的個人花費 (不分帳)</option>`).join('');
-
-    saveAndRenderExpenses();
-}
-
-// 新增花費紀錄
 function addExpense() {
     const date = document.getElementById('acc_date').value || '未填日期';
     const name = document.getElementById('acc_item').value.trim();
     const amountJPY = parseFloat(document.getElementById('acc_amount').value);
-    const payer = document.getElementById('acc_payer').value;
-    const type = document.getElementById('acc_type').value;
+    const payer = document.getElementById('acc_payer').value.trim();
+    const isSplit = document.getElementById('acc_is_split').checked;
 
-    if (!name || isNaN(amountJPY) || amountJPY <= 0) {
-        alert('請填寫完整的項目名稱與正確金額！');
+    if (!name || isNaN(amountJPY) || amountJPY <= 0 || !payer) {
+        alert('請完整填寫「項目名稱」、「金額」以及「先付錢的人」！');
         return;
     }
 
-    expenses.push({ 
-        id: Date.now(), 
-        date, 
-        name, 
-        amountJPY, 
-        payer, 
-        type 
+    expenses.push({
+        id: Date.now(),
+        date,
+        name,
+        amountJPY,
+        payer,
+        isSplit
     });
 
-    saveAndRenderExpenses();
+    renderExpenses();
 
-    // 清空輸入框
+    // 清空部分欄位
     document.getElementById('acc_item').value = '';
     document.getElementById('acc_amount').value = '';
     updateTwdPreview();
 }
 
-// 刪除花費紀錄
 function deleteExpense(id) {
     expenses = expenses.filter(e => e.id !== id);
-    saveAndRenderExpenses();
+    renderExpenses();
 }
 
-// 主渲染與結算邏輯
-function saveAndRenderExpenses() {
-    localStorage.setItem('fukuoka_expenses_v2', JSON.stringify(expenses));
+function renderExpenses() {
+    localStorage.setItem('fukuoka_expenses_v3', JSON.stringify(expenses));
     const tbody = document.getElementById('expense_body');
     tbody.innerHTML = '';
 
     let totalJPY = 0;
-    
-    // 建立成員的墊付與應付統計表
-    let stats = {};
-    members.forEach(m => {
-        stats[m] = { paid: 0, shouldPay: 0 };
-    });
+    let memberPaid = {};   // 記錄每人總共先墊了多少錢
+    let memberCost = {};   // 記錄每人實際應負擔多少錢
+    let allMembersSet = new Set();
 
     expenses.forEach(e => {
         totalJPY += e.amountJPY;
         const twd = Math.round(e.amountJPY * jpyRate);
 
-        // 統計付款金額 (公費不算在個人先墊)
-        if (e.payer !== '公費錢包' && stats[e.payer]) {
-            stats[e.payer].paid += e.amountJPY;
-        }
+        allMembersSet.add(e.payer);
 
-        // 統計應付金額
-        if (e.type === 'ALL') {
-            const splitAmount = e.amountJPY / members.length;
-            members.forEach(m => stats[m].shouldPay += splitAmount);
-        } else if (e.type.startsWith('SELF_')) {
-            const targetMember = e.type.replace('SELF_', '');
-            if (stats[targetMember]) {
-                stats[targetMember].shouldPay += e.amountJPY;
-            }
-        }
+        // 統計代墊
+        memberPaid[e.payer] = (memberPaid[e.payer] || 0) + e.amountJPY;
 
-        // 轉換表格閱讀標籤
-        let typeText = '👥 全體平分';
-        if (e.type.startsWith('SELF_')) {
-            typeText = `👤 ${e.type.replace('SELF_', '')} 個人`;
+        if (e.isSplit) {
+            // 如果是共同平分，暫時先標記這筆是大家平分
+            // 稍後根據實際參與人數來計算
+        } else {
+            // 如果不是平分，那就是該付款人的個人私人花費
+            memberCost[e.payer] = (memberCost[e.payer] || 0) + e.amountJPY;
         }
 
         tbody.innerHTML += `
@@ -1067,54 +792,69 @@ function saveAndRenderExpenses() {
                 <td>${e.name}</td>
                 <td><b>￥ ${e.amountJPY.toLocaleString()}</b></td>
                 <td style="color:var(--accent-warm);">NT$ ${twd.toLocaleString()}</td>
-                <td>${e.payer}</td>
-                <td>${typeText}</td>
+                <td>👤 ${e.payer}</td>
+                <td>${e.isSplit ? '👥 大家平分' : '👤 個人花費'}</td>
                 <td><button style="color:#d9534f; border:none; background:none; cursor:pointer;" onclick="deleteExpense(${e.id})">刪除</button></td>
             </tr>
         `;
     });
 
+    // 處理共同平分的均攤金額
+    let splitExpenses = expenses.filter(e => e.isSplit);
+    let totalSplitAmount = splitExpenses.reduce((sum, e) => sum + e.amountJPY, 0);
+    
+    // 自動抓取所有曾經出現在記帳或平分名單裡的人作為分帳對象
+    let membersList = Array.from(allMembersSet);
+    let memberCount = membersList.length > 0 ? membersList.length : 1;
+    let perPersonSplit = totalSplitAmount / memberCount;
+
+    membersList.forEach(m => {
+        if (!memberCost[m]) memberCost[m] = 0;
+        memberCost[m] += perPersonSplit;
+    });
+
     const totalTWD = Math.round(totalJPY * jpyRate);
 
-    // 生成結算報告 HTML
+    // 產生總結與結算區塊
     let summaryHTML = `
-        <strong>💰 費用統計與結算 (匯率 1 JPY = ${jpyRate} TWD)：</strong><br>
-        • 總花費：<b>￥ ${totalJPY.toLocaleString()} JPY</b> (約 NT$ ${totalTWD.toLocaleString()} TWD)<br>
+        <strong>💰 總花費與結算 (匯率 1 JPY = ${jpyRate} TWD)：</strong><br>
+        • 總消費金額：<b>￥ ${totalJPY.toLocaleString()} JPY</b> (約 NT$ ${totalTWD.toLocaleString()} TWD)<br>
+        • 參與分帳人數：<b>${memberCount} 人</b> (${membersList.join(', ') || '尚無成員'})\n
         <hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;">
-        <b>各成員分帳明細：</b><br>
+        <b>各成員收支狀況：</b><br>
     `;
 
-    // 計算每人差額 (先墊的 - 應付的)
     let balances = [];
-    members.forEach(m => {
-        let diff = stats[m].paid - stats[m].shouldPay;
+    membersList.forEach(m => {
+        let paid = memberPaid[m] || 0;
+        let cost = memberCost[m] || 0;
+        let diff = paid - cost; // 正數代表代墊較多可收錢，負數代表應付錢
         balances.push({ member: m, diff: diff });
-        
+
         let diffTwd = Math.round(diff * jpyRate);
         let statusText = diff >= 0 
             ? `<span style="color:green;">(可收回 ￥${Math.round(diff).toLocaleString()} / 約 NT$${diffTwd.toLocaleString()})</span>` 
             : `<span style="color:red;">(需補繳 ￥${Math.abs(Math.round(diff)).toLocaleString()} / 約 NT$${Math.abs(diffTwd).toLocaleString()})</span>`;
 
-        summaryHTML += `• <b>${m}</b>：先墊 ￥${Math.round(stats[m].paid).toLocaleString()}，個人應負擔 ￥${Math.round(stats[m].shouldPay).toLocaleString()} ${statusText}<br>`;
+        summaryHTML += `• <b>${m}</b>：先墊 ￥${Math.round(paid).toLocaleString()}，應負擔 ￥${Math.round(cost).toLocaleString()} ${statusText}<br>`;
     });
 
-    // 計算最佳轉帳結算建議 (給錢 / 收錢)
-    summaryHTML += `<hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;"><b>👉 結算建議：</b><br>`;
-    
-    let debtors = balances.filter(b => b.diff < -1); // 需付錢者
-    let creditors = balances.filter(b => b.diff > 1); // 應收錢者
+    summaryHTML += `<hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;"><b>👉 建議轉帳還款：</b><br>`;
+
+    let debtors = balances.filter(b => b.diff < -1);
+    let creditors = balances.filter(b => b.diff > 1);
 
     if (debtors.length === 0 && creditors.length === 0) {
-        summaryHTML += `所有費用均已平衡，目前無需補貼結算！<br>`;
+        summaryHTML += `目前帳目平衡，暫無須互補款項。<br>`;
     } else {
         debtors.forEach(d => {
-            let amountNeedToPay = Math.abs(d.diff);
+            let needPay = Math.abs(d.diff);
             creditors.forEach(c => {
-                if (amountNeedToPay <= 0 || c.diff <= 0) return;
-                let pay = Math.min(amountNeedToPay, c.diff);
+                if (needPay <= 0 || c.diff <= 0) return;
+                let pay = Math.min(needPay, c.diff);
                 let payTwd = Math.round(pay * jpyRate);
                 summaryHTML += `• <b>${d.member}</b> 應給 <b>${c.member}</b> <b>￥ ${Math.round(pay).toLocaleString()} JPY</b> <span style="color:var(--text-sub);">(約 NT$ ${payTwd.toLocaleString()})</span><br>`;
-                amountNeedToPay -= pay;
+                needPay -= pay;
                 c.diff -= pay;
             });
         });
@@ -1128,7 +868,7 @@ window.onload = function() {
     renderPackingList();
     document.getElementById('acc_date').valueAsDate = new Date();
     document.getElementById('jpy_rate').value = jpyRate;
-    saveAndRenderMembers();
+    renderExpenses();
 };
 </script>
 
