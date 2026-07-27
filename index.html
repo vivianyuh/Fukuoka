@@ -2,25 +2,19 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>福岡 6 天 5 夜自由行 APP</title>
-    <!-- FontAwesome Icons -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福岡自由行行程規劃</title>
+    <!-- FontAwesome 圖示套件 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #2C5E8A;
-            --primary-light: #EBF3FA;
-            --accent: #E07A5F;
-            --accent-light: #FDF0ED;
-            --bg: #F8F9FA;
-            --card-bg: #FFFFFF;
-            --text: #2B2D42;
-            --text-muted: #6C757D;
-            --border: #E9ECEF;
-            --success: #38B000;
-            --danger: #E63946;
-            --radius: 16px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --primary-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #ef4444;
         }
 
         * {
@@ -28,107 +22,80 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding-bottom: 85px;
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 70px;
         }
 
-        /* 頂部 Header */
         header {
-            background: linear-gradient(135deg, #2C5E8A 0%, #4A7C59 100%);
-            color: white;
-            padding: 20px 20px 15px;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 15px rgba(44, 94, 138, 0.2);
+            background-color: var(--card-bg);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-title {
+        header h1 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* 導覽分頁按鈕 */
+        .nav-tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .header-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-
-        /* 日期選擇列 */
-        .day-selector {
-            display: flex;
-            gap: 8px;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 15px;
             overflow-x: auto;
-            margin-top: 15px;
-            padding-bottom: 5px;
-            scrollbar-width: none;
         }
 
-        .day-selector::-webkit-scrollbar {
-            display: none;
-        }
-
-        .day-btn {
-            background: rgba(255, 255, 255, 0.2);
+        .tab-btn {
+            flex: 1;
+            padding: 8px 12px;
             border: none;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            white-space: nowrap;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .day-btn.active {
-            background: white;
-            color: var(--primary);
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* 頁面容器 */
-        .page-content {
-            padding: 16px;
+        .tab-content {
             display: none;
         }
 
-        .page-content.active {
+        .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 卡片通用樣式 */
+        /* 卡片與時間軸樣式 */
         .card {
             background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
         }
 
         .card-header {
@@ -137,37 +104,23 @@
             align-items: center;
             margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-weight: bold;
+            color: var(--primary-color);
         }
 
-        /* 每日行程時間軸 */
         .timeline {
             position: relative;
             padding-left: 20px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 5px;
-            bottom: 5px;
-            width: 2px;
-            background: #DCE5ED;
+            border-left: 2px solid #cbd5e1;
         }
 
         .timeline-item {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .timeline-item:last-child {
@@ -176,170 +129,58 @@
 
         .timeline-dot {
             position: absolute;
-            left: -20px;
+            left: -26px;
             top: 4px;
-            width: 14px;
-            height: 14px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: var(--primary);
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--primary);
+            background: var(--primary-color);
         }
 
         .timeline-time {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 4px;
-        }
-
-        .timeline-content {
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
         .timeline-title {
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-
-        .badge-plan {
-            display: inline-block;
-            background: var(--accent-light);
-            color: var(--accent);
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-right: 4px;
-        }
-
-        .badge-info {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        .map-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #4285F4;
-            color: white;
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 8px;
-            box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
-            transition: background 0.2s;
-        }
-
-        /* 費用小計卡片 */
-        .budget-box {
-            background: linear-gradient(135deg, #FFF8F6 0%, #FDF0ED 100%);
-            border: 1px solid #FAD2C9;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 0.85rem;
-        }
-
-        .budget-title {
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 6px;
-        }
-
-        /* 勾選清單列表 */
-        .checklist-group {
-            margin-bottom: 20px;
-        }
-
-        .checklist-title {
             font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin: 2px 0;
         }
 
-        .check-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 12px;
-            background: white;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .check-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-            margin-top: 2px;
-            cursor: pointer;
-        }
-
-        .check-item-text {
-            font-size: 0.88rem;
-            flex: 1;
+        .timeline-content {
+            font-size: 0.85rem;
+            color: var(--text-muted);
             line-height: 1.4;
         }
 
-        .check-item.checked {
-            background: #F8F9FA;
-            opacity: 0.6;
-        }
-
-        .check-item.checked .check-item-text {
-            text-decoration: line-through;
-        }
-
-        .tag-must {
-            background: #FF4D4F;
-            color: white;
-            font-size: 0.7rem;
-            padding: 1px 6px;
+        .badge-plan {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 6px;
             border-radius: 4px;
-            margin-left: 4px;
-            font-weight: normal;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 4px;
         }
 
-        /* 記帳專用樣式 */
-        .expense-summary {
-            background: linear-gradient(135deg, var(--primary) 0%, #1D3557 100%);
-            color: white;
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(44, 94, 138, 0.25);
+        .map-btn {
+            display: inline-block;
+            margin-top: 6px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
-        .expense-summary-total {
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 8px 0;
-            color: #FFD166;
-        }
-
+        /* 記帳與備忘錄樣式 */
         .expense-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         .form-row {
@@ -348,653 +189,346 @@
         }
 
         .form-control {
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            outline: none;
-            width: 100%;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
         }
 
         .btn-add {
-            background: var(--primary);
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 0.95rem;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-add:active {
-            background: #1d4263;
         }
 
         .expense-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .expense-item:last-child {
-            border-bottom: none;
-        }
-
-        .expense-tag {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-weight: bold;
-            margin-right: 6px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .expense-amount {
             font-weight: bold;
-            color: var(--accent);
-            font-size: 0.95rem;
+            color: var(--accent-color);
         }
 
         .btn-delete {
             background: none;
             border: none;
-            color: #ADB5BD;
+            color: #94a3b8;
             cursor: pointer;
-            padding: 4px 8px;
-            font-size: 0.9rem;
+            padding: 4px;
         }
 
-        .btn-delete:hover {
-            color: var(--danger);
+        .total-box {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: right;
+            margin-top: 10px;
         }
 
-        /* 底部導航列 */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 底部導覽 */
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
-            background: white;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 12px;
-            border-top: 1px solid var(--border);
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            z-index: 1000;
+            padding: 8px 0;
+            border-top: 1px solid var(--border-color);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: none;
-            border: none;
             color: var(--text-muted);
-            font-size: 0.68rem;
-            gap: 4px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            border: none;
+            background: none;
             cursor: pointer;
-            width: 25%;
         }
 
         .nav-item i {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
         }
 
         .nav-item.active {
-            color: var(--primary);
-            font-weight: bold;
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
 
-    <!-- 頂部 Header -->
     <header>
-        <div class="header-title">
-            <h1>🎌 福岡 6 天 5 夜自由行</h1>
-            <i class="fa-solid fa-plane-departure"></i>
-        </div>
-        <div class="header-subtitle">2026/11/06 - 11/11 專屬 APP</div>
-
-        <!-- 日期切換頁籤 (僅在每日行程顯示) -->
-        <div class="day-selector" id="daySelector">
-            <button class="day-btn active" onclick="switchDay(1)">11/6 (五)</button>
-            <button class="day-btn" onclick="switchDay(2)">11/7 (六)</button>
-            <button class="day-btn" onclick="switchDay(3)">11/8 (日)</button>
-            <button class="day-btn" onclick="switchDay(4)">11/9 (一)</button>
-            <button class="day-btn" onclick="switchDay(5)">11/10 (二)</button>
-            <button class="day-btn" onclick="switchDay(6)">11/11 (三)</button>
-        </div>
+        <h1>🇯🇵 福岡自由行 5天4夜</h1>
     </header>
 
-    <!-- ================= 頁面 1：每日行程 ================= -->
-    <main id="page-itinerary" class="page-content active">
+    <div class="container">
 
-        <!-- 全期飯店卡片 -->
-        <div class="card" style="border-left: 4px solid var(--primary);">
-            <div class="card-title"><i class="fa-solid fa-hotel"></i> 全期住宿：THE BASICS FUKUOKA</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">
-                〒812-0013 福岡県福岡市博多区博多駅東 2-14-1<br>
-                入住：11/06 15:00 ｜ 退房：11/11 11:00
-            </div>
-            <a href="https://maps.google.com/?q=THE+BASICS+FUKUOKA" target="_blank" class="map-btn">
-                <i class="fa-solid fa-location-dot"></i> 開啟地圖導航
-            </a>
+        <!-- 頁籤選單：行程每日切換 -->
+        <div id="itinerary-tabs" class="nav-tabs">
+            <button class="tab-btn active" onclick="switchDay('day-1')">Day 1</button>
+            <button class="tab-btn" onclick="switchDay('day-2')">Day 2</button>
+            <button class="tab-btn" onclick="switchDay('day-3')">Day 3</button>
+            <button class="tab-btn" onclick="switchDay('day-4')">Day 4</button>
+            <button class="tab-btn" onclick="switchDay('day-5')">Day 5</button>
         </div>
 
-        <!-- Day 1 -->
-        <div id="day-1" class="day-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-umbrella-beach"></i> Day 1：抵達福岡 ➔ 糸島二見浦</div>
-                    <span class="badge-info">11/6 (五)</span>
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">08:00 - 11:15</div>
-                        <div class="timeline-title">長榮 BR106 航班</div>
-                        <div class="timeline-content">桃園機場 T2 ➔ 福岡機場，辦理入境通關。</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">去程：前往糸島方案</div>
-                        <div class="timeline-content">
-                            <p><span class="badge-plan">Plan A 直達巴士</span> 13:28 博多巴士總站 ➔ 14:37 二見浦 PALMBEACH 前 ➔ 14:38 二見浦・月與太陽糸島茶房前 (夫妻岩)</p>
-                            <p style="margin-top: 4px;"><span class="badge-plan">Plan B 備案巴士</span> 14:28 博多巴士總站 ➔ 15:37 二見浦 PALMBEACH 前 ➔ 15:38 二見浦・月與太陽糸島茶房前 (夫妻岩)</p>
-                            <p style="margin-top: 4px;"><span class="badge-plan">Plan C 自駕前往</span> 🚗 <b>跟皮自駕前往</b>（彈性安排出發時間與停留點）</p>
-                            <a href="https://maps.google.com/?q=Sakurai+Futamigaura" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 二見浦 夫婦岩地圖</a>
+        <!-- 主要內容區 -->
+        <main>
+            <!-- 行程分頁區塊 -->
+            <div id="page-itinerary" class="tab-page">
+                
+                <!-- Day 1 -->
+                <div id="day-1" class="day-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-umbrella-beach"></i> Day 1：抵達福岡 ➔ 糸島二見浦</div>
+                            <span style="font-size:0.75rem; color: var(--text-muted);">11/6 (五)</span>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">08:00 - 11:15</div>
+                                <div class="timeline-title">長榮 BR106 航班</div>
+                                <div class="timeline-content">桃園機場 T2 ➔ 福岡機場，辦理入境通關。</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">去程：前往糸島方案</div>
+                                <div class="timeline-content">
+                                    <p><span class="badge-plan">Plan A 直達巴士</span> 13:28 博多巴士總站 ➔ 14:37 二見浦 PALMBEACH 前 ➔ 14:38 二見浦・月與太陽糸島茶房前 (夫妻岩)</p>
+                                    <p style="margin-top: 4px;"><span class="badge-plan">Plan B 備案巴士</span> 14:28 博多巴士總站 ➔ 15:37 二見浦 PALMBEACH 前 ➔ 15:38 二見浦・月與太陽糸島茶房前 (夫妻岩)</p>
+                                    <p style="margin-top: 4px;"><span class="badge-plan">Plan C 自駕前往</span> 🚗 跟皮自駕前往（彈性安排出發時間與停留點）</p>
+                                    <a href="https://maps.google.com/?q=Sakurai+Futamigaura" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 二見浦 夫婦岩地圖</a>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">回程：返程博多方案</div>
+                                <div class="timeline-content">
+                                    <p><span class="badge-plan">直達公車</span> 17:28 / 18:00 Palmbach前 ➔ 18:32 / 19:04 博多</p>
+                                    <p style="margin-top: 4px;"><span class="badge-plan">公車+地鐵</span> 18:18 Palmbach前 ➔ 九大學研都市站 ➔ 地鐵直通博多站</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">晚上</div>
+                                <div class="timeline-title">博多站周邊巡禮 & 晚餐</div>
+                                <div class="timeline-content">博多車站附近逛街、享用晚餐。</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">回程方案選項</div>
-                        <div class="timeline-content">
-                            <p><span class="badge-plan">Plan A 最晚直達</span> 17:32 二見浦 PALMBEACH 前 ➔ 18:35 返抵博多巴士總站 (IC卡 1,150 YEN)</p>
-                            <p style="margin-top: 4px;"><span class="badge-plan">Plan B 公車轉地鐵</span> 18:21 糸島茶房前搭西之浦線 ➔ 19:01 抵達九大學研都市 ➔ 轉地鐵筑肥線回到博多約 20:00</p>
-                            <p style="margin-top: 4px;"><span class="badge-plan">Plan C 自駕返回</span> 🚗 <b>跟皮自駕返回博多</b></p>
-                        </div>
-                    </div>
                 </div>
-                <div class="budget-box">
-                    <div class="budget-title">🚗 預估交通花費（每人）</div>
-                    大眾運輸：<b>約 ¥2,650 日圓</b>（若跟皮自駕則視油錢/過路費分攤）
-                </div>
-            </div>
-        </div>
 
-        <!-- Day 2 -->
-        <div id="day-2" class="day-content" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-torii-gate"></i> Day 2：太宰府觀光</div>
-                    <span class="badge-info">11/7 (六)</span>
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">09:15 - 10:17</div>
-                        <div class="timeline-title">博多站 ➔ 太宰府</div>
-                        <div class="timeline-content">
-                            <p><b>【主方案】</b>搭地下鐵至天神 ➔ 09:48 西鐵天神站搭乘「太宰府觀光列車旅人 tabito」 ➔ 10:17 抵達太宰府。</p>
-                            <p style="margin-top: 4px;"><b>【備案】</b>若能提早出門不用搭旅人號，改搭西鐵天神大牟田線（急行/特急）至二日市站，走到對面月台轉太宰府線。</p>
+                <!-- Day 2 -->
+                <div id="day-2" class="day-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-hot-tub-person"></i> Day 2：前往由布院</div>
+                            <span style="font-size:0.75rem; color: var(--text-muted);">11/7 (六)</span>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">上午</div>
+                                <div class="timeline-title">搭乘觀光列車前往由布院</div>
+                                <div class="timeline-content">體驗由布院之森列車風采。</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">下午</div>
+                                <div class="timeline-title">湯之坪街道 & 金鱗湖散策</div>
+                                <div class="timeline-content">逛街體驗、品嚐甜點與特色小吃。</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">10:17 - 14:30</div>
-                        <div class="timeline-title">太宰府天滿宮 & 參道商店街</div>
-                        <div class="timeline-content">參觀天滿宮、享用熱騰騰梅枝餅與參道美食。</div>
-                        <a href="https://maps.google.com/?q=Dazaifu+Tenmangu" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 太宰府天滿宮地圖</a>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">14:30 - 晚間</div>
-                        <div class="timeline-title">天神 / 博多市區散步</div>
-                        <div class="timeline-content">返回天神地下街購物商圈散步。</div>
-                    </div>
                 </div>
-                <div class="budget-box">
-                    <div class="budget-title">🚃 預估交通花費（每人）</div>
-                    預估車資：<b>約 ¥1,050 日圓</b>
-                </div>
-            </div>
-        </div>
 
-        <!-- Day 3 -->
-        <div id="day-3" class="day-content" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-hot-tub-person"></i> Day 3：由布院一日遊</div>
-                    <span class="badge-info">11/8 (日)</span>
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">去程：JR 特急列車（需預約）</div>
-                        <div class="timeline-content">
-                            <p><span class="badge-plan">首選</span> <b>由布院之森 1 號</b>：09:17 博多 ➔ 11:31 由布院</p>
-                            <p><span class="badge-plan">備案 1</span> <b>由布院之森 3 號</b>：10:11 博多 ➔ 12:27 由布院</p>
-                            <p><span class="badge-plan">備案 2</span> <b>由布號</b>：12:14 博多 ➔ 14:33 由布院</p>
+                <!-- Day 3 -->
+                <div id="day-3" class="day-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-torii-gate"></i> Day 3：太宰府與天神逛街</div>
+                            <span style="font-size:0.75rem; color: var(--text-muted);">11/8 (日)</span>
                         </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">11:30 - 17:00</div>
-                        <div class="timeline-title">湯之坪街道 & 金鱗湖</div>
-                        <div class="timeline-content">漫步湯之坪商店街、品嚐由布まぶし心釜飯、前往金鱗湖欣賞湖光山色。</div>
-                        <a href="https://maps.google.com/?q=Yunotsubo+Street" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 湯之坪街道地圖</a>
-                        <a href="https://maps.google.com/?q=Kinrin+Lake" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 金鱗湖地圖</a>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">回程：JR 特急列車（需預約）</div>
-                        <div class="timeline-content">
-                            <p><span class="badge-plan">主方案</span> <b>由布院之森 6 號</b>：17:17 由布院 ➔ 19:27 博多</p>
-                            <p><span class="badge-plan">晚班備案</span> <b>由布號 6 號</b>：19:27 由布院 ➔ 21:34 博多</p>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">上午</div>
+                                <div class="timeline-title">太宰府天滿宮</div>
+                                <div class="timeline-content">參訪天滿宮、品嚐梅枝餅與建築大師隈研吾設計之星巴克。</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="budget-box">
-                    <div class="budget-title">🚄 預估交通花費（每人）</div>
-                    特急來回車資：<b>約 ¥9,200 日圓</b>
-                </div>
-            </div>
-        </div>
 
-        <!-- Day 4 -->
-        <div id="day-4" class="day-content" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-mountain-sun"></i> Day 4：門司港 + 皿倉山</div>
-                    <span class="badge-info">11/9 (一)</span>
-                </div>
-                <div style="font-size: 0.8rem; color: var(--accent); margin-bottom: 12px; font-weight: bold;">
-                    💡 建議考慮購買 JR Kyushu Mobile Pass (福岡廣域版)
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">09:00 - 09:50</div>
-                        <div class="timeline-title">博多 ➔ 小倉 ➔ 門司港</div>
-                        <div class="timeline-content">
-                            09:00 博多搭 JR Sonic ➔ 09:37 到小倉 ➔ 09:45 小倉發車（搭鹿兒島本線，對面月台直接換車）➔ 09:50 抵達門司港。
+                <!-- Day 4 -->
+                <div id="day-4" class="day-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-bag-shopping"></i> Day 4：市區購物與備案</div>
+                            <span style="font-size:0.75rem; color: var(--text-muted);">11/9 (一)</span>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">全天</div>
+                                <div class="timeline-title">博多 / 天神 商圈採購</div>
+                                <div class="timeline-content">購買伴手禮、藥妝與服飾。</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">10:00 - 15:30</div>
-                        <div class="timeline-title">門司港懷舊區</div>
-                        <div class="timeline-content">漫步門司港懷舊建築、享用特色名物燒咖哩。</div>
-                        <a href="https://maps.google.com/?q=Mojiko+Retro" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 門司港懷舊區地圖</a>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">16:00 - 20:30</div>
-                        <div class="timeline-title">八幡站 ➔ 皿倉山百萬夜景</div>
-                        <div class="timeline-content">
-                            搭地鐵/JR至八幡站，轉搭皿倉山免費接駁巴士（首班 17:05，末班 20:15，每小時 05 分與 25 分各一班車）。搭乘纜車欣賞百萬夜景。
-                        </div>
-                        <a href="https://maps.google.com/?q=Sarakurayama+Cable+Car" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 皿倉山纜車站地圖</a>
-                    </div>
                 </div>
-                <div class="budget-box">
-                    <div class="budget-title">🎟️ 預估交通與門票花費（每人）</div>
-                    Pass 約 ¥3,000 + 纜車 ¥1,230 ｜ <b>合計：約 ¥4,230 日圓</b>
-                </div>
-            </div>
-        </div>
 
-        <!-- Day 5 -->
-        <div id="day-5" class="day-content" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-bag-shopping"></i> Day 5：購物採買</div>
-                    <span class="badge-info">11/10 (二)</span>
+                <!-- Day 5 -->
+                <div id="day-5" class="day-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-plane-departure"></i> Day 5：賦歸</div>
+                            <span style="font-size:0.75rem; color: var(--text-muted);">11/10 (二)</span>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">上午</div>
+                                <div class="timeline-title">前往福岡機場</div>
+                                <div class="timeline-content">免稅店最後採購，準備搭機返台。</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 10px 0;">
-                    <p style="font-size: 0.95rem; font-weight: bold; color: var(--primary); margin-bottom: 12px;">🛍️ 全天自由購物採買行程</p>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 16px;">
-                        今天不安排固定景點時間軸，隨心所欲暢遊各大商圈！
-                    </p>
+
+            </div>
+
+            <!-- 記帳分頁區塊 -->
+            <div id="page-expense" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-wallet"></i> 旅費記帳本</div>
+                    </div>
                     
-                    <div style="background: var(--bg); padding: 12px; border-radius: 12px; font-size: 0.88rem; line-height: 1.8; margin-bottom: 16px;">
-                        <b>推薦採買地點：</b><br>
-                        • <b>天神地下街 / 福岡 Parco</b>（含 Le Talon 福岡店）<br>
-                        • <b>JR 博多城 AMU PLAZA</b>（含 Le Talon 博多店）<br>
-                        • <b>博多運河城 Canal City</b><br>
-                        • <b>天神岩田屋 / 三越百貨</b>
+                    <form class="expense-form" id="expense-form" onsubmit="addExpense(event)">
+                        <div class="form-row">
+                            <!-- 日期選擇欄位 -->
+                            <input type="date" id="exp-date" class="form-control" style="max-width: 130px;" required>
+                            <input type="text" id="exp-item" class="form-control" placeholder="項目名稱 (如: 一蘭拉麵)" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" id="exp-amount" class="form-control" placeholder="日幣金額 (JPY)" required>
+                            <select id="exp-category" class="form-control">
+                                <option value="餐飲">餐飲</option>
+                                <option value="交通">交通</option>
+                                <option value="購物">購物</option>
+                                <option value="門票">門票</option>
+                                <option value="住宿">住宿</option>
+                                <option value="其他">其他</option>
+                            </select>
+                            <select id="exp-payment" class="form-control">
+                                <option value="現金">現金</option>
+                                <option value="刷卡">刷卡</option>
+                                <option value="IC卡">IC卡</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-add">+ 新增消費</button>
+                    </form>
+
+                    <div id="expense-list">
+                        <!-- 消費清單會在此動態產生 -->
                     </div>
 
-                    <a href="https://maps.google.com/?q=Tenjin+Chikagai" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 天神地下街</a>
-                    <a href="https://maps.google.com/?q=JR+Hakata+City" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> JR 博多城</a>
-                </div>
-                <div class="budget-box">
-                    <div class="budget-title">🚃 預估交通花費（每人）</div>
-                    市區地鐵車資：<b>約 ¥600 日圓</b>
-                </div>
-            </div>
-        </div>
-
-        <!-- Day 6 -->
-        <div id="day-6" class="day-content" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-plane-arrival"></i> Day 6：滿載而歸返台</div>
-                    <span class="badge-info">11/11 (三)</span>
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">09:00 - 10:00</div>
-                        <div class="timeline-title">辦理飯店退房</div>
-                        <div class="timeline-content">THE BASICS FUKUOKA 退房（最晚 11:00）。</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">10:00 - 12:15</div>
-                        <div class="timeline-title">前往福岡機場國際線</div>
-                        <div class="timeline-content">搭乘巴士或計程車至機場，辦理登機與免稅店採買。</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">12:15 - 13:50</div>
-                        <div class="timeline-title">長榮 BR105 航班</div>
-                        <div class="timeline-content">12:15 福岡起飛 ➔ 13:50 返抵桃園機場 T2。</div>
+                    <div class="total-box">
+                        <div>總計: <strong id="total-jpy">0</strong> JPY</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">約新台幣 <span id="total-twd">0</span> TWD (匯率0.21估算)</div>
                     </div>
                 </div>
-                <div class="budget-box">
-                    <div class="budget-title">🚌 預估交通花費（每人）</div>
-                    機場巴士車資：<b>約 ¥350 日圓</b>
+            </div>
+
+            <!-- 清單分頁區塊 -->
+            <div id="page-checklist" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-list-check"></i> 行前準備與買單</div>
+                    </div>
+                    <div id="checklist-container">
+                        <div class="checklist-item"><input type="checkbox" id="c1"><label for="c1">護照 (確認有效期限6個月以上)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c2"><label for="c2">填寫 Visit Japan Web</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c3"><label for="c3">網卡 / eSIM 準備</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c4"><label for="c4">日幣現金兌換</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">由布院之森車票預約</label></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
+    </div>
 
-    </main>
-
-    <!-- ================= 頁面 2：行前準備 ================= -->
-    <main id="page-prep" class="page-content">
-        <div class="card">
-            <div class="card-title" style="margin-bottom: 12px;">📋 行前準備須知</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">點擊項目即可打勾，系統會自動儲存勾選狀態。</div>
-
-            <!-- 交通預訂 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-train"></i> 交通預訂</div>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-1">
-                    <div class="check-item-text">
-                        <b>由布院之森 / 由布號 特急指定席預約（11/8）</b> <span class="tag-must">必辦</span><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-2">
-                    <div class="check-item-text">
-                        <b>確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）</b>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-3">
-                    <div class="check-item-text">
-                        <b>評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）</b><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">若當天會搭多段 JR，可比較單程票與周遊券何者劃算。</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-4">
-                    <div class="check-item-text">
-                        <b>確認 11/6 昭和巴士（West Coast Liner）最新去回程時刻</b><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">Plan A／Plan B 皆需再核對，避免錯過末班車。</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-5">
-                    <div class="check-item-text">
-                        <b>IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC</b><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。</span>
-                    </div>
-                </label>
-            </div>
-
-            <!-- 證件與金錢 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-passport"></i> 證件與金錢</div>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-6">
-                    <div class="check-item-text">
-                        <b>護照效期確認（建議 6 個月以上）</b> <span class="tag-must">必辦</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-7">
-                    <div class="check-item-text">
-                        <b>護照、機票、訂房證明各留一份電子備份</b><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">存雲端或手機相簿，遺失時方便處理。</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-8">
-                    <div class="check-item-text">
-                        <b>兌換日圓現金</b><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">郊區小店、巴士、神社香油錢等常僅收現金。</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-9">
-                    <div class="check-item-text">
-                        <b>確認信用卡海外刷卡與提款功能已開通</b>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-10">
-                    <div class="check-item-text">
-                        <b>購買旅遊不便險／海外突發疾病險</b>
-                    </div>
-                </label>
-            </div>
-
-            <!-- 通訊與 App -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-mobile-screen"></i> 通訊與 App</div>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-11">
-                    <div class="check-item-text">
-                        <b>預訂網路分享器或 eSIM／實體 SIM 卡</b> <span class="tag-must">必辦</span>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-12">
-                    <div class="check-item-text">
-                        <b>下載 Google 地圖離線地圖（福岡・北九州・由布院一帶）</b>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-13">
-                    <div class="check-item-text">
-                        <b>下載乘換案內類 App（Yahoo!乘換案內 或 Google Maps）</b>
-                    </div>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="prep-14">
-                    <div class="check-item-text">
-                        <b>下載翻譯 App（Google 翻譯拍照翻譯功能）</b>
-                    </div>
-                </label>
-            </div>
-        </div>
-    </main>
-
-    <!-- ================= 頁面 3：行李清單 ================= -->
-    <main id="page-luggage" class="page-content">
-        <div class="card">
-            <div class="card-title" style="margin-bottom: 12px;">🧳 完整行李打包清單</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">點擊項目即可打勾整理。</div>
-
-            <!-- 個人證件類 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-id-card"></i> 個人證件類</div>
-                <label class="check-item"><input type="checkbox" id="lug-1"><div class="check-item-text">護照</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-2"><div class="check-item-text">信用卡</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-3"><div class="check-item-text">日幣現金</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-4"><div class="check-item-text">網卡 / eSIM</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-5"><div class="check-item-text">交通卡 (IC 卡)</div></label>
-            </div>
-
-            <!-- 衣物類 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-shirt"></i> 衣物類</div>
-                <label class="check-item"><input type="checkbox" id="lug-6"><div class="check-item-text">內衣／內褲（5件）</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-7"><div class="check-item-text">上衣、背心（5件）</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-8"><div class="check-item-text">褲子、裙子（5件）</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-9"><div class="check-item-text"><b>防風保暖外套／襯衫（1-2件，皿倉山與海邊風大）</b></div></label>
-                <label class="check-item"><input type="checkbox" id="lug-10"><div class="check-item-text">睡衣（1套）</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-11"><div class="check-item-text">襪子（5雙）</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-12"><div class="check-item-text">鞋子（1-2雙）、拖鞋（1雙）</div></label>
-            </div>
-
-            <!-- 個人衛生用品類 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-pump-soap"></i> 個人衛生與保養類</div>
-                <label class="check-item"><input type="checkbox" id="lug-13"><div class="check-item-text">牙刷、牙膏、牙線、牙套</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-14"><div class="check-item-text">洗面乳、沐浴乳、洗髮精、護髮素/油</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-15"><div class="check-item-text">梳子、電棒（⚠️ *有線可託運/無線鋰電池禁帶*）、鯊魚夾</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-16"><div class="check-item-text">保養品、化妝品、面膜、乳液、防曬用品、卸妝巾/水</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-17"><div class="check-item-text">隱形眼鏡（5天+1備用）、生理食鹽水、人工淚液、眼鏡</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-18"><div class="check-item-text">衛生棉、香水、止汗劑、休足時間</div></label>
-            </div>
-
-            <!-- 電子產品類 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-plug"></i> 電子產品類</div>
-                <label class="check-item"><input type="checkbox" id="lug-19"><div class="check-item-text">手機充電器、充電線、耳機</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-20"><div class="check-item-text"><b>相機、相機電池（隨身）、充電器、記憶卡</b></div></label>
-                <label class="check-item"><input type="checkbox" id="lug-21"><div class="check-item-text"><b>行動電源（隨身攜帶）、充電線</b></div></label>
-                <label class="check-item"><input type="checkbox" id="lug-22"><div class="check-item-text">插座轉換器、延長線</div></label>
-            </div>
-
-            <!-- 藥品與隨身類 -->
-            <div class="checklist-group">
-                <div class="checklist-title"><i class="fa-solid fa-pills"></i> 藥品與生活隨身類</div>
-                <label class="check-item"><input type="checkbox" id="lug-23"><div class="check-item-text">常用藥品 (感冒/止痛/暈車/腸胃/濕疹)、長期處方藥</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-24"><div class="check-item-text">保健食品 (益生菌/酵素/葉黃素/維他命C)、防蚊液</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-25"><div class="check-item-text">雨傘（託運）、手機掛繩/背帶、帽子、太陽眼鏡</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-26"><div class="check-item-text">口罩、酒精、衛生紙、濕紙巾、涼感巾</div></label>
-                <label class="check-item"><input type="checkbox" id="lug-27"><div class="check-item-text">購物袋、壓縮袋、手提行李帶</div></label>
-            </div>
-        </div>
-    </main>
-
-    <!-- ================= 頁面 4：旅遊記帳 ================= -->
-    <main id="page-expense" class="page-content">
-        <!-- 總花費統計面板 -->
-        <div class="expense-summary">
-            <div style="font-size: 0.85rem; opacity: 0.9;">旅途總支出</div>
-            <div class="expense-summary-total">¥ <span id="total-jpy">0</span></div>
-            <div style="font-size: 0.8rem; opacity: 0.85;">約新台幣 NT$ <span id="total-twd">0</span> (匯率 0.21)</div>
-        </div>
-
-        <!-- 新增記帳表單 -->
-        <div class="card">
-            <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-pen-to-square"></i> 新增消費</div>
-            <form class="expense-form" id="expense-form" onsubmit="addExpense(event)">
-                <div class="form-row">
-                    <input type="text" id="exp-item" class="form-control" placeholder="項目名稱 (如: 一蘭拉麵)" required>
-                    <input type="number" id="exp-amount" class="form-control" placeholder="金額 (日幣 ¥)" required style="width: 130px;">
-                </div>
-                <div class="form-row">
-                    <select id="exp-category" class="form-control">
-                        <option value="餐飲">🍱 餐飲美食</option>
-                        <option value="購物">🛍️ 購物採買</option>
-                        <option value="交通">🚃 交通車資</option>
-                        <option value="門票">🎟️ 門票景點</option>
-                        <option value="其他">🎈 其他雜支</option>
-                    </select>
-                    <select id="exp-payment" class="form-control" style="width: 130px;">
-                        <option value="現金">💵 現金</option>
-                        <option value="信用卡">💳 信用卡</option>
-                        <option value="IC卡">📱 IC卡</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-add"><i class="fa-solid fa-plus"></i> 新增紀錄</button>
-            </form>
-        </div>
-
-        <!-- 消費明細列表 -->
-        <div class="card">
-            <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-list-check"></i> 消費明細列表</div>
-            <div id="expense-list">
-                <!-- 動態新增項目 -->
-            </div>
-        </div>
-    </main>
-
-    <!-- 底部導航列 -->
+    <!-- 底部導覽列 -->
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchPage('itinerary')">
+        <button class="nav-item active" onclick="switchPage('page-itinerary', this)">
             <i class="fa-solid fa-calendar-days"></i>
-            <span>每日行程</span>
+            <span>行程</span>
         </button>
-        <button class="nav-item" onclick="switchPage('prep')">
-            <i class="fa-solid fa-clipboard-check"></i>
-            <span>行前準備</span>
+        <button class="nav-item" onclick="switchPage('page-expense', this)">
+            <i class="fa-solid fa-calculator"></i>
+            <span>記帳</span>
         </button>
-        <button class="nav-item" onclick="switchPage('luggage')">
-            <i class="fa-solid fa-suitcase"></i>
-            <span>行李清單</span>
-        </button>
-        <button class="nav-item" onclick="switchPage('expense')">
-            <i class="fa-solid fa-wallet"></i>
-            <span>記帳消費</span>
+        <button class="nav-item" onclick="switchPage('page-checklist', this)">
+            <i class="fa-solid fa-square-check"></i>
+            <span>清單</span>
         </button>
     </nav>
 
-    <!-- JS 邏輯控制 -->
+    <!-- JavaScript 邏輯程式碼 -->
     <script>
-        // 切換主頁面
-        function switchPage(pageName) {
-            document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        // 頁面切換
+        function switchPage(pageId, btn) {
+            document.querySelectorAll('.tab-page').forEach(el => el.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
 
-            const targetPage = document.getElementById(`page-${pageName}`);
-            const daySelector = document.getElementById('daySelector');
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
 
-            targetPage.classList.add('active');
-            
-            if(pageName === 'itinerary') {
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
-                daySelector.style.display = 'flex';
-            } else if(pageName === 'prep') {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-                daySelector.style.display = 'none';
-            } else if(pageName === 'luggage') {
-                document.querySelectorAll('.nav-item')[2].classList.add('active');
-                daySelector.style.display = 'none';
-            } else if(pageName === 'expense') {
-                document.querySelectorAll('.nav-item')[3].classList.add('active');
-                daySelector.style.display = 'none';
+            const dayTabs = document.getElementById('itinerary-tabs');
+            if (pageId === 'page-itinerary') {
+                dayTabs.style.display = 'flex';
+            } else {
+                dayTabs.style.display = 'none';
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 切換每日行程 Day 1 ~ 6
-        function switchDay(dayNum) {
+        // 天數切換
+        function switchDay(dayId) {
             document.querySelectorAll('.day-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.day-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(dayId).style.display = 'block';
 
-            document.getElementById(`day-${dayNum}`).style.display = 'block';
-            document.querySelectorAll('.day-btn')[dayNum - 1].classList.add('active');
+            document.querySelectorAll('#itinerary-tabs .tab-btn').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
         // --- 記帳功能邏輯 ---
@@ -1016,11 +550,11 @@
                     el.innerHTML = `
                         <div>
                             <div>
-                                <span class="expense-tag">${item.category}</span>
+                                <span style="background:#e2e8f0; font-size:0.7rem; padding:2px 6px; border-radius:4px; font-weight:bold;">${item.category}</span>
                                 <b>${item.item}</b>
                             </div>
                             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                                ${item.payment}
+                                📅 ${item.date || '未標示日期'} ｜ ${item.payment}
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -1038,17 +572,21 @@
 
         function addExpense(e) {
             e.preventDefault();
+            const date = document.getElementById('exp-date').value;
             const item = document.getElementById('exp-item').value;
             const amount = document.getElementById('exp-amount').value;
             const category = document.getElementById('exp-category').value;
             const payment = document.getElementById('exp-payment').value;
 
-            if (!item || !amount) return;
+            if (!item || !amount || !date) return;
 
-            expenses.unshift({ item, amount, category, payment });
+            expenses.unshift({ date, item, amount, category, payment });
             localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
 
+            // 重設表單，並將日期重新設為今天
             document.getElementById('expense-form').reset();
+            document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
+            
             renderExpenses();
         }
 
@@ -1060,27 +598,11 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 勾選清單 localStorage
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                const savedState = localStorage.getItem(cb.id);
-                if (savedState === 'true') {
-                    cb.checked = true;
-                    cb.closest('.check-item').classList.add('checked');
-                }
-
-                cb.addEventListener('change', (e) => {
-                    const isChecked = e.target.checked;
-                    localStorage.setItem(e.target.id, isChecked);
-                    if (isChecked) {
-                        e.target.closest('.check-item').classList.add('checked');
-                    } else {
-                        e.target.closest('.check-item').classList.remove('checked');
-                    }
-                });
-            });
-
-            // 載入記帳資料
+            // 預設日期為今天 (YYYY-MM-DD)
+            const dateInput = document.getElementById('exp-date');
+            if (dateInput) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
             renderExpenses();
         });
     </script>
