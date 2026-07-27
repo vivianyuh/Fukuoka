@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>九州由布院・博多之旅 旅遊隨身 APP</title>
+    <style>
+        :root {
+            --bg-color: #f7f5f0;
+            --card-bg: #ffffff;
+            --primary: #2c3e50;
+            --accent: #d96b27;
+            --accent-light: #fdf2e9;
+            --sage: #5b7065;
+            --sage-light: #eef2f0;
+            --text-main: #2b2b2b;
+            --text-sub: #666666;
+            --border-color: #eaedea;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --nav-height: 65px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: calc(var(--nav-height) + 20px);
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        /* Top Header */
+        .app-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 24px 20px 18px 20px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            backdrop-filter: blur(4px);
+        }
+
+        .app-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .app-header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        /* Container & Tabs */
+        .content-container {
+            padding: 16px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Day Selector Pill Bar */
+        .day-selector {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+        .day-selector::-webkit-scrollbar { display: none; }
+
+        .day-btn {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #e4e7e5;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 3px 8px rgba(217, 107, 39, 0.3);
+        }
+
+        /* Timeline & Cards */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: #d8deda;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 18px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+        }
+
+        .card-time {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .tag-food { background: #fde8e8; color: #c0392b; }
+        .tag-spot { background: #e8f4f8; color: #2980b9; }
+        .tag-shop { background: #fef5e7; color: #d35400; }
+        .tag-trans { background: #eafaf1; color: #27ae60; }
+        .tag-hotel { background: #f4ecf7; color: #8e44ad; }
+
+        /* Buttons */
+        .btn-map {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px;
+            background-color: #34a853;
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(52, 168, 83, 0.25);
+            transition: background 0.2s;
+        }
+
+        .btn-map:active {
+            background-color: #2d8e47;
+        }
+
+        .btn-map svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Checkbox list for packing */
+        .check-list {
+            list-style: none;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .check-item.done {
+            opacity: 0.55;
+            background: #f0f0f0;
+            text-decoration: line-through;
+        }
+
+        .check-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .info-box label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .info-box span {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Budget Tracker */
+        .budget-summary {
+            background: linear-gradient(135deg, #5b7065 0%, #3e4f46 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(91, 112, 101, 0.2);
+        }
+
+        .budget-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .budget-row.total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e93;
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 500;
+            width: 20%;
+            height: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Add Expense Form */
+        .add-expense-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .add-expense-box input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        .add-expense-box input[type="text"] { flex: 2; }
+        .add-expense-box input[type="number"] { flex: 1; }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <span class="header-badge">🇯🇵 九州・福岡＆由布院之旅</span>
+        <h1 id="header-title">每日行程規劃</h1>
+        <p id="header-subtitle">2026 北九州 4 天 3 夜深度遊</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="content-container">
+
+        <!-- TAB 1: 每日行程 -->
+        <section id="tab-itinerary" class="tab-content active">
+            <!-- Day Selector Bar -->
+            <div class="day-selector">
+                <button class="day-btn active" onclick="switchDay('day1')">Day 1 博多/糸島</button>
+                <button class="day-btn" onclick="switchDay('day2')">Day 2 由布院溫泉</button>
+                <button class="day-btn" onclick="switchDay('day3')">Day 3 門司港/購物</button>
+                <button class="day-btn" onclick="switchDay('day4')">Day 4 福岡回程</button>
+            </div>
+
+            <!-- Day 1 Content -->
+            <div id="day1" class="day-schedule">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 09:30 - 11:00</div>
+                            <h3 class="card-title">福岡機場抵達 & 飯店寄放行李</h3>
+                            <p class="card-desc">入境後搭乘地下鐵至博多站，先前往飯店寄放大型行李，準備展開旅程。</p>
+                            <span class="tag tag-trans">交通</span><span class="tag tag-hotel">飯店</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Hakata+Station" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 博多車站
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 11:30 - 14:30</div>
+                            <h3 class="card-title">糸島海岸 & 海上鳥居觀光</h3>
+                            <p class="card-desc">品嚐知名海鮮燒烤與白色鳥居海景巡禮，拍照打卡絕佳景點。</p>
+                            <span class="tag tag-spot">景點</span><span class="tag tag-food">美食</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura+Couples+Stones" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 櫻井二見浦 夫婦岩
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 15:30 - 18:00</div>
+                            <h3 class="card-title">太宰府天滿宮 & 竈門神社</h3>
+                            <p class="card-desc">參拜學問之神，品嚐現烤梅枝餅，隨後前往竈門神社感受結緣神社氣氛。</p>
+                            <span class="tag tag-spot">參拜</span><span class="tag tag-food">小吃</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Dazaifu+Tenmangu" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 太宰府天滿宮
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 18:30 - 20:30</div>
+                            <h3 class="card-title">天神/博多水瀧鍋晚餐與逛街</h3>
+                            <p class="card-desc">享用福岡特色博多水瀧雞肉鍋，晚餐後在博多地下街順道散步。</p>
+                            <span class="tag tag-food">晚餐</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Hakata+Station+City" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 博多車站商圈
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2 Content -->
+            <div id="day2" class="day-schedule" style="display:none;">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 09:17 - 11:31</div>
+                            <h3 class="card-title">搭乘觀光列車「由布院之森」</h3>
+                            <p class="card-desc">體驗著名的綠色復古觀光列車，車上可購買由布院B-speak奶油捲與便當。</p>
+                            <span class="tag tag-trans">JR特急</span><span class="tag tag-spot">特色體驗</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Yufuin+Station" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 由布院車站
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 12:00 - 15:30</div>
+                            <h3 class="card-title">湯之坪街道散策 & 金鱗湖</h3>
+                            <p class="card-desc">逛湯之坪手作商店、花卉村（Yufuin Floral Village），路過金鱗湖欣賞晨霧與湖光山色。</p>
+                            <span class="tag tag-spot">散步</span><span class="tag tag-shop">購物</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Kinrin+Lake" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 金鱗湖
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 16:00 - 17:00</div>
+                            <h3 class="card-title">由布院溫泉飯店 Check-in</h3>
+                            <p class="card-desc">入住日式溫泉旅館，享受私人露天風呂與一泊二食會席料理。</p>
+                            <span class="tag tag-hotel">溫泉旅館</span><span class="tag tag-food">會席料理</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Yufuin+Onsen" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 由布院溫泉區
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⚠️ 關鍵交通提醒</div>
+                            <h3 class="card-title">明日回程車次：17:17 回博多</h3>
+                            <p class="card-desc">已預訂 17:17 由布院發車回博多之班次，請記得提前 15 分鐘至車站候車。</p>
+                            <span class="tag tag-trans">JR 回程</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3 Content -->
+            <div id="day3" class="day-schedule" style="display:none;">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 10:00 - 12:30</div>
+                            <h3 class="card-title">由布院藝術館與咖啡小憩</h3>
+                            <p class="card-desc">晨間漫步由布院，參觀 COMICO ART MUSEUM 或在湖畔咖啡廳享用早午餐。</p>
+                            <span class="tag tag-spot">藝術</span><span class="tag tag-food">咖啡</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 17:17 - 19:30</div>
+                            <h3 class="card-title">搭乘 17:17 列車 返回博多</h3>
+                            <p class="card-desc">準時搭車前往博多，抵達後可先去飯店存放購物戰利品。</p>
+                            <span class="tag tag-trans">JR 特急</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 20:00 - 21:30</div>
+                            <h3 class="card-title">Le Talon 鞋款實體店巡禮 & 博多購物</h3>
+                            <p class="card-desc">前往博多阪急 / 天神地下街的 Le Talon 專櫃選購氣質日系女鞋。</p>
+                            <span class="tag tag-shop">女鞋購物</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Le+Talon+Hakata+Hankyu" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 Le Talon (博多阪急店)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 4 Content -->
+            <div id="day4" class="day-schedule" style="display:none;">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 10:00 - 13:00</div>
+                            <h3 class="card-title">門司港懷舊區 & 燒咖哩</h3>
+                            <p class="card-desc">欣賞港口西洋建築群、關門海峽大橋，並品嚐著名的門司港焗烤燒咖哩。</p>
+                            <span class="tag tag-spot">懷舊建築</span><span class="tag tag-food">燒咖哩</span>
+                            <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Mojiko+Retro" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                                導航至 門司港懷舊區
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-time">⏰ 14:00 - 16:30</div>
+                            <h3 class="card-title">博多銘品館 伴手禮最後採買</h3>
+                            <p class="card-desc">購買明太子、福太郎仙貝、博多通饅頭與草莓甜點，準備前往機場。</p>
+                            <span class="tag tag-shop">伴手禮</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: 交通指南 -->
+        <section id="tab-transport" class="tab-content">
+            <div class="card">
+                <h3 class="card-title">🎫 JR 北九州 3 日 Pass</h3>
+                <p class="card-desc">可連續 3 天無限次搭乘指定區域內的 JR 特急列車與新幹線（博多至小倉除外）。</p>
+                <div class="info-grid">
+                    <div class="info-box"><label>票券類型</label><span>3 日周遊券</span></div>
+                    <div class="info-box"><label>劃位次數</label><span>指定席 6 次</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🚆 重要觀光列車時刻</h3>
+                <p class="card-desc"><strong>去程 (由布院之森 1 號)：</strong>博多 09:17 ➔ 由布院 11:31</p>
+                <p class="card-desc"><strong>回程 (特急由布/由布院之森)：</strong>由布院 17:17 ➔ 博多 19:28</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💳 交通 IC 卡 (SUICA / ICOCA)</h3>
+                <p class="card-desc">適用於福岡地下鐵、西鐵巴士以及多數便利商店消費，手機 Apple Pay 可直接感應過閘。</p>
+            </div>
+        </section>
+
+        <!-- TAB 3: 住宿資訊 -->
+        <section id="tab-hotel" class="tab-content">
+            <div class="card">
+                <span class="tag tag-hotel">Night 1 & 3</span>
+                <h3 class="card-title">博多站前精品酒店</h3>
+                <p class="card-desc"><strong>地址：</strong>福岡縣福岡市博多區博多站前 2-XX-XX</p>
+                <p class="card-desc"><strong>Check-in:</strong> 15:00 | <strong>Check-out:</strong> 11:00</p>
+                <p class="card-desc"><strong>優勢：</strong>距離 JR 博多站步行 3 分鐘，寄放行李極為方便。</p>
+                <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Hakata+Station+Hotel" target="_blank">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    導航至 博多飯店
+                </a>
+            </div>
+
+            <div class="card">
+                <span class="tag tag-hotel">Night 2</span>
+                <h3 class="card-title">由布院日式溫泉旅館</h3>
+                <p class="card-desc"><strong>地址：</strong>大分縣由布市湯布院町川上 XXX</p>
+                <p class="card-desc"><strong>Check-in:</strong> 15:30 | <strong>Check-out:</strong> 10:00</p>
+                <p class="card-desc"><strong>包含項目：</strong>附設露天風呂、晚餐會席料理、早餐日式定食。</p>
+                <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=Yufuin+Ryokan" target="_blank">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    導航至 由布院旅館
+                </a>
+            </div>
+        </section>
+
+        <!-- TAB 4: 行李清單 -->
+        <section id="tab-packing" class="tab-content">
+            <ul class="check-list">
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">護照 & 護照影本</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">日幣現金 & 信用卡</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">Visit Japan Web 填寫完成</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">JR Pass 兌換券/憑證</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">網卡 / Wi-Fi 分享器</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">行動電源 & 充電線</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">個人藥品 & 換洗衣物</span></li>
+                <li class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span class="check-label">雨傘 & 保暖外衣</span></li>
+            </ul>
+        </section>
+
+        <!-- TAB 5: 預算與記帳 -->
+        <section id="tab-budget" class="tab-content">
+            <div class="budget-summary">
+                <div class="budget-row"><span>JR 3日周遊券:</span> <span>¥12,000</span></div>
+                <div class="budget-row"><span>博多住宿 (2晚):</span> <span>¥18,000</span></div>
+                <div class="budget-row"><span>由布院溫泉 (1晚):</span> <span>¥22,000</span></div>
+                <div class="budget-row"><span>預估餐飲與購物:</span> <span>¥30,000</span></div>
+                <div class="budget-row total"><span>預估總預算:</span> <span>¥82,000 / 人</span></div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:12px;">快速隨手記帳</h3>
+                <div class="add-expense-box">
+                    <input type="text" id="exp-name" placeholder="項目 (如: 冰淇淋)">
+                    <input type="number" id="exp-amount" placeholder="日幣 ¥">
+                    <button class="btn-add" onclick="addExpense()">新增</button>
+                </div>
+                <ul id="expense-list" style="list-style:none; font-size:0.9rem;">
+                    <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                        <span>由布院 B-speak 蛋糕捲</span><span style="font-weight:bold; color:var(--accent);">¥1,500</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('itinerary', this)">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+            每日行程
+        </button>
+        <button class="nav-item" onclick="switchTab('transport', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 .5-8 4v10c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4zm5.5 6H6.5V6h11v2zM6 15.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            交通
+        </button>
+        <button class="nav-item" onclick="switchTab('hotel', this)">
+            <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            住宿
+        </button>
+        <button class="nav-item" onclick="switchTab('packing', this)">
+            <svg viewBox="0 0 24 24"><path d="M17 6h-2V3c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v3H7c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-3h2v3h-2V3zm6 16H7V8h10v11z"/></svg>
+            行李
+        </button>
+        <button class="nav-item" onclick="switchTab('budget', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            預算
+        </button>
+    </nav>
+
+    <script>
+        const titles = {
+            'itinerary': { title: '每日行程規劃', sub: '2026 北九州 4 天 3 夜深度遊' },
+            'transport': { title: '交通票券與時刻', sub: 'JR Pass、由布院之森 & 地下鐵' },
+            'hotel': { title: '飯店與溫泉旅館', sub: '博多站前 & 由布院溫泉' },
+            'packing': { title: '行李準備清單', sub: '出國必備證件與隨身物品' },
+            'budget': { title: '預算規劃與隨手記', sub: '開銷統計與日幣記帳' }
+        };
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+
+            document.getElementById('header-title').innerText = titles[tabId].title;
+            document.getElementById('header-subtitle').innerText = titles[tabId].sub;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchDay(dayId) {
+            document.querySelectorAll('.day-schedule').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.day-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(dayId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleCheck(checkbox) {
+            const item = checkbox.closest('.check-item');
+            if (checkbox.checked) {
+                item.classList.add('done');
+            } else {
+                item.classList.remove('done');
+            }
+        }
+
+        function addExpense() {
+            const name = document.getElementById('exp-name').value.trim();
+            const amount = document.getElementById('exp-amount').value.trim();
+            if (!name || !amount) return;
+
+            const ul = document.getElementById('expense-list');
+            const li = document.createElement('li');
+            li.style.cssText = 'display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;';
+            li.innerHTML = `<span>${name}</span><span style="font-weight:bold; color:var(--accent);">¥${parseInt(amount).toLocaleString()}</span>`;
+            ul.prepend(li);
+
+            document.getElementById('exp-name').value = '';
+            document.getElementById('exp-amount').value = '';
+        }
+    </script>
+</body>
+</html>
