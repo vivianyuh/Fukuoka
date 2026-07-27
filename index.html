@@ -909,11 +909,13 @@
         <div class="card">
             <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-pen-to-square"></i> 新增消費</div>
             <form class="expense-form" id="expense-form" onsubmit="addExpense(event)">
+                <!-- 加入日期選擇欄位 -->
                 <div class="form-row">
+                    <input type="date" id="exp-date" class="form-control" style="width: 130px;" required>
                     <input type="text" id="exp-item" class="form-control" placeholder="項目名稱 (如: 一蘭拉麵)" required>
-                    <input type="number" id="exp-amount" class="form-control" placeholder="金額 (日幣 ¥)" required style="width: 130px;">
                 </div>
                 <div class="form-row">
+                    <input type="number" id="exp-amount" class="form-control" placeholder="金額 (日幣 ¥)" required>
                     <select id="exp-category" class="form-control">
                         <option value="餐飲">🍱 餐飲美食</option>
                         <option value="購物">🛍️ 購物採買</option>
@@ -921,7 +923,7 @@
                         <option value="門票">🎟️ 門票景點</option>
                         <option value="其他">🎈 其他雜支</option>
                     </select>
-                    <select id="exp-payment" class="form-control" style="width: 130px;">
+                    <select id="exp-payment" class="form-control" style="width: 110px;">
                         <option value="現金">💵 現金</option>
                         <option value="信用卡">💳 信用卡</option>
                         <option value="IC卡">📱 IC卡</option>
@@ -1020,7 +1022,7 @@
                                 <b>${item.item}</b>
                             </div>
                             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                                ${item.payment}
+                                📅 ${item.date || '未標示日期'} ｜ ${item.payment}
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -1038,17 +1040,21 @@
 
         function addExpense(e) {
             e.preventDefault();
+            const date = document.getElementById('exp-date').value;
             const item = document.getElementById('exp-item').value;
             const amount = document.getElementById('exp-amount').value;
             const category = document.getElementById('exp-category').value;
             const payment = document.getElementById('exp-payment').value;
 
-            if (!item || !amount) return;
+            if (!item || !amount || !date) return;
 
-            expenses.unshift({ item, amount, category, payment });
+            expenses.unshift({ date, item, amount, category, payment });
             localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
 
+            // 重設表單，並將日期預設重設為今天
             document.getElementById('expense-form').reset();
+            document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
+            
             renderExpenses();
         }
 
@@ -1060,6 +1066,12 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 預設記帳日期欄位為今天 (YYYY-MM-DD)
+            const dateInput = document.getElementById('exp-date');
+            if (dateInput) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+
             // 勾選清單 localStorage
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(cb => {
