@@ -227,6 +227,17 @@
             color: var(--primary-morandi);
         }
 
+        .ps-box {
+            background-color: #fdfbf7;
+            border: 1px dashed var(--accent-warm);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-sub);
+            white-space: pre-line;
+            margin-top: 15px;
+        }
+
         /* 勾選清單樣式 */
         .checklist {
             list-style: none;
@@ -270,6 +281,11 @@
             font-size: 12px;
             left: 3px;
             top: -2px;
+        }
+
+        .check-item input[type="checkbox"]:checked + .item-label {
+            text-decoration: line-through;
+            color: #a0a0a0;
         }
 
         .item-label {
@@ -399,7 +415,98 @@
                 <li class="check-item">
                     <input type="checkbox" id="prep_1">
                     <div class="item-label">
-                        由布院之森 / 由布號 特急指定席預約 (11/8) <span class="badge-must">必辦</span>
+                        由布院之森 / 由布號 特急指定席預約 <span class="badge-must">必辦</span>
+                        <div class="sub-desc">熱門觀光列車，建議提前開放訂票時先預約去回程座位。</div>
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_2">
+                    <div class="item-label">
+                        確認太宰府觀光列車「旅人 tabito」最新時刻
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_3">
+                    <div class="item-label">
+                        評估是否購買 JR Kyushu Mobile Pass 福岡廣域版
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_4">
+                    <div class="item-label">
+                        確認昭和巴士 (West Coast Liner) 最新去回程時刻
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_5">
+                    <div class="item-label">
+                        IC 卡（Suica/ICOCA）儲值或準備手機 Mobile IC
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🔹 證件與金錢</div>
+            <ul class="checklist">
+                <li class="check-item">
+                    <input type="checkbox" id="prep_6">
+                    <div class="item-label">
+                        護照效期確認 (建議 6 個月以上) <span class="badge-must">必辦</span>
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_7">
+                    <div class="item-label">
+                        護照、機票、訂房證明各留一份電子備份
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_8">
+                    <div class="item-label">
+                        兌換日圓現金
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_9">
+                    <div class="item-label">
+                        確認信用卡海外刷卡與提款功能已開通
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_10">
+                    <div class="item-label">
+                        購買旅遊不便險／海外突發疾病險
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🔹 通訊與 App</div>
+            <ul class="checklist">
+                <li class="check-item">
+                    <input type="checkbox" id="prep_11">
+                    <div class="item-label">
+                        預訂網路分享機或 eSIM／實體 SIM 卡 <span class="badge-must">必辦</span>
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_12">
+                    <div class="item-label">
+                        下載 Google 地圖離線地圖 (福岡・北九州・由布院)
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_13">
+                    <div class="item-label">
+                        下載乘換案內類 App (Yahoo!乘換案內 / Google Maps)
+                    </div>
+                </li>
+                <li class="check-item">
+                    <input type="checkbox" id="prep_14">
+                    <div class="item-label">
+                        下載翻譯 App (Google 翻譯)
                     </div>
                 </li>
             </ul>
@@ -418,6 +525,33 @@
                 <ul class="checklist" id="list_clothes"></ul>
             </div>
         </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">🧴 個人衛生用品類</div>
+                <ul class="checklist" id="list_hygiene"></ul>
+            </div>
+            <div class="card">
+                <div class="card-title">🔌 電子產品類</div>
+                <ul class="checklist" id="list_electronics"></ul>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">💊 藥品類</div>
+                <ul class="checklist" id="list_medicine"></ul>
+            </div>
+            <div class="card">
+                <div class="card-title">🎒 其他類</div>
+                <ul class="checklist" id="list_other"></ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">👜 隨身物品</div>
+            <ul class="checklist" id="list_carryon"></ul>
+        </div>
     </div>
 
     <!-- ================= 3. 行程規劃 ================= -->
@@ -425,16 +559,117 @@
         <div class="day-nav">
             <button class="day-btn active" onclick="switchDay('day1', event)">Day 1 (糸島)</button>
             <button class="day-btn" onclick="switchDay('day2', event)">Day 2 (太宰府)</button>
+            <button class="day-btn" onclick="switchDay('day3', event)">Day 3 (由布院)</button>
+            <button class="day-btn" onclick="switchDay('day4', event)">Day 4 (門司港)</button>
+            <button class="day-btn" onclick="switchDay('day5', event)">Day 5 (購物)</button>
+            <button class="day-btn" onclick="switchDay('day6', event)">Day 6 (返台)</button>
         </div>
+
         <div id="day1" class="day-tab active">
             <div class="card">
-                <div class="card-title"><span> Day 1：抵達福岡 ➔ 糸島一日遊</span></div>
+                <div class="card-title">
+                    <span>Day 1：抵達福岡 ➔ 糸島一日遊</span>
+                    <span class="day-date">第一天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">🛫 航班與抵達</span>
+                        <a href="https://maps.google.com/?q=Fukuoka+Airport" target="_blank" class="map-btn">📍 福岡機場</a>
+                    </div>
+                    搭乘早班機抵達福岡機場，出關後前往博多車站飯店寄放行李。
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">🌊 糸島海景散策</span>
+                        <a href="https://maps.google.com/?q=Futamigaura+Meoto+Iwa" target="_blank" class="map-btn">📍 夫婦岩</a>
+                    </div>
+                    前往糸島欣賞著名的二見浦白色鳥居與夫婦岩，造訪海邊網美咖啡廳。
+                </div>
             </div>
         </div>
-        <div id="day2" class="day-tab"><div class="card"><div class="card-title"><span>Day 2：太宰府</span></div></div></div>
+
+        <div id="day2" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span>Day 2：太宰府天滿宮一日遊</span>
+                    <span class="day-date">第二天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">⛩️ 太宰府參拜與散策</span>
+                        <a href="https://maps.google.com/?q=Dazaifu+Tenmangu" target="_blank" class="map-btn">📍 太宰府天滿宮</a>
+                    </div>
+                    搭乘電車前往太宰府，參拜學問之神，品嚐現烤梅枝餅，逛特色星巴克。
+                </div>
+            </div>
+        </div>
+
+        <div id="day3" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span>Day 3：由布院溫泉散策</span>
+                    <span class="day-date">第三天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">🚂 搭乘由布院之森</span>
+                        <a href="https://maps.google.com/?q=Yufuin+Station" target="_blank" class="map-btn">📍 由布院站</a>
+                    </div>
+                    搭乘特色觀光列車前往由布院，逛湯之坪街道、金鱗湖，享受溫泉與美食。
+                </div>
+            </div>
+        </div>
+
+        <div id="day4" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span>Day 4：門司港懷舊與下關一日遊</span>
+                    <span class="day-date">第四天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">⚓ 門司港懷舊地區</span>
+                        <a href="https://maps.google.com/?q=Mojiko+Station" target="_blank" class="map-btn">📍 門司港站</a>
+                    </div>
+                    造訪門司港復古建築，品嚐著名的燒咖哩，搭船至唐戶市場吃海鮮。
+                </div>
+            </div>
+        </div>
+
+        <div id="day5" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span>Day 5：福岡市區購物血拚</span>
+                    <span class="day-date">第五天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">🛍️ 天神與博多商圈</span>
+                        <a href="https://maps.google.com/?q=Tenjin+Fukuoka" target="_blank" class="map-btn">📍 天神地下街</a>
+                    </div>
+                    大肆搜刮藥妝、服飾（如 Le Talon 等品牌），晚上享受屋台文化。
+                </div>
+            </div>
+        </div>
+
+        <div id="day6" class="day-tab">
+            <div class="card">
+                <div class="card-title">
+                    <span>Day 6：最後採買 ➔ 愉快返台</span>
+                    <span class="day-date">第六天</span>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-header">
+                        <span class="plan-title">🛒 伴手禮採買與機場免稅店</span>
+                        <a href="https://maps.google.com/?q=Fukuoka+Airport" target="_blank" class="map-btn">📍 福岡機場</a>
+                    </div>
+                    享用最後的博多拉麵，前往機場採買伴手禮後搭機返台。
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- ================= 4. 記帳分帳 (預設自己付款，朋友代墊才改名字) ================= -->
+    <!-- ================= 4. 記帳分帳 ================= -->
     <div id="accounting" class="page-content">
         
         <!-- 匯率設定 -->
@@ -469,7 +704,7 @@
 
             <div class="grid-2" style="align-items: center;">
                 <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">先付錢的人 (預設是你自己，若為同行友人代墊請更改)</label>
+                    <label style="font-size: 11px; color: var(--text-sub);">先付錢的人 (預設為自己，若幫友人代墊請更改)</label>
                     <input type="text" id="acc_payer" class="input-box" value="我" placeholder="預設「我」">
                 </div>
 
@@ -533,8 +768,13 @@ function switchDay(dayId, event) {
 
 // 行李清單資料
 const packingData = {
-    passport: ["護照", "信用卡", "現金", "網卡"],
-    clothes: ["內衣／褲", "上衣、外衣", "褲子、裙子", "外套", "睡衣", "襪子", "鞋子", "拖鞋"]
+    passport: ["護照", "信用卡", "現金", "網卡 / eSIM"],
+    clothes: ["內衣／褲", "上衣、外衣", "褲子、裙子", "外套", "睡衣", "襪子", "鞋子", "拖鞋"],
+    hygiene: ["牙刷、牙膏", "洗面乳", "保養品、化妝品", "防曬用品", "面膜", "常備個人用品"],
+    electronics: ["手機充電器", "行動電源", "轉接頭", "相機"],
+    medicine: ["常備藥品 (感冒/止痛/腸胃)"],
+    other: ["雨傘", "購物袋", "濕紙巾"],
+    carryon: ["護照", "錢包", "網卡", "行動電源", "雨傘"]
 };
 
 function renderPackingList() {
@@ -551,12 +791,12 @@ function renderPackingList() {
 }
 
 // ==================== 輕量記帳系統核心 ====================
-let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v4')) || [];
-let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate_v4')) || 0.21;
+let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v5')) || [];
+let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate_v5')) || 0.21;
 
 function saveRateAndRender() {
     jpyRate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
-    localStorage.setItem('fukuoka_jpy_rate_v4', jpyRate);
+    localStorage.setItem('fukuoka_jpy_rate_v5', jpyRate);
     updateTwdPreview();
     renderExpenses();
 }
@@ -591,7 +831,7 @@ function addExpense() {
 
     renderExpenses();
 
-    // 清空部分欄位 (保留日期與付款人維持「我」，方便連續記帳)
+    // 清空品項與金額，付款人維持「我」以便快速連續記帳
     document.getElementById('acc_item').value = '';
     document.getElementById('acc_amount').value = '';
     document.getElementById('acc_payer').value = '我';
@@ -604,7 +844,7 @@ function deleteExpense(id) {
 }
 
 function renderExpenses() {
-    localStorage.setItem('fukuoka_expenses_v4', JSON.stringify(expenses));
+    localStorage.setItem('fukuoka_expenses_v5', JSON.stringify(expenses));
     const tbody = document.getElementById('expense_body');
     tbody.innerHTML = '';
 
