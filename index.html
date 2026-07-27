@@ -309,7 +309,7 @@
             margin-left: 6px;
         }
 
-        /* 記帳表格樣式 */
+        /* 記帳表格與元件樣式 */
         .table-responsive {
             overflow-x: auto;
         }
@@ -318,7 +318,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
-            min-width: 500px;
+            min-width: 550px;
         }
 
         .accounting-table th, .accounting-table td {
@@ -361,6 +361,25 @@
             margin-top: 15px;
             font-size: 13px;
             line-height: 1.7;
+        }
+
+        .member-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #e0e2db;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 3px;
+        }
+
+        .member-tag button {
+            background: none;
+            border: none;
+            color: #d9534f;
+            font-weight: bold;
+            margin-left: 6px;
+            cursor: pointer;
         }
 
         .grid-2 {
@@ -758,55 +777,80 @@
 
     </div>
 
-    <!-- ================= 4. 記帳分帳 ================= -->
+    <!-- ================= 4. 記帳分帳 (自由新增成員 + 日圓為主換算台幣) ================= -->
     <div id="accounting" class="page-content">
+        <!-- 1. 成員與匯率設定 -->
         <div class="card">
-            <div class="card-title">新增花費項目</div>
-            
-            <div class="grid-3">
-                <input type="date" id="acc_date" class="input-box">
-                <input type="text" id="acc_item" class="input-box" placeholder="項目名稱 (例：拉麵/藥妝)">
-                <input type="number" id="acc_amount" class="input-box" placeholder="金額">
+            <div class="card-title">⚙️ 成員管理與換算匯率</div>
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: bold;">目前同行成員：</label>
+                <div id="member_tags_container" style="margin-top: 5px;"></div>
             </div>
-
-            <div class="grid-3">
-                <select id="acc_currency" class="input-box">
-                    <option value="JPY">日圓 (JPY)</option>
-                    <option value="TWD">台幣 (TWD)</option>
-                </select>
-
-                <select id="acc_payer" class="input-box">
-                    <option value="公費錢包">公費錢包 付款</option>
-                    <option value="A先墊">成員 A 先墊</option>
-                    <option value="B先墊">成員 B 先墊</option>
-                </select>
-
-                <select id="acc_type" class="input-box">
-                    <option value="split">👥 雙人平分 (需分帳)</option>
-                    <option value="self_A">👤 成員 A 個人支出 (不分帳)</option>
-                    <option value="self_B">👤 成員 B 個人支出 (不分帳)</option>
-                </select>
+            <div class="grid-2">
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="new_member_name" class="input-box" placeholder="輸入新成員名字" style="margin-bottom:0;">
+                    <button class="add-btn" onclick="addMember()" style="width: auto; white-space: nowrap;">+ 新增成員</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 13px; white-space: nowrap;">日圓匯率 (JPY➔TWD):</label>
+                    <input type="number" id="jpy_rate" class="input-box" value="0.21" step="0.005" style="margin-bottom:0;" onchange="saveRateAndRender()">
+                </div>
             </div>
-
-            <button class="add-btn" onclick="addExpense()">+ 新增紀錄</button>
         </div>
 
+        <!-- 2. 新增花費 -->
         <div class="card">
-            <div class="card-title">記帳明細列表</div>
+            <div class="card-title">➕ 新增花費項目</div>
+            
+            <div class="grid-3">
+                <div>
+                    <label style="font-size: 11px; color: var(--text-sub);">消費日期</label>
+                    <input type="date" id="acc_date" class="input-box">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: var(--text-sub);">項目名稱</label>
+                    <input type="text" id="acc_item" class="input-box" placeholder="例：一蘭拉麵 / 藥妝">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: var(--text-sub);">金額 (日圓 JPY)</label>
+                    <input type="number" id="acc_amount" class="input-box" placeholder="￥ 0" oninput="updateTwdPreview()">
+                    <div id="twd_preview" style="font-size: 11px; color: var(--accent-warm); margin-top: -6px; margin-bottom: 6px;">約 NT$ 0</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label style="font-size: 11px; color: var(--text-sub);">先付款的人</label>
+                    <select id="acc_payer" class="input-box"></select>
+                </div>
+
+                <div>
+                    <label style="font-size: 11px; color: var(--text-sub);">費用性質 / 誰負擔</label>
+                    <select id="acc_type" class="input-box"></select>
+                </div>
+            </div>
+
+            <button class="add-btn" onclick="addExpense()">+ 存入記帳本</button>
+        </div>
+
+        <!-- 3. 記帳明細與結算 -->
+        <div class="card">
+            <div class="card-title">🧾 記帳明細列表</div>
             <div class="table-responsive">
                 <table class="accounting-table">
                     <thead>
                         <tr>
                             <th>日期</th>
                             <th>項目</th>
-                            <th>金額</th>
+                            <th>日圓 (JPY)</th>
+                            <th>折合台幣 (TWD)</th>
                             <th>付款人</th>
-                            <th>性質</th>
+                            <th>分攤對象</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="expense_body">
-                        <!-- 動態加入 -->
+                        <!-- 動態生成列表 -->
                     </tbody>
                 </table>
             </div>
@@ -870,106 +914,221 @@ function renderPackingList() {
     }
 }
 
-// 記帳動態邏輯
-let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses')) || [];
+// ==================== 記帳分帳系統核心邏輯 ====================
+let members = JSON.parse(localStorage.getItem('fukuoka_members')) || ['成員A', '成員B'];
+let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v2')) || [];
+let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate')) || 0.21;
 
+// 儲存匯率並刷新
+function saveRateAndRender() {
+    jpyRate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
+    localStorage.setItem('fukuoka_jpy_rate', jpyRate);
+    updateTwdPreview();
+    saveAndRenderExpenses();
+}
+
+// 即時預覽金額換算台幣
+function updateTwdPreview() {
+    const val = parseFloat(document.getElementById('acc_amount').value) || 0;
+    const rate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
+    const twd = Math.round(val * rate);
+    document.getElementById('twd_preview').innerText = `約 NT$ ${twd.toLocaleString()}`;
+}
+
+// 管理成員：新增
+function addMember() {
+    const nameInput = document.getElementById('new_member_name');
+    const name = nameInput.value.trim();
+    if (!name) return;
+    if (members.includes(name)) {
+        alert('成員名稱已存在！');
+        return;
+    }
+    members.push(name);
+    nameInput.value = '';
+    saveAndRenderMembers();
+}
+
+// 管理成員：刪除
+function removeMember(name) {
+    if (members.length <= 1) {
+        alert('至少需保留一名成員！');
+        return;
+    }
+    members = members.filter(m => m !== name);
+    saveAndRenderMembers();
+}
+
+// 儲存並渲染成員與下拉選單
+function saveAndRenderMembers() {
+    localStorage.setItem('fukuoka_members', JSON.stringify(members));
+    
+    // 渲染成員標籤
+    const tagsDiv = document.getElementById('member_tags_container');
+    tagsDiv.innerHTML = members.map(m => `
+        <span class="member-tag">
+            👤 ${m}
+            <button onclick="removeMember('${m}')">✕</button>
+        </span>
+    `).join('');
+
+    // 更新付款人下拉選單
+    const payerSelect = document.getElementById('acc_payer');
+    payerSelect.innerHTML = `<option value="公費錢包">👛 公費錢包 付款</option>` +
+        members.map(m => `<option value="${m}">👤 ${m} 先墊</option>`).join('');
+
+    // 更新分攤類型下拉選單
+    const typeSelect = document.getElementById('acc_type');
+    typeSelect.innerHTML = `<option value="ALL">👥 全體成員平分 (共 ${members.length} 人)</option>` +
+        members.map(m => `<option value="SELF_${m}">👤 ${m} 的個人花費 (不分帳)</option>`).join('');
+
+    saveAndRenderExpenses();
+}
+
+// 新增花費紀錄
 function addExpense() {
     const date = document.getElementById('acc_date').value || '未填日期';
     const name = document.getElementById('acc_item').value.trim();
-    const amount = parseFloat(document.getElementById('acc_amount').value);
-    const currency = document.getElementById('acc_currency').value;
+    const amountJPY = parseFloat(document.getElementById('acc_amount').value);
     const payer = document.getElementById('acc_payer').value;
     const type = document.getElementById('acc_type').value;
 
-    if (!name || isNaN(amount)) {
-        alert('請填寫完整的項目名稱與金額！');
+    if (!name || isNaN(amountJPY) || amountJPY <= 0) {
+        alert('請填寫完整的項目名稱與正確金額！');
         return;
     }
 
-    expenses.push({ id: Date.now(), date, name, amount, currency, payer, type });
+    expenses.push({ 
+        id: Date.now(), 
+        date, 
+        name, 
+        amountJPY, 
+        payer, 
+        type 
+    });
+
     saveAndRenderExpenses();
 
+    // 清空輸入框
     document.getElementById('acc_item').value = '';
     document.getElementById('acc_amount').value = '';
+    updateTwdPreview();
 }
 
+// 刪除花費紀錄
 function deleteExpense(id) {
     expenses = expenses.filter(e => e.id !== id);
     saveAndRenderExpenses();
 }
 
+// 主渲染與結算邏輯
 function saveAndRenderExpenses() {
-    localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
+    localStorage.setItem('fukuoka_expenses_v2', JSON.stringify(expenses));
     const tbody = document.getElementById('expense_body');
     tbody.innerHTML = '';
 
-    // 統計變數
-    let totalJPY = 0, totalTWD = 0;
-    let jpyA_paid = 0, jpyB_paid = 0; // A, B 垫付的 JPY 總額
-    let jpyA_shouldPay = 0, jpyB_shouldPay = 0; // A, B 應負擔的 JPY 總額
+    let totalJPY = 0;
+    
+    // 建立成員的墊付與應付統計表
+    let stats = {};
+    members.forEach(m => {
+        stats[m] = { paid: 0, shouldPay: 0 };
+    });
 
     expenses.forEach(e => {
-        if (e.currency === 'JPY') totalJPY += e.amount;
-        if (e.currency === 'TWD') totalTWD += e.amount;
+        totalJPY += e.amountJPY;
+        const twd = Math.round(e.amountJPY * jpyRate);
 
-        // 計算 JPY 拆帳邏輯 (如有 TWD 可延伸)
-        if (e.currency === 'JPY') {
-            if (e.payer === 'A先墊') jpyA_paid += e.amount;
-            if (e.payer === 'B先墊') jpyB_paid += e.amount;
+        // 統計付款金額 (公費不算在個人先墊)
+        if (e.payer !== '公費錢包' && stats[e.payer]) {
+            stats[e.payer].paid += e.amountJPY;
+        }
 
-            if (e.type === 'split') {
-                jpyA_shouldPay += e.amount / 2;
-                jpyB_shouldPay += e.amount / 2;
-            } else if (e.type === 'self_A') {
-                jpyA_shouldPay += e.amount;
-            } else if (e.type === 'self_B') {
-                jpyB_shouldPay += e.amount;
+        // 統計應付金額
+        if (e.type === 'ALL') {
+            const splitAmount = e.amountJPY / members.length;
+            members.forEach(m => stats[m].shouldPay += splitAmount);
+        } else if (e.type.startsWith('SELF_')) {
+            const targetMember = e.type.replace('SELF_', '');
+            if (stats[targetMember]) {
+                stats[targetMember].shouldPay += e.amountJPY;
             }
         }
 
-        let typeText = '👥 雙人平分';
-        if (e.type === 'self_A') typeText = '👤 A 個人';
-        if (e.type === 'self_B') typeText = '👤 B 個人';
+        // 轉換表格閱讀標籤
+        let typeText = '👥 全體平分';
+        if (e.type.startsWith('SELF_')) {
+            typeText = `👤 ${e.type.replace('SELF_', '')} 個人`;
+        }
 
         tbody.innerHTML += `
             <tr>
                 <td>${e.date}</td>
                 <td>${e.name}</td>
-                <td>${e.amount} ${e.currency}</td>
+                <td><b>￥ ${e.amountJPY.toLocaleString()}</b></td>
+                <td style="color:var(--accent-warm);">NT$ ${twd.toLocaleString()}</td>
                 <td>${e.payer}</td>
                 <td>${typeText}</td>
-                <td><button style="color:red; border:none; background:none; cursor:pointer;" onclick="deleteExpense(${e.id})">刪除</button></td>
+                <td><button style="color:#d9534f; border:none; background:none; cursor:pointer;" onclick="deleteExpense(${e.id})">刪除</button></td>
             </tr>
         `;
     });
 
-    // 結算算式 (A 付出的 - A 應負擔的)
-    let diffA = jpyA_paid - jpyA_shouldPay;
-    let settleText = '';
-    if (diffA > 0) {
-        settleText = `👉 <b>結算結果：成員 B 需給 成員 A <span style="color:red;">${diffA.toLocaleString()} JPY</span></b>`;
-    } else if (diffA < 0) {
-        settleText = `👉 <b>結算結果：成員 A 需給 成員 B <span style="color:red;">${Math.abs(diffA).toLocaleString()} JPY</span></b>`;
+    const totalTWD = Math.round(totalJPY * jpyRate);
+
+    // 生成結算報告 HTML
+    let summaryHTML = `
+        <strong>💰 費用統計與結算 (匯率 1 JPY = ${jpyRate} TWD)：</strong><br>
+        • 總花費：<b>￥ ${totalJPY.toLocaleString()} JPY</b> (約 NT$ ${totalTWD.toLocaleString()} TWD)<br>
+        <hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;">
+        <b>各成員分帳明細：</b><br>
+    `;
+
+    // 計算每人差額 (先墊的 - 應付的)
+    let balances = [];
+    members.forEach(m => {
+        let diff = stats[m].paid - stats[m].shouldPay;
+        balances.push({ member: m, diff: diff });
+        
+        let diffTwd = Math.round(diff * jpyRate);
+        let statusText = diff >= 0 
+            ? `<span style="color:green;">(可收回 ￥${Math.round(diff).toLocaleString()} / 約 NT$${diffTwd.toLocaleString()})</span>` 
+            : `<span style="color:red;">(需補繳 ￥${Math.abs(Math.round(diff)).toLocaleString()} / 約 NT$${Math.abs(diffTwd).toLocaleString()})</span>`;
+
+        summaryHTML += `• <b>${m}</b>：先墊 ￥${Math.round(stats[m].paid).toLocaleString()}，個人應負擔 ￥${Math.round(stats[m].shouldPay).toLocaleString()} ${statusText}<br>`;
+    });
+
+    // 計算最佳轉帳結算建議 (給錢 / 收錢)
+    summaryHTML += `<hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;"><b>👉 結算建議：</b><br>`;
+    
+    let debtors = balances.filter(b => b.diff < -1); // 需付錢者
+    let creditors = balances.filter(b => b.diff > 1); // 應收錢者
+
+    if (debtors.length === 0 && creditors.length === 0) {
+        summaryHTML += `所有費用均已平衡，目前無需補貼結算！<br>`;
     } else {
-        settleText = `👉 <b>結算結果：雙人目前費用已平衡，不需互補差額！</b>`;
+        debtors.forEach(d => {
+            let amountNeedToPay = Math.abs(d.diff);
+            creditors.forEach(c => {
+                if (amountNeedToPay <= 0 || c.diff <= 0) return;
+                let pay = Math.min(amountNeedToPay, c.diff);
+                let payTwd = Math.round(pay * jpyRate);
+                summaryHTML += `• <b>${d.member}</b> 應給 <b>${c.member}</b> <b>￥ ${Math.round(pay).toLocaleString()} JPY</b> <span style="color:var(--text-sub);">(約 NT$ ${payTwd.toLocaleString()})</span><br>`;
+                amountNeedToPay -= pay;
+                c.diff -= pay;
+            });
+        });
     }
 
-    const summaryBox = document.getElementById('summary_content');
-    summaryBox.innerHTML = `
-        <strong>💰 費用統計與分帳結果 (以日圓 JPY 為例)：</strong><br>
-        • 日圓總支出：<b>${totalJPY.toLocaleString()} JPY</b> (台幣總支出：${totalTWD.toLocaleString()} TWD)<br>
-        • 成員 A 先墊總額：${jpyA_paid.toLocaleString()} JPY (個人應負擔：${jpyA_shouldPay.toLocaleString()} JPY)<br>
-        • 成員 B 先墊總額：${jpyB_paid.toLocaleString()} JPY (個人應負擔：${jpyB_shouldPay.toLocaleString()} JPY)<br>
-        <hr style="border:0; border-top:1px dashed var(--accent-warm); margin:8px 0;">
-        ${settleText}
-    `;
+    document.getElementById('summary_content').innerHTML = summaryHTML;
 }
 
-// 初始化預設日期為今天
+// 初始化
 window.onload = function() {
     renderPackingList();
     document.getElementById('acc_date').valueAsDate = new Date();
-    saveAndRenderExpenses();
+    document.getElementById('jpy_rate').value = jpyRate;
+    saveAndRenderMembers();
 };
 </script>
 
