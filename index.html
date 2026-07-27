@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>福岡 6 天 5 夜自由行 APP</title>
-    <!-- FontAwesome 圖示庫 -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -18,6 +18,7 @@
             --text-muted: #6C757D;
             --border: #E9ECEF;
             --success: #38B000;
+            --danger: #E63946;
             --radius: 16px;
             --shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
@@ -33,7 +34,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding-bottom: 80px;
+            padding-bottom: 85px;
             max-width: 500px;
             margin: 0 auto;
             min-height: 100vh;
@@ -240,10 +241,6 @@
             transition: background 0.2s;
         }
 
-        .map-btn:active {
-            background: #3367D6;
-        }
-
         /* 費用小計卡片 */
         .budget-box {
             background: linear-gradient(135deg, #FFF8F6 0%, #FDF0ED 100%);
@@ -321,6 +318,105 @@
             font-weight: normal;
         }
 
+        /* 記帳專用樣式 */
+        .expense-summary {
+            background: linear-gradient(135deg, var(--primary) 0%, #1D3557 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(44, 94, 138, 0.25);
+        }
+
+        .expense-summary-total {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 8px 0;
+            color: #FFD166;
+        }
+
+        .expense-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add:active {
+            background: #1d4263;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .expense-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .expense-amount {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #ADB5BD;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete:hover {
+            color: var(--danger);
+        }
+
         /* 底部導航列 */
         .bottom-nav {
             position: fixed;
@@ -345,14 +441,14 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             gap: 4px;
             cursor: pointer;
-            width: 33%;
+            width: 25%;
         }
 
         .nav-item i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .nav-item.active {
@@ -802,6 +898,50 @@
         </div>
     </main>
 
+    <!-- ================= 頁面 4：旅遊記帳 (新功能) ================= -->
+    <main id="page-expense" class="page-content">
+        <!-- 總花費統計面板 -->
+        <div class="expense-summary">
+            <div style="font-size: 0.85rem; opacity: 0.9;">旅途總支出</div>
+            <div class="expense-summary-total">¥ <span id="total-jpy">0</span></div>
+            <div style="font-size: 0.8rem; opacity: 0.85;">約新台幣 NT$ <span id="total-twd">0</span> (匯率 0.21)</div>
+        </div>
+
+        <!-- 新增記帳表單 -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-pen-to-square"></i> 新增消費</div>
+            <form class="expense-form" id="expense-form" onsubmit="addExpense(event)">
+                <div class="form-row">
+                    <input type="text" id="exp-item" class="form-control" placeholder="項目名稱 (如: 一蘭拉麵)" required>
+                    <input type="number" id="exp-amount" class="form-control" placeholder="金額 (日幣 ¥)" required style="width: 130px;">
+                </div>
+                <div class="form-row">
+                    <select id="exp-category" class="form-control">
+                        <option value="餐飲">🍱 餐飲美食</option>
+                        <option value="購物">🛍️ 購物採買</option>
+                        <option value="交通">🚃 交通車資</option>
+                        <option value="門票">🎟️ 門票景點</option>
+                        <option value="其他">🎈 其他雜支</option>
+                    </select>
+                    <select id="exp-payment" class="form-control" style="width: 130px;">
+                        <option value="現金">💵 現金</option>
+                        <option value="信用卡">💳 信用卡</option>
+                        <option value="IC卡">📱 IC卡</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-add"><i class="fa-solid fa-plus"></i> 新增紀錄</button>
+            </form>
+        </div>
+
+        <!-- 消費明細列表 -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 12px;"><i class="fa-solid fa-list-check"></i> 消費明細列表</div>
+            <div id="expense-list">
+                <!-- 動態新增項目 -->
+            </div>
+        </div>
+    </main>
+
     <!-- 底部導航列 -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchPage('itinerary')">
@@ -815,6 +955,10 @@
         <button class="nav-item" onclick="switchPage('luggage')">
             <i class="fa-solid fa-suitcase"></i>
             <span>行李清單</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('expense')">
+            <i class="fa-solid fa-wallet"></i>
+            <span>記帳消費</span>
         </button>
     </nav>
 
@@ -830,7 +974,6 @@
 
             targetPage.classList.add('active');
             
-            // 根據按鈕亮燈
             if(pageName === 'itinerary') {
                 document.querySelectorAll('.nav-item')[0].classList.add('active');
                 daySelector.style.display = 'flex';
@@ -839,6 +982,9 @@
                 daySelector.style.display = 'none';
             } else if(pageName === 'luggage') {
                 document.querySelectorAll('.nav-item')[2].classList.add('active');
+                daySelector.style.display = 'none';
+            } else if(pageName === 'expense') {
+                document.querySelectorAll('.nav-item')[3].classList.add('active');
                 daySelector.style.display = 'none';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -853,19 +999,78 @@
             document.querySelectorAll('.day-btn')[dayNum - 1].classList.add('active');
         }
 
-        // 綁定勾選狀態持久化 (localStorage)
+        // --- 記帳功能邏輯 ---
+        let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses')) || [];
+
+        function renderExpenses() {
+            const listEl = document.getElementById('expense-list');
+            listEl.innerHTML = '';
+
+            let totalJpy = 0;
+
+            if (expenses.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 20px 0; font-size: 0.85rem;">目前還沒有消費紀錄喔！</div>`;
+            } else {
+                expenses.forEach((item, index) => {
+                    totalJpy += Number(item.amount);
+                    const el = document.createElement('div');
+                    el.className = 'expense-item';
+                    el.innerHTML = `
+                        <div>
+                            <div>
+                                <span class="expense-tag">${item.category}</span>
+                                <b>${item.item}</b>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                                ${item.payment}
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="expense-amount">¥${Number(item.amount).toLocaleString()}</span>
+                            <button class="btn-delete" onclick="deleteExpense(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    `;
+                    listEl.appendChild(el);
+                });
+            }
+
+            document.getElementById('total-jpy').innerText = totalJpy.toLocaleString();
+            document.getElementById('total-twd').innerText = Math.round(totalJpy * 0.21).toLocaleString();
+        }
+
+        function addExpense(e) {
+            e.preventDefault();
+            const item = document.getElementById('exp-item').value;
+            const amount = document.getElementById('exp-amount').value;
+            const category = document.getElementById('exp-category').value;
+            const payment = document.getElementById('exp-payment').value;
+
+            if (!item || !amount) return;
+
+            expenses.unshift({ item, amount, category, payment });
+            localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
+
+            document.getElementById('expense-form').reset();
+            renderExpenses();
+        }
+
+        function deleteExpense(index) {
+            expenses.splice(index, 1);
+            localStorage.setItem('fukuoka_expenses', JSON.stringify(expenses));
+            renderExpenses();
+        }
+
+        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 勾選清單 localStorage
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            
             checkboxes.forEach(cb => {
-                // 恢復儲存狀態
                 const savedState = localStorage.getItem(cb.id);
                 if (savedState === 'true') {
                     cb.checked = true;
                     cb.closest('.check-item').classList.add('checked');
                 }
 
-                // 監聽點擊變更
                 cb.addEventListener('change', (e) => {
                     const isChecked = e.target.checked;
                     localStorage.setItem(e.target.id, isChecked);
@@ -876,6 +1081,9 @@
                     }
                 });
             });
+
+            // 載入記帳資料
+            renderExpenses();
         });
     </script>
 </body>
