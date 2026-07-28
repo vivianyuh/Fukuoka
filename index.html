@@ -449,25 +449,117 @@
     flex:none;
   }
 
-  /* expense tracker */
+  /* expense tracker - 優化版 */
   .expense-box{
-    margin-top:24px;
+    margin-top:20px;
     background:var(--panel);
     border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px;
+  }
+  .rate-box{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(185,138,46,0.1);
+    border:1px solid var(--gold);
     border-radius:6px;
-    padding:14px 16px;
+    padding:8px 12px;
+    margin-bottom:14px;
+    font-size:12.5px;
   }
-  .expense-title{
+  .rate-box label{font-weight:700; color:var(--ink);}
+  .rate-input-wrap{display:flex; align-items:center; gap:4px;}
+  .rate-input-wrap input{
+    width:65px;
     font-family:'JetBrains Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.1em;
-    color:var(--ink-soft);
-    margin-bottom:10px;
+    font-weight:700;
+    font-size:13px;
+    text-align:center;
+    padding:3px 6px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--white);
   }
+  .field-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:14px 0 6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .sub-action{
+    font-size:11px;
+    color:var(--steel);
+    cursor:pointer;
+    font-weight:normal;
+    text-decoration:underline;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-family:inherit;
+    font-size:13px;
+    padding:7px 13px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--ink);
+    cursor:pointer;
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+    transition:all .15s ease;
+  }
+  .chip-btn:active{transform:scale(0.96);}
+  .chip-btn.active{
+    background:var(--ink);
+    color:var(--bg);
+    border-color:var(--ink);
+    font-weight:700;
+  }
+  .chip-btn.multi-active{
+    background:var(--steel);
+    color:var(--white);
+    border-color:var(--steel);
+    font-weight:700;
+  }
+  .twd-preview{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--vermilion);
+    margin-top:4px;
+    text-align:right;
+    min-height:16px;
+  }
+  .add-btn-main{
+    width:100%;
+    margin-top:16px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    font-weight:700;
+    background:var(--ink);
+    color:var(--bg);
+    border:none;
+    border-radius:6px;
+    padding:12px 0;
+    cursor:pointer;
+    touch-action:manipulation;
+    box-shadow:0 2px 6px rgba(31,42,60,0.15);
+  }
+  .add-btn-main:active{opacity:0.9; transform:scale(0.99);}
+
   .expense-row{
     display:flex; justify-content:space-between; align-items:center;
     gap:8px;
-    padding:6px 0;
+    padding:8px 0;
     border-bottom:1px dashed var(--line);
     font-size:13.5px;
   }
@@ -475,7 +567,14 @@
   .expense-row .e-amt{
     font-family:'JetBrains Mono', monospace;
     font-weight:700;
+    text-align:right;
     white-space:nowrap;
+  }
+  .expense-row .e-amt .twd-sub{
+    font-size:11px;
+    font-weight:normal;
+    color:var(--ink-soft);
+    display:block;
   }
   .expense-row .e-del{
     flex:none;
@@ -487,13 +586,14 @@
     font-size:13px;
     cursor:pointer;
     line-height:1;
+    margin-left:4px;
   }
   .expense-add{
-    display:flex; gap:8px; margin-top:10px;
+    display:flex; gap:8px; margin-top:8px;
   }
   .expense-add input{
     font-family:'Zen Kaku Gothic New', sans-serif;
-    font-size:13px;
+    font-size:13.5px;
     border:1px solid var(--line);
     border-radius:4px;
     padding:8px 10px;
@@ -501,27 +601,20 @@
     color:var(--ink);
   }
   .expense-add .e-desc-input{flex:1; min-width:0;}
-  .expense-add .e-amt-input{width:90px; font-family:'JetBrains Mono', monospace;}
-  .expense-add button{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
-    font-weight:700;
-    background:var(--ink);
-    color:var(--bg);
-    border:none;
-    border-radius:4px;
-    padding:0 14px;
-    cursor:pointer;
-    touch-action:manipulation;
-  }
+  .expense-add .e-amt-input{width:110px; font-family:'JetBrains Mono', monospace;}
   .expense-sub{
-    display:flex; justify-content:space-between;
+    display:flex; justify-content:space-between; align-items:baseline;
     margin-top:10px;
     padding-top:10px;
     border-top:1px solid var(--line);
     font-family:'JetBrains Mono', monospace;
     font-size:13px;
     font-weight:700;
+  }
+  .expense-sub .twd-total{
+    font-size:12px;
+    color:var(--vermilion);
+    margin-left:6px;
   }
   .trip-total{
     font-family:'JetBrains Mono', monospace;
@@ -560,20 +653,6 @@
   }
   .nav-btn .nav-icon{font-size:19px; line-height:1;}
   .nav-btn.active{color:var(--ink); border-top-color:var(--vermilion);}
-
-  /* category buttons */
-  .cat-row{display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 10px;}
-  .cat-btn{
-    font-size:12px;
-    padding:6px 11px;
-    border-radius:16px;
-    border:1px solid var(--line);
-    background:var(--white);
-    color:var(--ink-soft);
-    cursor:pointer;
-    touch-action:manipulation;
-  }
-  .cat-btn.on{background:var(--ink); color:var(--bg); border-color:var(--ink);}
 
   /* people chips */
   .people-manage{
@@ -623,23 +702,8 @@
     color:var(--ink-soft);
     cursor:pointer;
   }
-  .pick-chip{
-    font-size:12px;
-    padding:6px 12px;
-    border-radius:16px;
-    border:1px solid var(--line);
-    background:var(--white);
-    color:var(--ink-soft);
-    cursor:pointer;
-    touch-action:manipulation;
-  }
-  .pick-chip.on{background:var(--bg-accent, #E9F0F6); border-color:var(--steel); color:var(--steel); font-weight:700;}
-  .field-label{font-size:11.5px; color:var(--ink-soft); margin:10px 0 5px;}
-  .field-hint{font-size:11px; color:var(--ink-soft); margin-top:4px;}
-  .e-cat{
-    font-size:13px;
-    margin-right:4px;
-  }
+
+  .e-cat{font-size:13px; margin-right:4px;}
   .e-payer{
     font-size:10.5px;
     color:var(--ink-soft);
@@ -745,11 +809,11 @@ hotelCard.innerHTML = `
       <div class="hotel-address">福岡県福岡市博多区博多駅東2-14-1（博多站步行約7分鐘）</div>
     </div>
   </div>
-  <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
+  <div class="hotel-right">Check-in <b>15:00</b> Check-out <b>11:00</b></div>
 `;
 const totalBadge = document.createElement('div');
 totalBadge.className = 'trip-total';
-totalBadge.innerHTML = `全程花費　<b id="trip-total-amt">¥0</b>`;
+totalBadge.innerHTML = `全程花費 <b id="trip-total-amt">¥0</b>`;
 hotelCard.appendChild(totalBadge);
 
 const prep = [
@@ -830,7 +894,7 @@ const days = [
     date:"11/6", wd:"五", theme:"抵達福岡・糸島夫婦岩", accent:"var(--steel)",
     weather:"沿海風大，夫婦岩海邊拍照建議帶擋風外套，太陽下山後氣溫會明顯下降。",
     stops:[
-      {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
+      {time:"08:00→11:15", place:"長榮 BR106 TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
     ],
     plans:[
       {
@@ -840,16 +904,16 @@ const days = [
           `<div class="leg"><span class="t">13:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">14:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">14:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站　${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
+           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站 ${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
           `<div class="leg"><span class="t">14:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">15:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">15:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
+           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多 ${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
           `<div class="note-box">Plan C・自駕/租車，跟皮皮一起去。時間彈性，不受巴士班次限制，二見浦沿岸與夫婦岩周邊都有付費停車場。</div>`
         ]
       }
     ],
-    fare:"IC 卡直達：去程 1,150 円／回程 1,150 円　｜　回程轉車：巴士 730 円＋地鐵 570 円",
+    fare:"IC 卡直達：去程 1,150 円／回程 1,150 円 ｜ 回程轉車：巴士 730 円＋地鐵 570 円",
     note:"去程／回程皆為 West Coast Liner 昭和巴士（直達）。在博多巴士總站 3 樓 32 號月台搭車，發車前請再核對最新巴士時刻表。",
     meals:[
       {type:"午餐建議", name:"糸島海鮮堂 二見ヶ浦本店", note:"就在夫妻岩巴士站附近，海景座位能直接望見夫婦岩，招牌是滿滿海鮮丼／鮪魚丼。假日人多，建議早點去或錯開尖峰。", map:"糸島海鮮堂 二見ヶ浦本店"}
@@ -946,7 +1010,7 @@ const days = [
     date:"11/11", wd:"三", theme:"賦歸", accent:"var(--ink-soft)",
     weather:"機場室內空調偏冷，登機前建議薄外套不要收進託運行李。",
     stops:[
-      {time:"12:15→13:50", place:"長榮 BR105　FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
+      {time:"12:15→13:50", place:"長榮 BR105 FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
     ],
     plans:[], fare:"", note:"中午起飛，建議至少提前 2 小時抵達機場辦理登機（約 10:15 前到）。",
     empty:true,
@@ -1091,9 +1155,11 @@ days.forEach((d, i) => {
   panels.appendChild(panel);
 });
 
-// --- 花費 tab (persisted via localStorage) ---
+// --- 花費 tab (全新換匯與優化介面版) ---
 const EXPENSE_KEY = 'fukuoka_trip_expenses_v2';
 const PEOPLE_KEY = 'fukuoka_trip_people_v1';
+const RATE_KEY = 'fukuoka_trip_rate_v1';
+
 const CATEGORIES = [
   {key:'food', emoji:'🍜', label:'吃的'},
   {key:'play', emoji:'🎡', label:'玩的'},
@@ -1115,62 +1181,122 @@ function saveExpenses(){
 function loadPeople(){
   try {
     const raw = localStorage.getItem(PEOPLE_KEY);
-    return raw ? JSON.parse(raw) : ['你'];
-  } catch(e){ return ['你']; }
+    return raw ? JSON.parse(raw) : ['你', '皮皮'];
+  } catch(e){ return ['你', '皮皮']; }
 }
 function savePeople(){
   try { localStorage.setItem(PEOPLE_KEY, JSON.stringify(people)); } catch(e){}
 }
+function loadRate(){
+  try {
+    const r = localStorage.getItem(RATE_KEY);
+    return r ? parseFloat(r) : 0.215;
+  } catch(e){ return 0.215; }
+}
+function saveRate(r){
+  try { localStorage.setItem(RATE_KEY, String(r)); } catch(e){}
+}
 
-let expenseEntries = loadExpenses(); // [{dayIndex, desc, amt, category, paidBy, splitWith:[]}]
+let expenseEntries = loadExpenses();
 let people = loadPeople();
+let currentRate = loadRate();
+
 let lastCategory = CATEGORIES[0].key;
 let lastPaidBy = people[0] || '你';
-let pendingSplit = null; // set on render, holds current toggle state before "加入"
+let pendingSplit = null;
 
 const expensePanel = document.getElementById('section-expense');
 const dayOptionsHtml = days.map((d, i) => `<option value="${i}">DAY ${i+1}・${d.date}（${d.wd}）${d.theme}</option>`).join('');
+
 expensePanel.innerHTML = `
   <h2 class="day-title">全程花費記錄</h2>
-  <span class="day-sub">資料會存在這台裝置的瀏覽器裡，重新整理也不會消失</span>
+  <span class="day-sub">資料自動保存在手機中，支援即時匯率換算與轉帳結算</span>
   <div class="expense-box">
+
+    <!-- 匯率設定 -->
+    <div class="rate-box">
+      <label>匯率換算 (JPY ➔ TWD)</label>
+      <div class="rate-input-wrap">
+        <span>1 円 = </span>
+        <input type="number" step="0.001" id="rate-input" value="${currentRate}" onchange="updateRate(this.value)">
+        <span>台幣</span>
+      </div>
+    </div>
+
+    <!-- 旅伴管理 -->
     <div class="people-manage">
       <span class="people-label">旅伴</span>
       <div id="people-chips" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
       <div class="person-add">
-        <input type="text" id="new-person-input" placeholder="新增旅伴姓名">
+        <input type="text" id="new-person-input" placeholder="新增旅伴">
         <button onclick="addPerson()">+</button>
       </div>
     </div>
 
-    <select id="e-day-select" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);margin-bottom:8px;">
+    <!-- 輸入區域 -->
+    <select id="e-day-select" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13.5px;border:1px solid var(--line);border-radius:6px;padding:9px 10px;background:var(--white);color:var(--ink);margin-bottom:8px;">
       ${dayOptionsHtml}
     </select>
+    
     <div class="expense-add">
-      <input type="text" class="e-desc-input" id="e-desc" placeholder="品項，例如：午餐">
-      <input type="number" class="e-amt-input" id="e-amt" placeholder="円">
+      <input type="text" class="e-desc-input" id="e-desc" placeholder="品項，如：牛腸鍋、車資">
+      <input type="number" class="e-amt-input" id="e-amt" placeholder="日圓 (円)" oninput="previewTwd()">
+    </div>
+    <div class="twd-preview" id="twd-preview"></div>
+
+    <div class="field-label"><span>分類</span></div>
+    <div class="chip-row" id="cat-row"></div>
+
+    <div class="field-label"><span>誰先付的</span></div>
+    <div class="chip-row" id="payer-row"></div>
+
+    <div class="field-label">
+      <span>這筆算誰的</span>
+      <div>
+        <span class="sub-action" onclick="selectAllSplit()">全選均分</span> · 
+        <span class="sub-action" onclick="selectSelfSplit()">僅自己</span>
+      </div>
+    </div>
+    <div class="chip-row" id="split-row"></div>
+
+    <button class="add-btn-main" onclick="addExpense()">＋ 加入花費紀錄</button>
+
+    <div id="expense-groups" style="margin-top:20px;"></div>
+    
+    <div class="expense-sub">
+      <span>全程總計</span>
+      <div>
+        <span id="expense-grand-total">¥0</span>
+        <span class="twd-total" id="expense-grand-twd">(NT$ 0)</span>
+      </div>
     </div>
 
-    <div class="field-label">分類</div>
-    <div class="cat-row" id="cat-row"></div>
-
-    <div class="field-label">誰先付的</div>
-    <div class="cat-row" id="payer-row"></div>
-
-    <div class="field-label">這筆算誰的</div>
-    <div class="cat-row" id="split-row"></div>
-    <div class="field-hint">預設全部人均分，也可以只勾自己（代表個人花費，不分攤）</div>
-
-    <button style="width:100%;margin-top:12px;" onclick="addExpense()">加入</button>
-
-    <div id="expense-groups" style="margin-top:18px;"></div>
-    <div class="expense-sub"><span>全程總計</span><span id="expense-grand-total">¥0</span></div>
-
-    <div class="field-label" style="margin-top:20px;">結算總覽</div>
+    <div class="field-label" style="margin-top:24px; font-size:14px; font-weight:700;">結算總覽（自動換算台幣）</div>
     <div class="settle-grid" id="settle-grid"></div>
     <div id="settle-suggestions"></div>
   </div>
 `;
+
+function updateRate(val){
+  const r = parseFloat(val);
+  if (!isNaN(r) && r > 0) {
+    currentRate = r;
+    saveRate(r);
+    previewTwd();
+    renderExpenses();
+  }
+}
+
+function previewTwd(){
+  const amt = parseFloat(document.getElementById('e-amt').value);
+  const prevEl = document.getElementById('twd-preview');
+  if (!isNaN(amt) && amt > 0) {
+    const twd = Math.round(amt * currentRate);
+    prevEl.textContent = `約等於 NT$ ${twd.toLocaleString()}`;
+  } else {
+    prevEl.textContent = '';
+  }
+}
 
 function renderPeopleChips(){
   document.getElementById('people-chips').innerHTML = people.map(p => `
@@ -1204,25 +1330,32 @@ function renderPickerRows(){
   else pendingSplit = pendingSplit.filter(p => people.includes(p));
 
   document.getElementById('cat-row').innerHTML = CATEGORIES.map(c => `
-    <span class="cat-btn ${c.key === lastCategory ? 'on' : ''}" onclick="pickCategory('${c.key}')">${c.emoji} ${c.label}</span>
+    <button type="button" class="chip-btn ${c.key === lastCategory ? 'active' : ''}" onclick="pickCategory('${c.key}')">${c.emoji} ${c.label}</button>
   `).join('');
 
   document.getElementById('payer-row').innerHTML = people.map(p => `
-    <span class="pick-chip ${p === lastPaidBy ? 'on' : ''}" onclick="pickPayer('${p.replace(/'/g,"\\'")}')">${p}</span>
+    <button type="button" class="chip-btn ${p === lastPaidBy ? 'active' : ''}" onclick="pickPayer('${p.replace(/'/g,"\\'")}')">${p}</button>
   `).join('');
 
   document.getElementById('split-row').innerHTML = people.map(p => `
-    <span class="pick-chip ${pendingSplit.includes(p) ? 'on' : ''}" onclick="toggleSplit('${p.replace(/'/g,"\\'")}')">${p}</span>
+    <button type="button" class="chip-btn ${pendingSplit.includes(p) ? 'multi-active' : ''}" onclick="toggleSplit('${p.replace(/'/g,"\\'")}')">
+      ${pendingSplit.includes(p) ? '✓ ' : ''}${p}
+    </button>
   `).join('');
 }
 
 function pickCategory(key){ lastCategory = key; renderPickerRows(); }
 function pickPayer(name){ lastPaidBy = name; renderPickerRows(); }
 function toggleSplit(name){
-  if (pendingSplit.includes(name)) pendingSplit = pendingSplit.filter(p => p !== name);
-  else pendingSplit.push(name);
+  if (pendingSplit.includes(name)) {
+    if (pendingSplit.length > 1) pendingSplit = pendingSplit.filter(p => p !== name);
+  } else {
+    pendingSplit.push(name);
+  }
   renderPickerRows();
 }
+function selectAllSplit(){ pendingSplit = [...people]; renderPickerRows(); }
+function selectSelfSplit(){ pendingSplit = [lastPaidBy]; renderPickerRows(); }
 
 function addExpense(){
   const dayIndex = parseInt(document.getElementById('e-day-select').value, 10);
@@ -1232,14 +1365,17 @@ function addExpense(){
   const amt = parseFloat(amtInput.value);
   if (!desc || isNaN(amt) || amt <= 0) return;
   if (!pendingSplit || !pendingSplit.length) pendingSplit = [lastPaidBy];
+
   expenseEntries.push({
     dayIndex, desc, amt,
     category: lastCategory,
     paidBy: lastPaidBy,
     splitWith: [...pendingSplit]
   });
+
   descInput.value = '';
   amtInput.value = '';
+  document.getElementById('twd-preview').textContent = '';
   saveExpenses();
   renderExpenses();
 }
@@ -1253,31 +1389,49 @@ function deleteExpense(idx){
 function renderExpenses(){
   const groupsEl = document.getElementById('expense-groups');
   const grandEl = document.getElementById('expense-grand-total');
+  const grandTwdEl = document.getElementById('expense-grand-twd');
   if (!groupsEl) return;
+
   let grand = 0;
   let html = '';
+
   days.forEach((d, di) => {
     const items = expenseEntries.map((e, idx) => ({...e, idx})).filter(e => e.dayIndex === di);
     if (!items.length) return;
     const subtotal = items.reduce((s, e) => s + e.amt, 0);
     grand += subtotal;
+
     html += `<div class="prep-group" style="--accent:${d.accent}">
       <div class="prep-group-title"><span class="dot"></span>DAY ${di+1}・${d.date}（${d.wd}）${d.theme}</div>
       ${items.map(e => {
         const c = catInfo(e.category);
-        const splitLabel = e.splitWith.length === people.length ? '均分' : e.splitWith.join('、');
+        const splitLabel = e.splitWith.length === people.length ? '全體均分' : e.splitWith.join('、');
+        const twd = Math.round(e.amt * currentRate);
         return `
         <div class="expense-row">
-          <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.desc}<span class="e-payer">${e.paidBy} 付・${splitLabel}</span></span>
-          <span class="e-amt">¥${e.amt.toLocaleString()}</span>
+          <span class="e-desc">
+            <span class="e-cat">${c.emoji}</span>${e.desc}
+            <span class="e-payer">${e.paidBy} 付 · ${splitLabel}</span>
+          </span>
+          <span class="e-amt">
+            ¥${e.amt.toLocaleString()}
+            <span class="twd-sub">NT$ ${twd.toLocaleString()}</span>
+          </span>
           <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
         </div>`;
       }).join('')}
-      <div class="expense-sub" style="border-top:none;padding-top:4px;margin-top:4px;"><span>小計</span><span>¥${subtotal.toLocaleString()}</span></div>
+      <div class="expense-sub" style="border-top:none;padding-top:4px;margin-top:4px;">
+        <span>日圓小計</span>
+        <span>¥${subtotal.toLocaleString()} <span class="twd-total">(NT$ ${Math.round(subtotal * currentRate).toLocaleString()})</span></span>
+      </div>
     </div>`;
   });
-  groupsEl.innerHTML = html || `<div class="meal-tbd">還沒有花費記錄</div>`;
+
+  groupsEl.innerHTML = html || `<div class="meal-tbd">目前還沒有花費記錄</div>`;
   grandEl.textContent = '¥' + grand.toLocaleString();
+  const grandTwd = Math.round(grand * currentRate);
+  grandTwdEl.textContent = `(NT$ ${grandTwd.toLocaleString()})`;
+
   const headerTotal = document.getElementById('trip-total-amt');
   if (headerTotal) headerTotal.textContent = '¥' + grand.toLocaleString();
 
@@ -1288,25 +1442,37 @@ function renderSettlement(){
   const grid = document.getElementById('settle-grid');
   const sugEl = document.getElementById('settle-suggestions');
   if (!grid) return;
+
   const paid = {}, owed = {};
   people.forEach(p => { paid[p] = 0; owed[p] = 0; });
+
   expenseEntries.forEach(e => {
     paid[e.paidBy] = (paid[e.paidBy] || 0) + e.amt;
     const share = e.amt / e.splitWith.length;
     e.splitWith.forEach(p => { owed[p] = (owed[p] || 0) + share; });
   });
-  const net = {};
-  people.forEach(p => { net[p] = Math.round((paid[p] - owed[p]) * 100) / 100; });
 
-  grid.innerHTML = people.map(p => `
+  const netTwd = {};
+  people.forEach(p => {
+    const netJpy = paid[p] - owed[p];
+    netTwd[p] = Math.round(netJpy * currentRate);
+  });
+
+  grid.innerHTML = people.map(p => {
+    const paidTwd = Math.round(paid[p] * currentRate);
+    const owedTwd = Math.round(owed[p] * currentRate);
+    return `
     <div class="settle-card">
       <div class="settle-name">${p}</div>
-      <div class="settle-amt">¥${Math.round(paid[p]).toLocaleString()}</div>
-      <div class="settle-sub">應攤 ¥${Math.round(owed[p]).toLocaleString()}</div>
-    </div>`).join('');
+      <div class="settle-amt">NT$ ${paidTwd.toLocaleString()}</div>
+      <div class="settle-sub">實付 ¥${Math.round(paid[p]).toLocaleString()}</div>
+      <div class="settle-sub" style="color:var(--ink-soft)">應分攤 NT$ ${owedTwd.toLocaleString()}</div>
+    </div>`;
+  }).join('');
 
-  const creditors = people.filter(p => net[p] > 0.5).map(p => ({p, amt: net[p]})).sort((a,b) => b.amt - a.amt);
-  const debtors = people.filter(p => net[p] < -0.5).map(p => ({p, amt: -net[p]})).sort((a,b) => b.amt - a.amt);
+  const creditors = people.filter(p => netTwd[p] > 1).map(p => ({p, amt: netTwd[p]})).sort((a,b) => b.amt - a.amt);
+  const debtors = people.filter(p => netTwd[p] < -1).map(p => ({p, amt: -netTwd[p]})).sort((a,b) => b.amt - a.amt);
+
   const settlements = [];
   let ci = 0, di = 0;
   while (ci < creditors.length && di < debtors.length) {
@@ -1314,12 +1480,13 @@ function renderSettlement(){
     settlements.push({from: debtors[di].p, to: creditors[ci].p, amt: Math.round(amt)});
     creditors[ci].amt -= amt;
     debtors[di].amt -= amt;
-    if (creditors[ci].amt < 0.5) ci++;
-    if (debtors[di].amt < 0.5) di++;
+    if (creditors[ci].amt < 1) ci++;
+    if (debtors[di].amt < 1) di++;
   }
+
   sugEl.innerHTML = settlements.length
-    ? settlements.map(s => `<div class="settle-row"><span>${s.from}</span><span>→</span><b>${s.to}</b><span style="margin-left:auto;">¥${s.amt.toLocaleString()}</span></div>`).join('')
-    : `<div class="meal-tbd">目前不需要轉帳，帳都算平了</div>`;
+    ? settlements.map(s => `<div class="settle-row"><span>${s.from}</span><span>➔ 應轉給</span><b>${s.to}</b><span style="margin-left:auto; font-weight:700;">NT$ ${s.amt.toLocaleString()}</span></div>`).join('')
+    : `<div class="meal-tbd">所有花費均已算平，不需要互相轉帳</div>`;
 }
 
 renderPeopleChips();
