@@ -1,950 +1,862 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>福岡雙人自由行隨身手冊</title>
-    <style>
-        :root {
-            --bg-color: #f4f3ef;
-            --card-bg: #ffffff;
-            --primary-morandi: #6b7b8c; /* 霧灰藍 */
-            --accent-green: #8a9a86; /* 莫蘭迪綠 */
-            --accent-warm: #c4a482; /* 燕麥奶茶 */
-            --text-main: #3d405b;
-            --text-sub: #727d8a;
-            --border-color: #e0e2db;
-            --tag-must: #e07a5f;
-            --btn-map: #4a7c59;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>福岡・北九州 六天五夜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1ECE1;
+    --panel:#FBF8F2;
+    --ink:#1F2A3C;
+    --ink-soft:#5B6474;
+    --line:rgba(31,42,60,0.14);
+    --vermilion:#C1440E;
+    --moss:#5B7553;
+    --gold:#B98A2E;
+    --steel:#3E6285;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(62,98,133,0.06), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(193,68,14,0.05), transparent 35%);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    padding:28px 16px 60px;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:760px; margin:0 auto;}
+  @media (max-width:400px){
+    body{padding:18px 10px 50px;}
+  }
 
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
-        }
+  /* header */
+  header{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:18px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Noto Serif JP', serif;
+    font-weight:700;
+    font-size:clamp(28px,6vw,38px);
+    margin:0;
+    letter-spacing:0.02em;
+  }
+  .flight-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:var(--ink);
+    color:var(--bg);
+    padding:8px 12px;
+    border-radius:2px;
+    text-align:right;
+    line-height:1.6;
+  }
+  .flight-badge b{color:#F4C97B; font-weight:700;}
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            line-height: 1.6;
-        }
+  /* day tabs — departure board style */
+  .board{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:6px 2px 10px;
+    margin:0 -2px 24px;
+    scrollbar-width:thin;
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--bg);
+  }
+  .board::-webkit-scrollbar{height:4px;}
+  .tab{
+    flex:0 0 auto;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-bottom:3px solid transparent;
+    border-radius:3px 3px 0 0;
+    padding:12px 14px;
+    cursor:pointer;
+    min-width:96px;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    transition:all .18s ease;
+  }
+  .tab:hover{background:var(--white);}
+  .tab.active{
+    background:var(--ink);
+    border-bottom:3px solid var(--vermilion);
+  }
+  .tab .d-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+  }
+  .tab.active .d-num{color:#B7C2D6;}
+  .tab .d-date{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:15px;
+    margin:2px 0 3px;
+  }
+  .tab.active .d-date{color:var(--bg);}
+  .tab .d-theme{
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .tab.active .d-theme{color:#D7DCE5;}
 
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-        }
+  /* day panel */
+  .panel{display:none;}
+  .panel.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
 
-        header {
-            text-align: center;
-            padding: 20px;
-            background: var(--primary-morandi);
-            color: #ffffff;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(107, 123, 140, 0.15);
-        }
+  .day-title{
+    font-family:'Noto Serif JP', serif;
+    font-weight:700;
+    font-size:22px;
+    margin:0 0 2px;
+  }
+  .day-sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+    display:block;
+  }
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
-        }
+  /* timeline */
+  .timeline{position:relative; padding-left:26px;}
+  .timeline::before{
+    content:"";
+    position:absolute; left:6px; top:6px; bottom:6px;
+    width:2px;
+    background:repeating-linear-gradient(var(--line) 0 6px, transparent 6px 10px);
+  }
+  .stop{position:relative; margin-bottom:18px;}
+  .stop::before{
+    content:"";
+    position:absolute; left:-26px; top:5px;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--accent, var(--steel));
+  }
+  .stop-time{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:15px;
+    color:var(--accent, var(--steel));
+  }
+  .stop-place{font-weight:700; font-size:15px; margin:2px 0 3px;}
+  .stop-note{font-size:13px; color:var(--ink-soft); line-height:1.55;}
+  .map-link{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--accent, var(--steel));
+    text-decoration:none;
+    border:1px solid currentColor;
+    border-radius:10px;
+    padding:4px 9px 4px 6px;
+    margin-left:6px;
+    vertical-align:middle;
+    white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .map-link:hover{background:currentColor; color:var(--white) !important;}
+  .map-link svg{width:9px; height:9px; flex:none;}
+  .leg .p .map-link{margin-left:6px;}
+  .tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.06em;
+    padding:2px 7px;
+    border-radius:2px;
+    color:var(--white);
+    background:var(--accent, var(--steel));
+    margin-right:6px;
+    vertical-align:middle;
+  }
 
-        /* 飯店資訊卡 */
-        .hotel-card {
-            background-color: #eae7dc;
-            border: 1px solid #d8d3cd;
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+  /* plan card */
+  .plan-block{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px 16px;
+    margin:10px 0 18px;
+  }
+  .plan-head{
+    display:flex; gap:8px; margin-bottom:10px;
+  }
+  .plan-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    font-weight:700;
+    padding:8px 14px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--ink-soft);
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .plan-btn.on{
+    background:var(--ink);
+    color:var(--bg);
+    border-color:var(--ink);
+  }
+  .plan-body{display:none; font-size:13.5px; line-height:1.9;}
+  .plan-body.on{display:block;}
+  .leg{
+    display:flex; justify-content:space-between; gap:10px;
+    border-bottom:1px dashed var(--line);
+    padding:4px 0;
+  }
+  .leg:last-child{border-bottom:none;}
+  .leg .t{font-family:'JetBrains Mono', monospace; font-weight:700; white-space:nowrap;}
+  .leg .p{color:var(--ink-soft); text-align:right;}
 
-        .hotel-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 16px;
-            color: var(--text-main);
-        }
+  .fare{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:#FBF3E4;
+    border:1px dashed var(--gold);
+    color:#7A5A17;
+    padding:8px 12px;
+    border-radius:4px;
+    margin-top:8px;
+  }
+  .note-box{
+    font-size:13px;
+    color:var(--ink-soft);
+    background:rgba(62,98,133,0.06);
+    border-left:3px solid var(--steel);
+    padding:8px 12px;
+    border-radius:0 4px 4px 0;
+    margin:10px 0;
+  }
 
-        .hotel-info p {
-            margin: 2px 0;
-            font-size: 12px;
-            color: var(--text-sub);
-        }
+  /* meal recommendations */
+  .meal-section{margin:22px 0 6px;}
+  .meal-heading{
+    display:flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .meal-heading::before{content:"";flex:0 0 14px; height:1px; background:var(--line);}
+  .meal-heading::after{content:"";flex:1 1 auto; height:1px; background:var(--line);}
+  .meal-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent, var(--gold));
+    border-radius:0 6px 6px 0;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .meal-card-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+    flex-wrap:wrap;
+  }
+  .meal-name{font-weight:700; font-size:14.5px;}
+  .meal-type{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--accent, var(--gold));
+    letter-spacing:0.06em;
+  }
+  .meal-note{font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.6;}
+  .meal-tbd{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+    padding:10px 2px;
+  }
 
-        /* 地圖通用按鈕 */
-        .map-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background-color: var(--btn-map);
-            color: white;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
+  /* prep checklist */
+  .tab.prep-tab{border-bottom-color:transparent;}
+  .tab.prep-tab.active{border-bottom-color:var(--gold);}
+  .prep-group{margin-bottom:22px;}
+  .prep-group-title{
+    font-family:'Noto Serif JP', serif;
+    font-weight:700;
+    font-size:16px;
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .prep-group-title .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--accent, var(--gold));
+    flex:none;
+  }
+  .prep-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:12px 6px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .prep-group-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:18px;
+  }
+  .prep-group-body.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .prep-group-body .prep-item:nth-last-child(1),
+  .prep-group-body .prep-item:nth-last-child(2):nth-child(odd){
+    border-bottom:none;
+  }
+  .prep-group-body.cols-3 .prep-item{border-bottom:1px solid var(--line);}
+  @media (max-width:640px){
+    .prep-group-body.cols-3{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:520px){
+    .prep-group-body{grid-template-columns:1fr !important;}
+    .prep-group-body .prep-item{border-bottom:1px solid var(--line);}
+    .prep-group-body .prep-item:last-child{border-bottom:none;}
+  }
+  .prep-item:last-child{border-bottom:none;}
+  .prep-check{
+    flex:none;
+    width:20px; height:20px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:5px;
+    margin-top:1px;
+    position:relative;
+    transition:all .15s ease;
+  }
+  .prep-item.checked .prep-check{
+    background:var(--moss);
+    border-color:var(--moss);
+  }
+  .prep-item.checked .prep-check::after{
+    content:"";
+    position:absolute; left:6px; top:2px;
+    width:6px; height:11px;
+    border:solid var(--white);
+    border-width:0 2px 2px 0;
+    transform:rotate(40deg);
+  }
+  .prep-text{flex:1;}
+  .prep-item.checked .prep-main{
+    color:var(--ink-soft);
+    text-decoration:line-through;
+    text-decoration-color:rgba(91,100,116,0.5);
+  }
+  .prep-main{font-size:14px; font-weight:500;}
+  .prep-detail{font-size:12.5px; color:var(--ink-soft); margin-top:2px; line-height:1.55;}
+  .prep-priority{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    color:var(--vermilion);
+    border:1px solid var(--vermilion);
+    border-radius:3px;
+    padding:1px 5px;
+    margin-left:6px;
+    white-space:nowrap;
+  }
 
-        .map-btn:hover {
-            background-color: #3b6346;
-        }
-
-        /* 1. 主分頁導覽列 */
-        .main-nav {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
-
-        .nav-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px 10px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-        }
-
-        .nav-btn.active {
-            background-color: var(--primary-morandi);
-            color: #ffffff;
-            border-color: var(--primary-morandi);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-        }
-
-        .page-content {
-            display: none;
-        }
-
-        .page-content.active {
-            display: block;
-        }
-
-        /* Day 1 - Day 6 子按鈕排版 */
-        .day-nav {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .day-btn {
-            flex: 1;
-            min-width: 70px;
-            padding: 8px 12px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--text-sub);
-            cursor: pointer;
-            text-align: center;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-        }
-
-        .day-btn.active {
-            background-color: var(--accent-warm);
-            color: #ffffff;
-            border-color: var(--accent-warm);
-        }
-
-        .day-tab {
-            display: none;
-        }
-
-        .day-tab.active {
-            display: block;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 18px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--primary-morandi);
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .day-date {
-            font-size: 13px;
-            color: var(--accent-warm);
-            font-weight: normal;
-        }
-
-        /* 行程細項排版 */
-        .plan-box {
-            background-color: #faf9f6;
-            border-left: 4px solid var(--accent-green);
-            padding: 12px 14px;
-            margin-bottom: 12px;
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
-        }
-
-        .plan-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .plan-title {
-            font-weight: bold;
-            color: var(--primary-morandi);
-        }
-
-        .ps-box {
-            background-color: #fdfbf7;
-            border: 1px dashed var(--accent-warm);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: var(--text-sub);
-            white-space: pre-line;
-            margin-top: 15px;
-        }
-
-        /* 勾選清單樣式 */
-        .checklist {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .check-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
-        .check-item:last-child {
-            border-bottom: none;
-        }
-
-        .check-item input[type="checkbox"] {
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--primary-morandi);
-            border-radius: 4px;
-            margin-right: 12px;
-            margin-top: 3px;
-            cursor: pointer;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .check-item input[type="checkbox"]:checked {
-            background-color: var(--accent-green);
-            border-color: var(--accent-green);
-        }
-
-        .check-item input[type="checkbox"]:checked::after {
-            content: '✓';
-            color: white;
-            position: absolute;
-            font-size: 12px;
-            left: 3px;
-            top: -2px;
-        }
-
-        .check-item input[type="checkbox"]:checked + .item-label {
-            text-decoration: line-through;
-            color: #a0a0a0;
-        }
-
-        .item-label {
-            font-size: 14px;
-            cursor: pointer;
-            flex-grow: 1;
-        }
-
-        .sub-desc {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 2px;
-        }
-
-        .badge-must {
-            background-color: var(--tag-must);
-            color: white;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 6px;
-        }
-
-        /* 記帳表格與元件樣式 */
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .accounting-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            min-width: 550px;
-        }
-
-        .accounting-table th, .accounting-table td {
-            padding: 10px 8px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-        }
-
-        .accounting-table th {
-            background-color: var(--bg-color);
-            color: var(--primary-morandi);
-        }
-
-        .input-box {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        .add-btn {
-            background-color: var(--accent-green);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-        }
-
-        .summary-box {
-            background-color: #fdfbf7;
-            border: 1px solid var(--accent-warm);
-            padding: 14px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        @media (max-width: 600px) {
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-        }
-    </style>
+  /* hotel card */
+  .hotel-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--moss);
+    border-radius:0 6px 6px 0;
+    padding:12px 16px;
+    margin-bottom:22px;
+  }
+  .hotel-left{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .hotel-icon{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    color:var(--moss);
+    border:1px solid var(--moss);
+    border-radius:3px;
+    padding:2px 6px;
+    flex:none;
+  }
+  .hotel-name{font-weight:700; font-size:14.5px;}
+  .hotel-address{font-size:12px; color:var(--ink-soft);}
+  .hotel-right{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .hotel-right b{color:var(--ink);}
+  .placeholder{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--ink-soft);
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+  }
+  .placeholder .big{
+    font-family:'Noto Serif JP', serif;
+    font-size:20px;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  footer{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:40px;
+    letter-spacing:0.08em;
+  }
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-    <header>
-        <h1>福岡自由行 隨身手冊</h1>
-    </header>
-
-    <!-- 飯店資訊固定卡 -->
-    <div class="hotel-card">
-        <div class="hotel-info">
-            <h3>🏨 住宿飯店：THE BASICS FUKUOKA</h3>
-            <p>📍 地址：福岡県福岡市博多区博多駅東2-14-1 (博多站築紫口步行約7分鐘)</p>
-            <p>📞 電話：+81 92-412-1234</p>
-        </div>
-        <a href="https://maps.google.com/?q=THE+BASICS+FUKUOKA" target="_blank" class="map-btn">
-            📍 地圖導航
-        </a>
+  <header>
+    <div>
+      <div class="eyebrow">KYUSHU · FUKUOKA ITINERARY</div>
+      <h1>福岡・北九州</h1>
     </div>
-
-    <!-- 主頁籤 -->
-    <div class="main-nav">
-        <button class="nav-btn active" onclick="switchTab('prep', event)">📋 行程準備</button>
-        <button class="nav-btn" onclick="switchTab('packing', event)">🧳 行李清單</button>
-        <button class="nav-btn" onclick="switchTab('itinerary', event)">🗓️ 行程規劃</button>
-        <button class="nav-btn" onclick="switchTab('accounting', event)">💰 記帳分帳</button>
+    <div class="flight-badge">
+      BR106&nbsp; TPE 08:00 → FUK 11:15<br>
+      <b>11/6 (五) — 11/11 (三)</b> · 六天五夜
     </div>
+  </header>
 
-    <!-- ================= 1. 行程準備 ================= -->
-    <div id="prep" class="page-content active">
-        <div class="card">
-            <div class="card-title">🔹 交通預訂</div>
-            <ul class="checklist">
-                <li class="check-item">
-                    <input type="checkbox" id="prep_1">
-                    <div class="item-label">
-                        由布院之森 / 由布號 特急指定席預約 <span class="badge-must">必辦</span>
-                        <div class="sub-desc">熱門觀光列車，建議提前開放訂票時先預約去回程座位。</div>
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_2">
-                    <div class="item-label">
-                        確認太宰府觀光列車「旅人 tabito」最新時刻
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_3">
-                    <div class="item-label">
-                        評估是否購買 JR Kyushu Mobile Pass 福岡廣域版
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_4">
-                    <div class="item-label">
-                        確認昭和巴士 (West Coast Liner) 最新去回程時刻
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_5">
-                    <div class="item-label">
-                        IC 卡（Suica/ICOCA）儲值或準備手機 Mobile IC
-                    </div>
-                </li>
-            </ul>
-        </div>
+  <div class="hotel-card" id="hotel-card"></div>
 
-        <div class="card">
-            <div class="card-title">🔹 證件與金錢</div>
-            <ul class="checklist">
-                <li class="check-item">
-                    <input type="checkbox" id="prep_6">
-                    <div class="item-label">
-                        護照效期確認 (建議 6 個月以上) <span class="badge-must">必辦</span>
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_7">
-                    <div class="item-label">
-                        護照、機票、訂房證明各留一份電子備份
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_8">
-                    <div class="item-label">
-                        兌換日圓現金
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_9">
-                    <div class="item-label">
-                        確認信用卡海外刷卡與提款功能已開通
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_10">
-                    <div class="item-label">
-                        購買旅遊不便險／海外突發疾病險
-                    </div>
-                </li>
-            </ul>
-        </div>
+  <div class="board" id="board"></div>
+  <div id="panels"></div>
 
-        <div class="card">
-            <div class="card-title">🔹 通訊與 App</div>
-            <ul class="checklist">
-                <li class="check-item">
-                    <input type="checkbox" id="prep_11">
-                    <div class="item-label">
-                        預訂網路分享機或 eSIM／實體 SIM 卡 <span class="badge-must">必辦</span>
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_12">
-                    <div class="item-label">
-                        下載 Google 地圖離線地圖 (福岡・北九州・由布院)
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_13">
-                    <div class="item-label">
-                        下載乘換案內類 App (Yahoo!乘換案內 / Google Maps)
-                    </div>
-                </li>
-                <li class="check-item">
-                    <input type="checkbox" id="prep_14">
-                    <div class="item-label">
-                        下載翻譯 App (Google 翻譯)
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- ================= 2. 行李清單 ================= -->
-    <div id="packing" class="page-content">
-        <div class="grid-2">
-            <div class="card">
-                <div class="card-title">🪪 個人證件類</div>
-                <ul class="checklist" id="list_passport"></ul>
-            </div>
-            <div class="card">
-                <div class="card-title">👔 衣物類</div>
-                <ul class="checklist" id="list_clothes"></ul>
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="card">
-                <div class="card-title">🧴 個人衛生用品類</div>
-                <ul class="checklist" id="list_hygiene"></ul>
-            </div>
-            <div class="card">
-                <div class="card-title">🔌 電子產品類</div>
-                <ul class="checklist" id="list_electronics"></ul>
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="card">
-                <div class="card-title">💊 藥品類</div>
-                <ul class="checklist" id="list_medicine"></ul>
-            </div>
-            <div class="card">
-                <div class="card-title">🎒 其他類</div>
-                <ul class="checklist" id="list_other"></ul>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">👜 隨身物品</div>
-            <ul class="checklist" id="list_carryon"></ul>
-        </div>
-    </div>
-
-    <!-- ================= 3. 行程規劃 ================= -->
-    <div id="itinerary" class="page-content">
-        <div class="day-nav">
-            <button class="day-btn active" onclick="switchDay('day1', event)">Day 1 (糸島)</button>
-            <button class="day-btn" onclick="switchDay('day2', event)">Day 2 (太宰府)</button>
-            <button class="day-btn" onclick="switchDay('day3', event)">Day 3 (由布院)</button>
-            <button class="day-btn" onclick="switchDay('day4', event)">Day 4 (門司港)</button>
-            <button class="day-btn" onclick="switchDay('day5', event)">Day 5 (購物)</button>
-            <button class="day-btn" onclick="switchDay('day6', event)">Day 6 (返台)</button>
-        </div>
-
-        <div id="day1" class="day-tab active">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 1：抵達福岡 ➔ 糸島一日遊</span>
-                    <span class="day-date">第一天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🛫 航班與抵達</span>
-                        <a href="https://maps.google.com/?q=Fukuoka+Airport" target="_blank" class="map-btn">📍 福岡機場</a>
-                    </div>
-                    搭乘早班機抵達福岡機場，出關後前往博多車站飯店寄放行李。
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🌊 糸島海景散策</span>
-                        <a href="https://maps.google.com/?q=Futamigaura+Meoto+Iwa" target="_blank" class="map-btn">📍 夫婦岩</a>
-                    </div>
-                    前往糸島欣賞著名的二見浦白色鳥居與夫婦岩，造訪海邊網美咖啡廳。
-                </div>
-            </div>
-        </div>
-
-        <div id="day2" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 2：太宰府天滿宮一日遊</span>
-                    <span class="day-date">第二天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">⛩️ 太宰府參拜與散策</span>
-                        <a href="https://maps.google.com/?q=Dazaifu+Tenmangu" target="_blank" class="map-btn">📍 太宰府天滿宮</a>
-                    </div>
-                    搭乘電車前往太宰府，參拜學問之神，品嚐現烤梅枝餅，逛特色星巴克。
-                </div>
-            </div>
-        </div>
-
-        <div id="day3" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 3：由布院溫泉散策</span>
-                    <span class="day-date">第三天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🚂 搭乘由布院之森</span>
-                        <a href="https://maps.google.com/?q=Yufuin+Station" target="_blank" class="map-btn">📍 由布院站</a>
-                    </div>
-                    搭乘特色觀光列車前往由布院，逛湯之坪街道、金鱗湖，享受溫泉與美食。
-                </div>
-            </div>
-        </div>
-
-        <div id="day4" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 4：門司港懷舊與下關一日遊</span>
-                    <span class="day-date">第四天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">⚓ 門司港懷舊地區</span>
-                        <a href="https://maps.google.com/?q=Mojiko+Station" target="_blank" class="map-btn">📍 門司港站</a>
-                    </div>
-                    造訪門司港復古建築，品嚐著名的燒咖哩，搭船至唐戶市場吃海鮮。
-                </div>
-            </div>
-        </div>
-
-        <div id="day5" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 5：福岡市區購物血拚</span>
-                    <span class="day-date">第五天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🛍️ 天神與博多商圈</span>
-                        <a href="https://maps.google.com/?q=Tenjin+Fukuoka" target="_blank" class="map-btn">📍 天神地下街</a>
-                    </div>
-                    大肆搜刮藥妝、服飾（如 Le Talon 等品牌），晚上享受屋台文化。
-                </div>
-            </div>
-        </div>
-
-        <div id="day6" class="day-tab">
-            <div class="card">
-                <div class="card-title">
-                    <span>Day 6：最後採買 ➔ 愉快返台</span>
-                    <span class="day-date">第六天</span>
-                </div>
-                <div class="plan-box">
-                    <div class="plan-header">
-                        <span class="plan-title">🛒 伴手禮採買與機場免稅店</span>
-                        <a href="https://maps.google.com/?q=Fukuoka+Airport" target="_blank" class="map-btn">📍 福岡機場</a>
-                    </div>
-                    享用最後的博多拉麵，前往機場採買伴手禮後搭機返台。
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= 4. 記帳分帳 ================= -->
-    <div id="accounting" class="page-content">
-        
-        <!-- 匯率設定 -->
-        <div class="card" style="padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div style="font-size: 13px; font-weight: bold; color: var(--primary-morandi);">💰 匯率設定 (日圓 ➔ 台幣)</div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <label style="font-size: 13px;">1 JPY =</label>
-                <input type="number" id="jpy_rate" class="input-box" value="0.21" step="0.005" style="width: 90px; margin-bottom:0; text-align:center;" onchange="saveRateAndRender()">
-                <label style="font-size: 13px;">TWD</label>
-            </div>
-        </div>
-
-        <!-- 新增花費 -->
-        <div class="card">
-            <div class="card-title">➕ 新增花費項目</div>
-            
-            <div class="grid-3">
-                <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">消費日期</label>
-                    <input type="date" id="acc_date" class="input-box">
-                </div>
-                <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">項目名稱</label>
-                    <input type="text" id="acc_item" class="input-box" placeholder="例：一蘭拉麵 / 藥妝">
-                </div>
-                <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">金額 (日圓 JPY)</label>
-                    <input type="number" id="acc_amount" class="input-box" placeholder="￥ 0" oninput="updateTwdPreview()">
-                    <div id="twd_preview" style="font-size: 11px; color: var(--accent-warm); margin-top: -6px; margin-bottom: 6px;">約 NT$ 0</div>
-                </div>
-            </div>
-
-            <div class="grid-2" style="align-items: center;">
-                <div>
-                    <label style="font-size: 11px; color: var(--text-sub);">先付錢的人 (預設為自己，若幫友人代墊請更改)</label>
-                    <input type="text" id="acc_payer" class="input-box" value="我" placeholder="預設「我」">
-                </div>
-
-                <div style="padding-top: 10px;">
-                    <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" id="acc_is_split" checked style="width: 18px; height: 18px; cursor: pointer;">
-                        <b>👥 這筆是大家一起平分的共同花費</b>
-                    </label>
-                </div>
-            </div>
-
-            <button class="add-btn" style="margin-top: 10px;" onclick="addExpense()">+ 存入記帳本</button>
-        </div>
-
-        <!-- 記帳明細與結算 -->
-        <div class="card">
-            <div class="card-title">🧾 記帳明細列表</div>
-            <div class="table-responsive">
-                <table class="accounting-table">
-                    <thead>
-                        <tr>
-                            <th>日期</th>
-                            <th>項目</th>
-                            <th>日圓 (JPY)</th>
-                            <th>折合台幣 (TWD)</th>
-                            <th>付款人</th>
-                            <th>性質</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expense_body">
-                        <!-- 動態生成列表 -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="summary-box" id="summary_content">
-                <!-- 動態計算總計與結算結果 -->
-            </div>
-        </div>
-    </div>
-
+  <footer>行程可能隨天氣與現場狀況調整・出發前請再次確認車次時刻</footer>
 </div>
 
 <script>
-// 主頁籤切換
-function switchTab(tabId, event) {
-    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.main-nav .nav-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+function mapA(query){
+  const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+  return `<a class="map-link" href="${url}" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>地圖</a>`;
+}
+function linkA(label, url){
+  return `<a class="map-link" href="${url}" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 7V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2M6 21a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/></svg>${label}</a>`;
 }
 
-// Day 頁籤切換
-function switchDay(dayId, event) {
-    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(dayId).classList.add('active');
-    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-}
+const hotelCard = document.getElementById('hotel-card');
+hotelCard.innerHTML = `
+  <div class="hotel-left">
+    <span class="hotel-icon">住宿</span>
+    <div>
+      <div class="hotel-name">THE BASICS FUKUOKA${mapA('THE BASICS FUKUOKA')}</div>
+      <div class="hotel-address">福岡県福岡市博多区博多駅東2-14-1（博多站步行約7分鐘）</div>
+    </div>
+  </div>
+  <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
+`;
 
-// 行李清單資料
-const packingData = {
-    passport: ["護照", "信用卡", "現金", "網卡 / eSIM"],
-    clothes: ["內衣／褲", "上衣、外衣", "褲子、裙子", "外套", "睡衣", "襪子", "鞋子", "拖鞋"],
-    hygiene: ["牙刷、牙膏", "洗面乳", "保養品、化妝品", "防曬用品", "面膜", "常備個人用品"],
-    electronics: ["手機充電器", "行動電源", "轉接頭", "相機"],
-    medicine: ["常備藥品 (感冒/止痛/腸胃)"],
-    other: ["雨傘", "購物袋", "濕紙巾"],
-    carryon: ["護照", "錢包", "網卡", "行動電源", "雨傘"]
-};
+const prep = [
+  {
+    title:"交通預訂", accent:"var(--steel)",
+    items:[
+      {text:"由布院之森 / 由布號 特急指定席預約（11/8）", detail:"熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。", priority:"必辦"},
+      {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
+      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者划算。", priority:""},
+      {text:"確認 11/6 昭和巴士（West Coast Liner）最新去回程時刻", detail:"Plan A／Plan B 皆需再核對，避免錯過末班車。", priority:""},
+      {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
+    ]
+  },
+  {
+    title:"證件與金錢", accent:"var(--vermilion)",
+    items:[
+      {text:"護照效期確認（建議 6 個月以上）", detail:"", priority:"必辦"},
+      {text:"護照、機票、訂房證明各留一份電子備份", detail:"存雲端或手機相簿，遺失時方便處理。", priority:""},
+      {text:"兌換日圓現金", detail:"郊區小店、巴士、神社香油錢等常僅收現金。", priority:""},
+      {text:"確認信用卡海外刷卡與提款功能已開通", detail:"", priority:""},
+      {text:"購買旅遊不便險／海外突發疾病險", detail:"", priority:""}
+    ]
+  },
+  {
+    title:"通訊與App", accent:"var(--gold)",
+    items:[
+      {text:"預訂網路分享機或 eSIM／實體 SIM 卡", detail:"", priority:"必辦"},
+      {text:"下載 Google 地圖離線地圖（福岡・北九州・由布院一帶）", detail:"", priority:""},
+      {text:"下載乘換案內類 App（Yahoo!乗換案内 或 Google Maps 皆可查日本電車巴士）", detail:"", priority:""},
+      {text:"下載翻譯 App（Google 翻譯拍照翻譯功能）", detail:"", priority:""}
+    ]
+  },
+  {
+    title:"行李與穿著", accent:"var(--moss)",
+    items:[
+      {text:"查詢 11 月福岡・由布院當地氣溫，洋蔥式穿法", detail:"日夜溫差較大，早晚山區（皿倉山、由布院）會更涼，建議帶薄外套或針織衫。", priority:""},
+      {text:"準備輕便雨具", detail:"", priority:""},
+      {text:"帶一雙好走的鞋", detail:"太宰府、由布院、門司港皆需步行不少路。", priority:""},
+      {text:"轉接插頭／充電器（日本為 A 型插座、110V）", detail:"", priority:""}
+    ]
+  }
+];
 
-function renderPackingList() {
-    for (let category in packingData) {
-        const container = document.getElementById(`list_${category}`);
-        if (!container) continue;
-        container.innerHTML = packingData[category].map((item, idx) => `
-            <li class="check-item">
-                <input type="checkbox" id="pack_${category}_${idx}">
-                <label for="pack_${category}_${idx}" class="item-label">${item}</label>
-            </li>
-        `).join('');
+const packing = [
+  {
+    title:"個人證件類", accent:"var(--vermilion)",
+    items:["護照","信用卡","現金","網卡"]
+  },
+  {
+    title:"衣物類", accent:"var(--steel)",
+    items:["內衣／褲（5件）","上衣、背心（5件）","褲子、裙子（5件）","薄外套／襯衫（1件）","睡衣（1套）","襪子（5雙）","鞋子（1-2雙）","拖鞋（1雙）"]
+  },
+  {
+    title:"個人衛生用品類", accent:"var(--gold)", cols:3,
+    items:["牙刷、牙膏、牙線","牙套","洗面乳","梳子","衛生棉","沐浴乳","洗髮精","護髮素","護髮油","保養品","化妝品","香水","卸妝巾／水","防曬用品","止汗劑","乳液","電棒","隱形眼鏡(5天+1備用)","生理食鹽水","人工淚液","眼鏡","面膜","休足時間","鯊魚夾"]
+  },
+  {
+    title:"電子產品類", accent:"var(--moss)",
+    items:["手機充電器、線","相機、電池（隨身行李）、相機充電器、記憶卡","耳機","插座轉換器","行動電源（隨身行李）、行動電源充電線","延長線"]
+  },
+  {
+    title:"其他類", accent:"var(--steel)",
+    items:["雨傘（最好託運比較保險）","手機掛繩","帽子","太陽眼鏡","口罩","酒精","衛生紙", "濕紙巾", "購物袋","壓縮袋","手提行李帶"],
+    mustHave:["衛生紙","濕紙巾","購物袋"]
+  },
+  {
+    title:"藥品類", accent:"var(--vermilion)",
+    items:["常用藥品（感冒藥、止痛藥、暈機藥、腸胃藥、濕疹藥）","保健食品（益生菌、酵素、葉黃素、維他命）","維他命C","長期處方藥品","防蚊液"]
+  },
+  {
+    title:"隨身物品（登機隨身包）", accent:"var(--gold)", cols:3,
+    items:["護照","信用卡","交通卡","現金","購物袋","衛生紙","濕紙巾","涼感巾","帽子","太陽眼鏡","雨傘","水","行動電源＋線","手機背帶","相機","人工淚液","防曬用品","隨身藥品","薄外套／襯衫","衛生棉"]
+  }
+];
+
+const days = [
+  {
+    date:"11/6", wd:"五", theme:"抵達福岡・糸島夫婦岩", accent:"var(--steel)",
+    stops:[
+      {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
+    ],
+    plans:[
+      {
+        label:"去程・回程巴士方案",
+        options:["Plan A", "Plan B", "Plan C"],
+        bodies:[
+          `<div class="leg"><span class="t">13:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
+           <div class="leg"><span class="t">14:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
+           <div class="leg"><span class="t">14:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
+           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站　${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
+          `<div class="leg"><span class="t">14:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
+           <div class="leg"><span class="t">15:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
+           <div class="leg"><span class="t">15:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
+           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
+          `<div class="note-box">Plan C・自駕/租車，跟皮皮一起去。時間彈性，不受巴士班次限制，二見浦沿岸與夫婦岩周邊都有付費停車場。</div>`
+        ]
+      }
+    ],
+    fare:"IC 卡直達：去程 1,150 円／回程 1,150 円　｜　回程轉車：巴士 730 円＋地鐵 570 円",
+    note:"去程／回程皆為 West Coast Liner 昭和巴士（直達）。在博多巴士總站 3 樓 32 號月台搭車，發車前請再核對最新巴士時刻表。",
+    meals:[
+      {type:"午餐建議", name:"糸島海鮮堂 二見ヶ浦本店", note:"就在夫妻岩巴士站附近，海景座位能直接望見夫婦岩，招牌是滿滿海鮮丼／鮪魚丼。假日人多，建議早點去或錯開尖峰。", map:"糸島海鮮堂 二見ヶ浦本店"}
+    ]
+  },
+  {
+    date:"11/7", wd:"六", theme:"太宰府", accent:"var(--vermilion)",
+    stops:[],
+    plans:[
+      {
+        label:"前往太宰府方案",
+        options:["旅人號 tabito", "一般轉乘"],
+        bodies:[
+          `<div class="leg"><span class="t">09:48</span><span class="p">西鐵天神站 發車（太宰府觀光列車 旅人 tabito）${mapA('西鉄福岡(天神)駅')}</span></div>
+           <div class="leg"><span class="t">10:17</span><span class="p">太宰府站 抵達${mapA('太宰府駅')}</span></div>
+           <div class="note-box">若能提早出門可不必搭旅人號，但仍需再確認可搭乘之班次。</div>`,
+          `<div class="leg"><span class="t">—</span><span class="p">博多站 → 西鐵福岡（天神）站${mapA('西鉄福岡(天神)駅')}</span></div>
+           <div class="leg"><span class="t">—</span><span class="p">西鐵天神大牟田線（急行或特急）→ 二日市站${mapA('西鉄二日市駅')}</span></div>
+           <div class="leg"><span class="t">—</span><span class="p">走到對面月台，轉西鐵太宰府線 → 太宰府站${mapA('太宰府駅')}</span></div>`
+        ]
+      }
+    ],
+    fare:"",
+    note:"出發前請再查詢一次旅人號最新時刻表與班次。",
+    meals:[
+      {type:"表參道小吃", name:"梅枝餅（かさの家 / 寺田屋 / やす武）", note:"太宰府必吃名物，現烤紅豆餅一個約 120 円，表參道上多家分店都有排隊，かさの家評價最高、寺田屋可內用配抹茶。", map:"かさの家 太宰府"},
+      {type:"順道一嚐", name:"Fukuya 明太子茶泡飯／一蘭合格拉麵", note:"表參道上可嚐明太子料理，一蘭太宰府店限定「合格拉麵」也蠻多人排隊。", map:"ふくや 太宰府"}
+    ]
+  },
+  {
+    date:"11/8", wd:"日", theme:"由布院", accent:"var(--gold)",
+    stops:[],
+    plans:[
+      {
+        label:"去程車次選擇",
+        options:["由布院之森 1", "由布院之森 3", "由布號"],
+        bodies:[
+          `<div class="leg"><span class="t">09:17</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
+           <div class="leg"><span class="t">11:31</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
+          `<div class="leg"><span class="t">10:11</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
+           <div class="leg"><span class="t">12:27</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
+          `<div class="leg"><span class="t">12:14</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
+           <div class="leg"><span class="t">14:33</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`
+        ]
+      },
+      {
+        label:"回程車次選擇",
+        options:["由布院之森 6", "由布號 6"],
+        bodies:[
+          `<div class="leg"><span class="t">17:17</span><span class="p">由布院 發車${mapA('由布院駅')}</span></div>
+           <div class="leg"><span class="t">19:27</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`,
+          `<div class="leg"><span class="t">19:27</span><span class="p">由布院 發車${mapA('由布院駅')}</span></div>
+           <div class="leg"><span class="t">21:34</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`
+        ]
+      }
+    ],
+    fare:"",
+    note:"特急列車須事先完成 JR 預約，建議及早訂位。",
+    meals:[
+      {type:"午餐/晚餐建議", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。", map:"由布まぶし心"},
+      {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
+    ]
+  },
+  {
+    date:"11/9", wd:"一", theme:"門司港・皿倉山", accent:"var(--moss)",
+    stops:[
+      {time:"09:00", place:"博多 發車（JR Sonic）", note:"", tag:"JR", map:"博多駅"},
+      {time:"09:37", place:"小倉 抵達", note:"", tag:"JR", map:"小倉駅"},
+      {time:"09:45", place:"小倉 發車", note:"搭鹿兒島本線，對面月台直接換車", tag:"JR", map:"小倉駅"},
+      {time:"09:50", place:"門司港 抵達", note:"", tag:"JR", map:"門司港駅"},
+      {time:"下午", place:"八幡站 → 皿倉山纜車山麓站", note:"轉搭接駁巴士上山，首班 17:05、末班 20:15，逢 5 分／25 分各一班", tag:"BUS", map:"皿倉山ケーブルカー山麓駅"}
+    ],
+    plans:[],
+    fare:"",
+    note:"可考慮購買 JR Kyushu Mobile Pass（福岡廣域）。車資只需另付皿倉山入場費。",
+    meals:[
+      {type:"門司港名物午餐", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯。「咖哩本舖」評價最穩、「プリンセスピピ」需現場登記排隊，兩間都在車站附近。", map:"門司港 燒咖哩 咖哩本舖"}
+    ]
+  },
+  {
+    date:"11/10", wd:"二", theme:"購物", accent:"var(--steel)",
+    stops:[], plans:[], fare:"", note:"", empty:true,
+    placeholderText:"這天目前只定了「購物」主題，地點與時間還沒排 — 需要我幫忙安排博多／天神一帶的購物路線嗎？",
+    meals:[
+      {type:"晚餐建議", name:"大山牛腸鍋（天神 ONE BLDG. 店／KITTE博多店）", note:"博多招牌牛腸鍋名店，交通方便，逛街後順路。", map:"博多もつ鍋 おおやま 天神"},
+      {type:"備選", name:"一蘭拉麵 中洲川端總本店 / 華味鳥水炊鍋", note:"想吃拉麵可選一蘭總本店的「味集中座位」；想吃雞肉鍋可選博多華味鳥。", map:"一蘭ラーメン 中洲川端総本店"}
+    ]
+  },
+  {
+    date:"11/11", wd:"三", theme:"賦歸", accent:"var(--ink-soft)",
+    stops:[
+      {time:"12:15→13:50", place:"長榮 BR105　FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
+    ],
+    plans:[], fare:"", note:"中午起飛，建議至少提前 2 小時抵達機場辦理登機（約 10:15 前到）。",
+    empty:true,
+    placeholderText:"上午還有一段空檔（約到 10:00 左右）— 要不要幫你排在飯店附近做最後採買，或安排寄放行李後的短程行程？"
+  }
+];
+
+const board = document.getElementById('board');
+const panels = document.getElementById('panels');
+
+// --- 行前準備 tab ---
+const prepTab = document.createElement('div');
+prepTab.className = 'tab prep-tab active';
+prepTab.dataset.key = 'prep';
+prepTab.innerHTML = `<div class="d-num">READY</div><div class="d-date">✓ 準備</div><div class="d-theme">行前須知</div>`;
+prepTab.onclick = () => selectPanel('prep');
+board.appendChild(prepTab);
+
+const prepPanel = document.createElement('div');
+prepPanel.className = 'panel active';
+prepPanel.dataset.key = 'prep';
+const prepGroupsHtml = prep.map(g => `
+  <div class="prep-group" style="--accent:${g.accent}">
+    <div class="prep-group-title"><span class="dot"></span>${g.title}</div>
+    ${g.items.map(it => `
+      <div class="prep-item" style="--accent:${g.accent}">
+        <div class="prep-check"></div>
+        <div class="prep-text">
+          <div class="prep-main">${it.text}${it.priority ? `<span class="prep-priority">${it.priority}</span>` : ''}</div>
+          ${it.detail ? `<div class="prep-detail">${it.detail}</div>` : ''}
+        </div>
+      </div>`).join('')}
+  </div>`).join('');
+prepPanel.innerHTML = `
+  <h2 class="day-title">行前準備須知</h2>
+  <span class="day-sub">出發前可以勾選確認・點項目即可打勾</span>
+  ${prepGroupsHtml}`;
+panels.appendChild(prepPanel);
+
+panels.addEventListener('click', (e) => {
+  const item = e.target.closest('.prep-item');
+  if (item) { item.classList.toggle('checked'); return; }
+});
+
+// --- 行李清單 tab ---
+const packTab = document.createElement('div');
+packTab.className = 'tab prep-tab';
+packTab.dataset.key = 'packing';
+packTab.innerHTML = `<div class="d-num">PACK</div><div class="d-date">🧳 行李</div><div class="d-theme">出國清單</div>`;
+packTab.onclick = () => selectPanel('packing');
+board.appendChild(packTab);
+
+const packPanel = document.createElement('div');
+packPanel.className = 'panel';
+packPanel.dataset.key = 'packing';
+const packGroupsHtml = packing.map(g => `
+  <div class="prep-group" style="--accent:${g.accent}">
+    <div class="prep-group-title"><span class="dot"></span>${g.title}</div>
+    <div class="prep-group-body${g.cols===3 ? ' cols-3' : ''}">
+    ${g.items.map(txt => `
+      <div class="prep-item" style="--accent:${g.accent}">
+        <div class="prep-check"></div>
+        <div class="prep-text">
+          <div class="prep-main">${txt}${(g.mustHave && g.mustHave.includes(txt)) ? `<span class="prep-priority">必備</span>` : ''}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`).join('');
+packPanel.innerHTML = `
+  <h2 class="day-title">出國行李清單</h2>
+  <span class="day-sub">打包時可逐項點選打勾</span>
+  ${packGroupsHtml}`;
+panels.appendChild(packPanel);
+
+days.forEach((d, i) => {
+  const tab = document.createElement('div');
+  tab.className = 'tab';
+  tab.dataset.key = String(i);
+  tab.innerHTML = `<div class="d-num">DAY ${i+1}</div><div class="d-date">${d.date}</div><div class="d-theme">${d.wd}・${d.theme}</div>`;
+  tab.onclick = () => selectPanel(String(i));
+  board.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.dataset.key = String(i);
+
+  function buildMealsHtml(meals, accent){
+    if (!meals || !meals.length) {
+      return `<div class="meal-section"><div class="meal-heading">餐廳</div><div class="meal-tbd">尚未決定 — 之後補上</div></div>`;
     }
-}
+    const cards = meals.map(m => `
+      <div class="meal-card" style="--accent:${accent}">
+        <div class="meal-card-head">
+          <div class="meal-name">${m.name}${m.map ? mapA(m.map) : ''}</div>
+          <div class="meal-type">${m.type}</div>
+        </div>
+        ${m.note ? `<div class="meal-note">${m.note}</div>` : ''}
+      </div>`).join('');
+    return `<div class="meal-section"><div class="meal-heading">餐廳建議・待確認</div>${cards}</div>`;
+  }
 
-// ==================== 輕量記帳系統核心 ====================
-let expenses = JSON.parse(localStorage.getItem('fukuoka_expenses_v5')) || [];
-let jpyRate = parseFloat(localStorage.getItem('fukuoka_jpy_rate_v5')) || 0.21;
-
-function saveRateAndRender() {
-    jpyRate = parseFloat(document.getElementById('jpy_rate').value) || 0.21;
-    localStorage.setItem('fukuoka_jpy_rate_v5', jpyRate);
-    updateTwdPreview();
-    renderExpenses();
-}
-
-function updateTwdPreview() {
-    const val = parseFloat(document.getElementById('acc_amount').value) || 0;
-    const twd = Math.round(val * jpyRate);
-    document.getElementById('twd_preview').innerText = `約 NT$ ${twd.toLocaleString()}`;
-}
-
-function addExpense() {
-    const date = document.getElementById('acc_date').value || '未填日期';
-    const name = document.getElementById('acc_item').value.trim();
-    const amountJPY = parseFloat(document.getElementById('acc_amount').value);
-    let payer = document.getElementById('acc_payer').value.trim();
-    if (!payer) payer = "我";
-    const isSplit = document.getElementById('acc_is_split').checked;
-
-    if (!name || isNaN(amountJPY) || amountJPY <= 0) {
-        alert('請完整填寫「項目名稱」以及「金額」！');
-        return;
-    }
-
-    expenses.push({
-        id: Date.now(),
-        date,
-        name,
-        amountJPY,
-        payer,
-        isSplit
+  if (d.empty) {
+    let stopsHtml = '';
+    (d.stops || []).forEach(s => {
+      stopsHtml += `
+        <div class="stop" style="--accent:${d.accent}">
+          ${s.tag ? `<span class="tag" style="--accent:${d.accent}">${s.tag}</span>` : ''}
+          <div class="stop-time">${s.time}</div>
+          <div class="stop-place">${s.place}${s.map ? mapA(s.map) : ''}</div>
+          ${s.note ? `<div class="stop-note">${s.note}</div>` : ''}
+        </div>`;
     });
+    panel.innerHTML = `
+      <h2 class="day-title">DAY ${i+1} · ${d.date}（${d.wd}）</h2>
+      <span class="day-sub">${d.theme}</span>
+      ${stopsHtml ? `<div class="timeline">${stopsHtml}</div>` : ''}
+      ${d.note ? `<div class="note-box">${d.note}</div>` : ''}
+      <div class="placeholder">
+        <div class="big">尚未安排</div>
+        <div>${d.placeholderText}</div>
+      </div>
+      ${buildMealsHtml(d.meals, d.accent)}`;
+    panels.appendChild(panel);
+    return;
+  }
 
-    renderExpenses();
+  let stopsHtml = '';
+  d.stops.forEach(s => {
+    stopsHtml += `
+      <div class="stop" style="--accent:${d.accent}">
+        ${s.tag ? `<span class="tag" style="--accent:${d.accent}">${s.tag}</span>` : ''}
+        <div class="stop-time">${s.time}</div>
+        <div class="stop-place">${s.place}${s.map ? mapA(s.map) : ''}</div>
+        ${s.note ? `<div class="stop-note">${s.note}</div>` : ''}
+      </div>`;
+  });
 
-    // 清空品項與金額，付款人維持「我」以便快速連續記帳
-    document.getElementById('acc_item').value = '';
-    document.getElementById('acc_amount').value = '';
-    document.getElementById('acc_payer').value = '我';
-    updateTwdPreview();
+  let plansHtml = '';
+  d.plans.forEach((p, pi) => {
+    const btns = p.options.map((o, oi) => `<button class="plan-btn ${oi===0?'on':''}" data-pi="${pi}" data-oi="${oi}">${o}</button>`).join('');
+    const bodies = p.bodies.map((b, oi) => `<div class="plan-body ${oi===0?'on':''}" data-pi="${pi}" data-oi="${oi}">${b}</div>`).join('');
+    plansHtml += `
+      <div class="plan-block" style="--accent:${d.accent}">
+        <div style="font-size:12px;color:var(--ink-soft);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">${p.label}</div>
+        <div class="plan-head">${btns}</div>
+        ${bodies}
+      </div>`;
+  });
+
+  panel.innerHTML = `
+    <h2 class="day-title">DAY ${i+1} · ${d.date}（${d.wd}）</h2>
+    <span class="day-sub">${d.theme}</span>
+    <div class="timeline">${stopsHtml}</div>
+    ${plansHtml}
+    ${d.fare ? `<div class="fare">${d.fare}</div>` : ''}
+    ${d.note ? `<div class="note-box">${d.note}</div>` : ''}
+    ${buildMealsHtml(d.meals, d.accent)}
+  `;
+  panels.appendChild(panel);
+});
+
+function selectPanel(key){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.key === key));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.dataset.key === key));
 }
 
-function deleteExpense(id) {
-    expenses = expenses.filter(e => e.id !== id);
-    renderExpenses();
-}
-
-function renderExpenses() {
-    localStorage.setItem('fukuoka_expenses_v5', JSON.stringify(expenses));
-    const tbody = document.getElementById('expense_body');
-    tbody.innerHTML = '';
-
-    let totalJPY = 0;
-    let memberPaid = {};   
-    let memberCost = {};   
-    let allMembersSet = new Set();
-
-    expenses.forEach(e => {
-        totalJPY += e.amountJPY;
-        const twd = Math.round(e.amountJPY * jpyRate);
-
-        allMembersSet.add(e.payer);
-        memberPaid[e.payer] = (memberPaid[e.payer] || 0) + e.amountJPY;
-
-        if (!e.isSplit) {
-            memberCost[e.payer] = (memberCost[e.payer] || 0) + e.amountJPY;
-        }
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${e.date}</td>
-                <td>${e.name}</td>
-                <td><b>￥ ${e.amountJPY.toLocaleString()}</b></td>
-                <td style="color:var(--accent-warm);">NT$ ${twd.toLocaleString()}</td>
-                <td>👤 ${e.payer}</td>
-                <td>${e.isSplit ? '👥 大家平分' : '👤 個人花費'}</td>
-                <td><button style="color:#d9534f; border:none; background:none; cursor:pointer;" onclick="deleteExpense(${e.id})">刪除</button></td>
-            </tr>
-        `;
-    });
-
-    let splitExpenses = expenses.filter(e => e.isSplit);
-    let totalSplitAmount = splitExpenses.reduce((sum, e) => sum + e.amountJPY, 0);
-    
-    let membersList = Array.from(allMembersSet);
-    let memberCount = membersList.length > 0 ? membersList.length : 1;
-    let perPersonSplit = totalSplitAmount / memberCount;
-
-    membersList.forEach(m => {
-        if (!memberCost[m]) memberCost[m] = 0;
-        memberCost[m] += perPersonSplit;
-    });
-
-    const totalTWD = Math.round(totalJPY * jpyRate);
-
-    let summaryHTML = `
-        <strong>💰 總花費與結算 (匯率 1 JPY = ${jpyRate} TWD)：</strong><br>
-        • 總消費金額：<b>￥ ${totalJPY.toLocaleString()} JPY</b> (約 NT$ ${totalTWD.toLocaleString()} TWD)<br>
-        • 參與分帳成員：<b>${membersList.join(', ') || '尚無成員'}</b>\n
-        <hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;">
-        <b>各成員收支狀況：</b><br>
-    `;
-
-    let balances = [];
-    membersList.forEach(m => {
-        let paid = memberPaid[m] || 0;
-        let cost = memberCost[m] || 0;
-        let diff = paid - cost; 
-        balances.push({ member: m, diff: diff });
-
-        let diffTwd = Math.round(diff * jpyRate);
-        let statusText = diff >= 0 
-            ? `<span style="color:green;">(可收回 ￥${Math.round(diff).toLocaleString()} / 約 NT$${diffTwd.toLocaleString()})</span>` 
-            : `<span style="color:red;">(需補繳 ￥${Math.abs(Math.round(diff)).toLocaleString()} / 約 NT$${Math.abs(diffTwd).toLocaleString()})</span>`;
-
-        summaryHTML += `• <b>${m}</b>：先墊 ￥${Math.round(paid).toLocaleString()}，應負擔 ￥${Math.round(cost).toLocaleString()} ${statusText}<br>`;
-    });
-
-    summaryHTML += `<hr style="border:0; border-top:1px dashed var(--border-color); margin:10px 0;"><b>👉 建議轉帳還款：</b><br>`;
-
-    let debtors = balances.filter(b => b.diff < -1);
-    let creditors = balances.filter(b => b.diff > 1);
-
-    if (debtors.length === 0 && creditors.length === 0) {
-        summaryHTML += `目前帳目平衡，暫無須互補款項。<br>`;
-    } else {
-        debtors.forEach(d => {
-            let needPay = Math.abs(d.diff);
-            creditors.forEach(c => {
-                if (needPay <= 0 || c.diff <= 0) return;
-                let pay = Math.min(needPay, c.diff);
-                let payTwd = Math.round(pay * jpyRate);
-                summaryHTML += `• <b>${d.member}</b> 應給 <b>${c.member}</b> <b>￥ ${Math.round(pay).toLocaleString()} JPY</b> <span style="color:var(--text-sub);">(約 NT$ ${payTwd.toLocaleString()})</span><br>`;
-                needPay -= pay;
-                c.diff -= pay;
-            });
-        });
-    }
-
-    document.getElementById('summary_content').innerHTML = summaryHTML;
-}
-
-window.onload = function() {
-    renderPackingList();
-    document.getElementById('acc_date').valueAsDate = new Date();
-    document.getElementById('jpy_rate').value = jpyRate;
-    renderExpenses();
-};
+panels.addEventListener('click', (e) => {
+  const btn = e.target.closest('.plan-btn');
+  if (!btn) return;
+  const pi = btn.dataset.pi;
+  const block = btn.closest('.plan-block');
+  block.querySelectorAll(`.plan-btn[data-pi="${pi}"]`).forEach(b => b.classList.toggle('on', b === btn));
+  block.querySelectorAll(`.plan-body[data-pi="${pi}"]`).forEach(b => b.classList.toggle('on', b.dataset.oi === btn.dataset.oi));
+});
 </script>
-
 </body>
 </html>
