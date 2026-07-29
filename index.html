@@ -1275,7 +1275,22 @@ const expensePanel = document.getElementById('section-expense');
 expensePanel.innerHTML = `
   <h2 class="day-title">行前費用記錄</h2>
   <span class="day-sub">出發前的機票、住宿、eSIM、保險等花費・下方「新增其他花費」存在這台裝置的瀏覽器裡，重新整理不會消失，但換裝置/瀏覽器看不到</span>
-  <div class="reset-row"><button class="reset-btn" onclick="resetExpenses()">清除所有新增花費</button></div>
+  <div class="reset-row" style="justify-content:space-between;">
+    <div style="display:flex;gap:8px;">
+      <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="exportExpenses()">匯出備份</button>
+      <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="toggleImportBox()">匯入備份</button>
+    </div>
+    <button class="reset-btn" onclick="resetExpenses()">清除所有新增花費</button>
+  </div>
+  <div id="export-box" style="display:none; margin-bottom:14px;">
+    <textarea id="export-textarea" readonly style="width:100%;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:8px;background:var(--white);color:var(--ink);"></textarea>
+    <button style="width:100%;margin-top:8px;" onclick="copyExportText()">複製文字</button>
+    <div class="field-hint">也已經自動幫你下載一份備份檔案，兩種方式都可以用來換裝置時匯入</div>
+  </div>
+  <div id="import-box" style="display:none; margin-bottom:14px;">
+    <textarea id="import-textarea" placeholder="貼上之前匯出的備份文字" style="width:100%;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:8px;background:var(--white);color:var(--ink);"></textarea>
+    <button style="width:100%;margin-top:8px;" onclick="importExpenses()">確認匯入</button>
+  </div>
 
   <div class="expense-box" style="margin-bottom:14px;">
     <div class="field-label">目前為止花了多少</div>
@@ -1393,6 +1408,57 @@ function resetExpenses(){
   if (!confirm('確定要清除所有「新增其他花費」的記錄嗎？已確定花費（機票、住宿）不會受影響。這個動作無法復原。')) return;
   expenseEntries = [];
   saveExpenses();
+  renderExpenses();
+}
+
+function exportExpenses(){
+  const data = JSON.stringify({expenseEntries, exportedAt: new Date().toISOString()});
+  const box = document.getElementById('export-box');
+  document.getElementById('export-textarea').value = data;
+  box.style.display = 'block';
+  document.getElementById('import-box').style.display = 'none';
+  try {
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'fukuoka-expenses-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch(e){ /* download not supported, textarea copy still works */ }
+}
+
+function copyExportText(){
+  const ta = document.getElementById('export-textarea');
+  ta.select();
+  try { navigator.clipboard.writeText(ta.value); alert('已複製到剪貼簿'); }
+  catch(e) {
+    try { document.execCommand('copy'); alert('已複製到剪貼簿'); }
+    catch(e2) { alert('複製失敗，請手動選取文字複製'); }
+  }
+}
+
+function toggleImportBox(){
+  const box = document.getElementById('import-box');
+  document.getElementById('export-box').style.display = 'none';
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function importExpenses(){
+  const text = document.getElementById('import-textarea').value.trim();
+  if (!text) return;
+  let parsed;
+  try { parsed = JSON.parse(text); }
+  catch(e) { alert('格式不對，請確認貼上的是完整的備份文字'); return; }
+  const list = Array.isArray(parsed) ? parsed : parsed.expenseEntries;
+  if (!Array.isArray(list)) { alert('格式不對，請確認貼上的是完整的備份文字'); return; }
+  if (!confirm(`確定要加入 ${list.length} 筆記錄嗎？`)) return;
+  expenseEntries = expenseEntries.concat(list);
+  saveExpenses();
+  document.getElementById('import-textarea').value = '';
+  document.getElementById('import-box').style.display = 'none';
   renderExpenses();
 }
 
