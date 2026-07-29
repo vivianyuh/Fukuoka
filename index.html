@@ -722,7 +722,7 @@
   <button class="nav-btn" data-section="prep" onclick="selectSection('prep')"><span class="nav-icon">✓</span><span>準備</span></button>
   <button class="nav-btn" data-section="packing" onclick="selectSection('packing')"><span class="nav-icon">🧳</span><span>行李</span></button>
   <button class="nav-btn" data-section="itinerary" onclick="selectSection('itinerary')"><span class="nav-icon">🗓️</span><span>行程</span></button>
-  <button class="nav-btn" data-section="expense" onclick="selectSection('expense')"><span class="nav-icon">💰</span><span>記帳</span></button>
+  <button class="nav-btn" data-section="expense" onclick="selectSection('expense')"><span class="nav-icon">💰</span><span>行前費用</span></button>
 </nav>
 
 <script>
@@ -745,11 +745,11 @@ hotelCard.innerHTML = `
       <div class="hotel-address">福岡県福岡市博多区博多駅東2-14-1（博多站步行約7分鐘）</div>
     </div>
   </div>
-  <div class="hotel-right">Check-in <b>15:00</b> Check-out <b>11:00</b></div>
+  <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
 `;
 const totalBadge = document.createElement('div');
 totalBadge.className = 'trip-total';
-totalBadge.innerHTML = `全程花費 <b id="trip-total-amt">¥0</b>`;
+totalBadge.innerHTML = `行前花費　<b id="trip-total-amt">¥0</b>`;
 hotelCard.appendChild(totalBadge);
 
 const prep = [
@@ -758,7 +758,7 @@ const prep = [
     items:[
       {text:"由布院之森 / 由布號 特急指定席預約（11/8）", detail:"熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
-      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者劃算。", priority:""},
+      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者划算。", priority:""},
       {text:"確認 11/6 昭和巴士（West Coast Liner）最新去回程時刻", detail:"Plan A／Plan B 皆需再核對，避免錯過末班車。", priority:""},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
@@ -830,7 +830,7 @@ const days = [
     date:"11/6", wd:"五", theme:"抵達福岡・糸島夫婦岩", accent:"var(--steel)",
     weather:"沿海風大，夫婦岩海邊拍照建議帶擋風外套，太陽下山後氣溫會明顯下降。",
     stops:[
-      {time:"08:00→11:15", place:"長榮 BR106 TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
+      {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
     ],
     plans:[
       {
@@ -840,16 +840,16 @@ const days = [
           `<div class="leg"><span class="t">13:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">14:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">14:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站 ${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
+           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站　${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
           `<div class="leg"><span class="t">14:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">15:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">15:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多 ${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
+           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
           `<div class="note-box">Plan C・自駕/租車，跟皮皮一起去。時間彈性，不受巴士班次限制，二見浦沿岸與夫婦岩周邊都有付費停車場。</div>`
         ]
       }
     ],
-    fare:"IC 卡直達：去程 1,150 円／回程 1,150 円 ｜ 回程轉車：巴士 730 円＋地鐵 570 円",
+    fare:"IC 卡直達：去程 1,150 円／回程 1,150 円　｜　回程轉車：巴士 730 円＋地鐵 570 円",
     note:"去程／回程皆為 West Coast Liner 昭和巴士（直達）。在博多巴士總站 3 樓 32 號月台搭車，發車前請再核對最新巴士時刻表。",
     meals:[
       {type:"午餐建議", name:"糸島海鮮堂 二見ヶ浦本店", note:"就在夫妻岩巴士站附近，海景座位能直接望見夫婦岩，招牌是滿滿海鮮丼／鮪魚丼。假日人多，建議早點去或錯開尖峰。", map:"糸島海鮮堂 二見ヶ浦本店"}
@@ -883,29 +883,23 @@ const days = [
   {
     date:"11/8", wd:"日", theme:"由布院", accent:"var(--gold)",
     weather:"山區日夜溫差大，早晚明顯轉冷，建議洋蔥式穿法，晚間搭車回程可多帶件外套。",
-    stops:[
-      {time:"10:11", place:"博多 發車（由布院之森 3 號）", note:"JR 特急觀光列車，需事先預約指定席", tag:"JR", map:"博多駅"},
-      {time:"12:27", place:"由布院 抵達", note:"", tag:"JR", map:"由布院駅"},
-      {time:"下午", place:"湯之坪街道＆金鱗湖散策", note:"沿途可品嚐金賞可樂餅、Milch 起司蛋糕，逛逛特色小店", tag:"SPOT", map:"金鱗湖"},
-      {time:"17:17", place:"由布院 發車（由布院之森 6 號）", note:"搭乘 17:17 的列車返回博多", tag:"JR", map:"由布院駅"},
-      {time:"19:27", place:"博多 抵達", note:"", tag:"JR", map:"博多駅"}
-    ],
+    stops:[],
     plans:[
       {
         label:"去程車次選擇",
-        options:["由布院之森 3", "由布院之森 1", "由布號"],
+        options:["由布院之森 1", "由布院之森 3", "由布號"],
         bodies:[
-          `<div class="leg"><span class="t">10:11</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
-           <div class="leg"><span class="t">12:27</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
           `<div class="leg"><span class="t">09:17</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
            <div class="leg"><span class="t">11:31</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
+          `<div class="leg"><span class="t">10:11</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
+           <div class="leg"><span class="t">12:27</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
           `<div class="leg"><span class="t">12:14</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
            <div class="leg"><span class="t">14:33</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`
         ]
       },
       {
         label:"回程車次選擇",
-        options:["由布院之森 6 (17:17)", "由布號 6 (19:27)"],
+        options:["由布院之森 6", "由布號 6"],
         bodies:[
           `<div class="leg"><span class="t">17:17</span><span class="p">由布院 發車${mapA('由布院駅')}</span></div>
            <div class="leg"><span class="t">19:27</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`,
@@ -917,7 +911,7 @@ const days = [
     fare:"",
     note:"特急列車須事先完成 JR 預約，建議及早訂位。",
     meals:[
-      {type:"午晚餐建議", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。", map:"由布まぶし心"},
+      {type:"午餐/晚餐建議", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。", map:"由布まぶし心"},
       {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
     ]
   },
@@ -939,12 +933,10 @@ const days = [
     ]
   },
   {
-    date:"11/10", wd:"二", theme:"購物・Le Talon", accent:"var(--steel)",
+    date:"11/10", wd:"二", theme:"購物", accent:"var(--steel)",
     weather:"多以室內商場移動為主，但店與店之間移動仍會吹到風，建議帶件方便穿脫的外套。",
-    stops:[
-      {time:"全天", place:"博多 / 天神 購物行程", note:"逛街採買，包含造訪 Le Talon 專櫃（可至天神地下街 Le Talon 天神店 或 博多阪急 / AMU PLAZA 專櫃採購）", tag:"SHOP", map:"Le Talon 天神地下街"}
-    ],
-    plans:[], fare:"", note:"天神地下街與博多車站週邊商場眾多，可依購物清單彈性調整路線。", empty:false,
+    stops:[], plans:[], fare:"", note:"", empty:true,
+    placeholderText:"這天目前只定了「購物」主題，地點與時間還沒排 — 需要我幫忙安排博多／天神一帶的購物路線嗎？",
     meals:[
       {type:"晚餐建議", name:"大山牛腸鍋（天神 ONE BLDG. 店／KITTE博多店）", note:"博多招牌牛腸鍋名店，交通方便，逛街後順路。", map:"博多もつ鍋 おおやま 天神"},
       {type:"備選", name:"一蘭拉麵 中洲川端總本店 / 華味鳥水炊鍋", note:"想吃拉麵可選一蘭總本店的「味集中座位」；想吃雞肉鍋可選博多華味鳥。", map:"一蘭ラーメン 中洲川端総本店"}
@@ -954,7 +946,7 @@ const days = [
     date:"11/11", wd:"三", theme:"賦歸", accent:"var(--ink-soft)",
     weather:"機場室內空調偏冷，登機前建議薄外套不要收進託運行李。",
     stops:[
-      {time:"12:15→13:50", place:"長榮 BR105 FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
+      {time:"12:15→13:50", place:"長榮 BR105　FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
     ],
     plans:[], fare:"", note:"中午起飛，建議至少提前 2 小時抵達機場辦理登機（約 10:15 前到）。",
     empty:true,
@@ -1099,17 +1091,63 @@ days.forEach((d, i) => {
   panels.appendChild(panel);
 });
 
-// --- 花費 tab (persisted via localStorage) ---
-const EXPENSE_KEY = 'fukuoka_trip_expenses_v2';
-const PEOPLE_KEY = 'fukuoka_trip_people_v1';
-const CATEGORIES = [
-  {key:'food', emoji:'🍜', label:'吃的'},
-  {key:'play', emoji:'🎡', label:'玩的'},
-  {key:'ticket', emoji:'🎫', label:'門票'},
-  {key:'shop', emoji:'🛍️', label:'購物'},
-  {key:'other', emoji:'📦', label:'其他'}
+// --- 行前費用記錄 tab (persisted via localStorage) ---
+const EXPENSE_KEY = 'fukuoka_pretrip_expenses_v1';
+const CATEGORY_KEY = 'fukuoka_categories_v1';
+const CATEGORY_CURRENCY_DEFAULT = {
+  flight:'TWD', insurance:'TWD', esim:'TWD',
+  stay:'JPY', ticket:'JPY', other:'JPY'
+};
+
+const BUDGET_KEY = 'fukuoka_budget_twd_v1';
+function loadBudget(){
+  try {
+    const raw = localStorage.getItem(BUDGET_KEY);
+    return raw ? parseFloat(raw) : 0;
+  } catch(e){ return 0; }
+}
+function saveBudget(){
+  try { localStorage.setItem(BUDGET_KEY, String(budgetTwd)); } catch(e){}
+}
+let budgetTwd = loadBudget();
+function onBudgetChange(){
+  const input = document.getElementById('budget-input');
+  const v = parseFloat(input.value);
+  budgetTwd = isNaN(v) || v <= 0 ? 0 : v;
+  saveBudget();
+  renderExpenses();
+}
+const DEFAULT_CATEGORIES = [
+  {key:'flight', emoji:'✈️', label:'機票'},
+  {key:'stay', emoji:'🏨', label:'住宿'},
+  {key:'esim', emoji:'📶', label:'網路/eSIM'},
+  {key:'insurance', emoji:'🛡️', label:'保險'},
+  {key:'ticket', emoji:'🎫', label:'門票/預約'},
+  {key:'other', emoji:'💡', label:'其他'}
 ];
-function catInfo(key){ return CATEGORIES.find(c => c.key === key) || CATEGORIES[CATEGORIES.length-1]; }
+function loadCustomCategories(){
+  try {
+    const raw = localStorage.getItem(CATEGORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){ return []; }
+}
+function saveCustomCategories(){
+  try { localStorage.setItem(CATEGORY_KEY, JSON.stringify(customCategories)); } catch(e){}
+}
+let customCategories = loadCustomCategories();
+function getCategories(){ return DEFAULT_CATEGORIES.concat(customCategories); }
+function catInfo(key){ return getCategories().find(c => c.key === key) || DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length-1]; }
+function addCustomCategory(){
+  const input = document.getElementById('new-cat-input');
+  const name = input.value.trim();
+  if (!name) return;
+  const key = 'custom_' + Date.now();
+  customCategories.push({key, emoji:'🏷️', label:name});
+  saveCustomCategories();
+  input.value = '';
+  lastCategory = key;
+  renderPickerRows();
+}
 
 function loadExpenses(){
   try {
@@ -1120,134 +1158,198 @@ function loadExpenses(){
 function saveExpenses(){
   try { localStorage.setItem(EXPENSE_KEY, JSON.stringify(expenseEntries)); } catch(e){}
 }
-function loadPeople(){
-  try {
-    const raw = localStorage.getItem(PEOPLE_KEY);
-    return raw ? JSON.parse(raw) : ['你'];
-  } catch(e){ return ['你']; }
+
+const PAYMENT_METHODS = [
+  {key:'cash', emoji:'💵', label:'現金'},
+  {key:'card', emoji:'💳', label:'信用卡'}
+];
+
+const CURRENCIES = [
+  {key:'JPY', sign:'¥'},
+  {key:'TWD', sign:'NT$'}
+];
+function currencySign(key){ return (CURRENCIES.find(c => c.key === key) || CURRENCIES[0]).sign; }
+function fmtAmt(amt, currency){ return currencySign(currency) + Math.round(amt).toLocaleString(); }
+function shareAmt(e){ return e.splitCount && e.splitCount > 1 ? e.amt / e.splitCount : e.amt; }
+function sumByCurrency(list){
+  const totals = {};
+  list.forEach(e => { const cur = e.currency || 'JPY'; totals[cur] = (totals[cur] || 0) + shareAmt(e); });
+  return totals;
 }
-function savePeople(){
-  try { localStorage.setItem(PEOPLE_KEY, JSON.stringify(people)); } catch(e){}
+function fmtTotals(totals){
+  const parts = Object.keys(totals).map(cur => fmtAmt(totals[cur], cur));
+  return parts.length ? parts.join('　／　') : '¥0';
 }
 
-let expenseEntries = loadExpenses(); // [{dayIndex, desc, amt, category, paidBy, splitWith:[]}]
-let people = loadPeople();
-let lastCategory = CATEGORIES[0].key;
-let lastPaidBy = people[0] || '你';
-let pendingSplit = null; // set on render, holds current toggle state before "加入"
+const RATE_KEY = 'fukuoka_exchange_rate_v1';
+function loadRate(){
+  try {
+    const raw = localStorage.getItem(RATE_KEY);
+    return raw ? parseFloat(raw) : 0.198;
+  } catch(e){ return 0.198; }
+}
+function saveRate(){
+  try { localStorage.setItem(RATE_KEY, String(exchangeRate)); } catch(e){}
+}
+let exchangeRate = loadRate(); // 1 JPY = exchangeRate TWD
+function convertAmt(amt, fromCur){
+  if (fromCur === 'JPY') return amt * exchangeRate;
+  if (fromCur === 'TWD') return amt / exchangeRate;
+  return amt;
+}
+function otherCur(cur){ return cur === 'JPY' ? 'TWD' : 'JPY'; }
+function fmtConverted(amt, fromCur){
+  const to = otherCur(fromCur);
+  return `≈ ${fmtAmt(convertAmt(amt, fromCur), to)}`;
+}
+function onRateChange(){
+  const input = document.getElementById('exchange-rate-input');
+  const v = parseFloat(input.value);
+  if (!isNaN(v) && v > 0) { exchangeRate = v; saveRate(); renderExpenses(); }
+}
+
+// 統一以台幣為主要顯示，日幣括號在下面
+function toTwdJpy(amt, fromCur){
+  const twd = fromCur === 'TWD' ? amt : convertAmt(amt, 'JPY');
+  const jpy = fromCur === 'JPY' ? amt : convertAmt(amt, 'TWD');
+  return {twd, jpy};
+}
+function totalsToTwdJpy(totals){
+  const twd = (totals.TWD || 0) + convertAmt(totals.JPY || 0, 'JPY');
+  const jpy = (totals.JPY || 0) + convertAmt(totals.TWD || 0, 'TWD');
+  return {twd, jpy};
+}
+function fmtRowAmt(amt, fromCur){
+  const {twd, jpy} = toTwdJpy(amt, fromCur);
+  return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
+}
+function fmtTwdMain(totals){
+  const {twd, jpy} = totalsToTwdJpy(totals);
+  return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
+}
+function fmtTwdOneLine(totals){
+  const {twd, jpy} = totalsToTwdJpy(totals);
+  return `NT$${Math.round(twd).toLocaleString()}（≈¥${Math.round(jpy).toLocaleString()}）`;
+}
+
+// 已確定花費：直接寫死在頁面裡，不受瀏覽器/裝置影響，任何人打開都看得到
+const fixedExpenses = [
+  {date:'2026-03-18', category:'flight', note:'福岡來回機票（長榮 BR106/BR105）', amt:13657, currency:'TWD', paymentMethod:'card'},
+  {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜（每人）', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2}
+];
+
+let expenseEntries = loadExpenses(); // [{date, amt, category, note, paymentMethod, currency}]
+let lastCategory = DEFAULT_CATEGORIES[0].key;
+let lastPaymentMethod = PAYMENT_METHODS[0].key;
+let lastCurrency = 'JPY';
 
 const expensePanel = document.getElementById('section-expense');
-const dayOptionsHtml = days.map((d, i) => `<option value="${i}">DAY ${i+1}・${d.date}（${d.wd}）${d.theme}</option>`).join('');
 expensePanel.innerHTML = `
-  <h2 class="day-title">全程花費記錄</h2>
-  <span class="day-sub">資料會存在這台裝置的瀏覽器裡，重新整理也不會消失</span>
+  <h2 class="day-title">行前費用記錄</h2>
+  <span class="day-sub">出發前的機票、住宿、eSIM、保險等花費・下方「新增其他花費」存在這台裝置的瀏覽器裡，重新整理不會消失，但換裝置/瀏覽器看不到</span>
+
+  <div class="expense-box" style="margin-bottom:14px;">
+    <div class="field-label">目前為止花了多少</div>
+    <div id="summary-totals" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;margin-bottom:4px;"></div>
+    <div class="field-hint" id="summary-converted" style="margin-bottom:14px;"></div>
+
+    <div class="field-label">預算（台幣，選填）</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span style="font-size:13px;color:var(--ink-soft);">NT$</span>
+      <input type="number" id="budget-input" value="${budgetTwd || ''}" placeholder="例如：50000" onchange="onBudgetChange()"
+        style="width:120px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--white);color:var(--ink);">
+    </div>
+    <div id="budget-progress"></div>
+  </div>
+
+  <div class="expense-box" style="margin-bottom:14px;">
+    <div class="field-label">依分類小計</div>
+    <div id="category-breakdown"></div>
+  </div>
+
   <div class="expense-box">
-    <div class="people-manage">
-      <span class="people-label">旅伴</span>
-      <div id="people-chips" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
-      <div class="person-add">
-        <input type="text" id="new-person-input" placeholder="新增旅伴姓名">
-        <button onclick="addPerson()">+</button>
-      </div>
+    <div class="field-label">匯率設定（1 日圓 = 多少台幣，可自行修改）</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <span style="font-size:13px;color:var(--ink-soft);">¥1 =</span>
+      <input type="number" step="0.0001" id="exchange-rate-input" value="${exchangeRate}" onchange="onRateChange()"
+        style="width:90px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--white);color:var(--ink);">
+      <span style="font-size:13px;color:var(--ink-soft);">NT$</span>
     </div>
 
-    <select id="e-day-select" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);margin-bottom:8px;">
-      ${dayOptionsHtml}
-    </select>
-    <div class="expense-add">
-      <input type="text" class="e-desc-input" id="e-desc" placeholder="品項，例如：午餐">
-      <input type="number" class="e-amt-input" id="e-amt" placeholder="円">
-    </div>
+    <div class="field-label">已確定花費・固定顯示，不受裝置影響</div>
+    <div id="fixed-expense-list"></div>
+    <div class="expense-sub" style="border-top:1px dashed var(--line);"><span>已確定小計</span><span id="fixed-expense-total">¥0</span></div>
 
-    <div class="field-label">分類</div>
+    <div class="field-label" style="margin-top:22px;">新增其他花費</div>
     <div class="cat-row" id="cat-row"></div>
 
-    <div class="field-label">誰先付的</div>
-    <div class="cat-row" id="payer-row"></div>
+    <div class="expense-add">
+      <input type="number" class="e-amt-input" id="e-amt" placeholder="¥ 金額" style="flex:1;">
+      <input type="date" id="e-date"
+        style="font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);">
+    </div>
 
-    <div class="field-label">這筆算誰的</div>
-    <div class="cat-row" id="split-row"></div>
-    <div class="field-hint">預設全部人均分，也可以只勾自己（代表個人花費，不分攤）</div>
+    <div class="field-label">付款方式</div>
+    <div class="cat-row" id="pay-method-row"></div>
+
+    <div class="field-label">幣別</div>
+    <div class="cat-row" id="currency-row"></div>
+
+    <div class="field-label">備註</div>
+    <input type="text" id="e-note" placeholder="選填，例如：長榮 BR106/BR105 來回機票" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);margin-bottom:4px;">
 
     <button style="width:100%;margin-top:12px;" onclick="addExpense()">加入</button>
 
-    <div id="expense-groups" style="margin-top:18px;"></div>
-    <div class="expense-sub"><span>全程總計</span><span id="expense-grand-total">¥0</span></div>
-
-    <div class="field-label" style="margin-top:20px;">結算總覽</div>
-    <div class="settle-grid" id="settle-grid"></div>
-    <div id="settle-suggestions"></div>
+    <div class="field-label" style="margin-top:22px;">其他花費記錄・存在這台裝置的瀏覽器裡</div>
+    <div id="expense-groups"></div>
+    <div class="expense-sub"><span>全部行前花費總計</span><span id="expense-grand-total">¥0</span></div>
+    <div class="field-hint" id="expense-grand-converted" style="text-align:right;"></div>
   </div>
 `;
 
-function renderPeopleChips(){
-  document.getElementById('people-chips').innerHTML = people.map(p => `
-    <span class="person-chip">${p}<span class="p-del" onclick="removePerson('${p.replace(/'/g,"\\'")}')">×</span></span>
-  `).join('');
-  renderPickerRows();
-}
-
-function addPerson(){
-  const input = document.getElementById('new-person-input');
-  const name = input.value.trim();
-  if (!name || people.includes(name)) return;
-  people.push(name);
-  savePeople();
-  input.value = '';
-  renderPeopleChips();
-}
-
-function removePerson(name){
-  people = people.filter(p => p !== name);
-  if (!people.length) people = ['你'];
-  savePeople();
-  if (pendingSplit) pendingSplit = pendingSplit.filter(p => people.includes(p));
-  renderPeopleChips();
-  renderExpenses();
-}
-
 function renderPickerRows(){
-  if (!lastPaidBy || !people.includes(lastPaidBy)) lastPaidBy = people[0];
-  if (!pendingSplit) pendingSplit = [...people];
-  else pendingSplit = pendingSplit.filter(p => people.includes(p));
-
-  document.getElementById('cat-row').innerHTML = CATEGORIES.map(c => `
+  document.getElementById('cat-row').innerHTML = getCategories().map(c => `
     <span class="cat-btn ${c.key === lastCategory ? 'on' : ''}" onclick="pickCategory('${c.key}')">${c.emoji} ${c.label}</span>
+  `).join('') + `
+    <span class="person-add" style="display:inline-flex;">
+      <input type="text" id="new-cat-input" placeholder="自訂類別" style="width:84px;font-size:12px;border:1px solid var(--line);border-radius:16px;padding:6px 10px;background:var(--white);color:var(--ink);font-family:'Zen Kaku Gothic New',sans-serif;">
+      <button onclick="addCustomCategory()" style="border-radius:50%;width:26px;height:26px;border:1px solid var(--line);background:var(--white);color:var(--ink-soft);cursor:pointer;">+</button>
+    </span>`;
+
+  document.getElementById('pay-method-row').innerHTML = PAYMENT_METHODS.map(m => `
+    <span class="cat-btn ${m.key === lastPaymentMethod ? 'on' : ''}" onclick="pickPaymentMethod('${m.key}')">${m.emoji} ${m.label}</span>
   `).join('');
 
-  document.getElementById('payer-row').innerHTML = people.map(p => `
-    <span class="pick-chip ${p === lastPaidBy ? 'on' : ''}" onclick="pickPayer('${p.replace(/'/g,"\\'")}')">${p}</span>
-  `).join('');
-
-  document.getElementById('split-row').innerHTML = people.map(p => `
-    <span class="pick-chip ${pendingSplit.includes(p) ? 'on' : ''}" onclick="toggleSplit('${p.replace(/'/g,"\\'")}')">${p}</span>
+  document.getElementById('currency-row').innerHTML = CURRENCIES.map(c => `
+    <span class="cat-btn ${c.key === lastCurrency ? 'on' : ''}" onclick="pickCurrency('${c.key}')">${c.sign} ${c.key}</span>
   `).join('');
 }
 
-function pickCategory(key){ lastCategory = key; renderPickerRows(); }
-function pickPayer(name){ lastPaidBy = name; renderPickerRows(); }
-function toggleSplit(name){
-  if (pendingSplit.includes(name)) pendingSplit = pendingSplit.filter(p => p !== name);
-  else pendingSplit.push(name);
+function pickCurrency(key){ lastCurrency = key; renderPickerRows(); }
+
+function pickCategory(key){
+  lastCategory = key;
+  if (CATEGORY_CURRENCY_DEFAULT[key]) lastCurrency = CATEGORY_CURRENCY_DEFAULT[key];
   renderPickerRows();
 }
+function pickPaymentMethod(key){ lastPaymentMethod = key; renderPickerRows(); }
 
 function addExpense(){
-  const dayIndex = parseInt(document.getElementById('e-day-select').value, 10);
-  const descInput = document.getElementById('e-desc');
+  const dateInput = document.getElementById('e-date');
+  const date = dateInput.value;
   const amtInput = document.getElementById('e-amt');
-  const desc = descInput.value.trim();
+  const noteInput = document.getElementById('e-note');
   const amt = parseFloat(amtInput.value);
-  if (!desc || isNaN(amt) || amt <= 0) return;
-  if (!pendingSplit || !pendingSplit.length) pendingSplit = [lastPaidBy];
+  if (isNaN(amt) || amt <= 0) return;
   expenseEntries.push({
-    dayIndex, desc, amt,
+    date, amt,
+    note: noteInput.value.trim(),
     category: lastCategory,
-    paidBy: lastPaidBy,
-    splitWith: [...pendingSplit]
+    paymentMethod: lastPaymentMethod,
+    currency: lastCurrency
   });
-  descInput.value = '';
   amtInput.value = '';
+  noteInput.value = '';
   saveExpenses();
   renderExpenses();
 }
@@ -1258,79 +1360,111 @@ function deleteExpense(idx){
   renderExpenses();
 }
 
+function renderFixedExpenses(){
+  const listEl = document.getElementById('fixed-expense-list');
+  const subEl = document.getElementById('fixed-expense-total');
+  if (!listEl) return {};
+  listEl.innerHTML = fixedExpenses.map(e => {
+    const c = catInfo(e.category);
+    const pm = PAYMENT_METHODS.find(m => m.key === e.paymentMethod) || PAYMENT_METHODS[0];
+    const dateLabel = e.date ? e.date.slice(5).replace('-', '/') : '';
+    const hasSplit = e.splitCount && e.splitCount > 1;
+    const totalTwdJpy = toTwdJpy(e.amt, e.currency);
+    const totalNote = hasSplit
+      ? `<span class="e-payer">${e.splitCount}人合計 NT$${Math.round(totalTwdJpy.twd).toLocaleString()}（≈¥${Math.round(totalTwdJpy.jpy).toLocaleString()}）</span>` : '';
+    const displayAmt = hasSplit ? e.amt / e.splitCount : e.amt;
+    return `
+      <div class="expense-row">
+        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.note}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span>${totalNote}</span>
+        <span class="e-amt">${fmtRowAmt(displayAmt, e.currency)}</span>
+      </div>`;
+  }).join('');
+  const totals = sumByCurrency(fixedExpenses);
+  subEl.innerHTML = fmtTwdMain(totals);
+  return totals;
+}
+
 function renderExpenses(){
   const groupsEl = document.getElementById('expense-groups');
   const grandEl = document.getElementById('expense-grand-total');
   if (!groupsEl) return;
-  let grand = 0;
-  let html = '';
-  days.forEach((d, di) => {
-    const items = expenseEntries.map((e, idx) => ({...e, idx})).filter(e => e.dayIndex === di);
-    if (!items.length) return;
-    const subtotal = items.reduce((s, e) => s + e.amt, 0);
-    grand += subtotal;
-    html += `<div class="prep-group" style="--accent:${d.accent}">
-      <div class="prep-group-title"><span class="dot"></span>DAY ${di+1}・${d.date}（${d.wd}）${d.theme}</div>
-      ${items.map(e => {
-        const c = catInfo(e.category);
-        const splitLabel = e.splitWith.length === people.length ? '均分' : e.splitWith.join('、');
-        return `
-        <div class="expense-row">
-          <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.desc}<span class="e-payer">${e.paidBy} 付・${splitLabel}</span></span>
-          <span class="e-amt">¥${e.amt.toLocaleString()}</span>
-          <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
-        </div>`;
-      }).join('')}
-      <div class="expense-sub" style="border-top:none;padding-top:4px;margin-top:4px;"><span>小計</span><span>¥${subtotal.toLocaleString()}</span></div>
-    </div>`;
-  });
-  groupsEl.innerHTML = html || `<div class="meal-tbd">還沒有花費記錄</div>`;
-  grandEl.textContent = '¥' + grand.toLocaleString();
+
+  const fixedTotals = renderFixedExpenses();
+
+  const withIdx = expenseEntries.map((e, idx) => ({...e, idx}))
+    .sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+
+  groupsEl.innerHTML = withIdx.length ? withIdx.map(e => {
+    const c = catInfo(e.category);
+    const pm = PAYMENT_METHODS.find(m => m.key === e.paymentMethod) || PAYMENT_METHODS[0];
+    const title = e.note ? e.note : c.label;
+    const dateLabel = e.date ? e.date.slice(5).replace('-', '/') : '無日期';
+    return `
+      <div class="expense-row">
+        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span></span>
+        <span class="e-amt">${fmtRowAmt(e.amt, e.currency)}</span>
+        <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
+      </div>`;
+  }).join('') : `<div class="meal-tbd">還沒有其他花費記錄</div>`;
+
+  const dynamicTotals = sumByCurrency(expenseEntries);
+  const grandTotals = {};
+  Object.keys(fixedTotals).forEach(cur => { grandTotals[cur] = (grandTotals[cur] || 0) + fixedTotals[cur]; });
+  Object.keys(dynamicTotals).forEach(cur => { grandTotals[cur] = (grandTotals[cur] || 0) + dynamicTotals[cur]; });
+  const totalInTwd = (grandTotals.JPY ? convertAmt(grandTotals.JPY, 'JPY') : 0) + (grandTotals.TWD || 0);
+
+  grandEl.innerHTML = fmtTwdMain(grandTotals);
+  const convertedGrandEl = document.getElementById('expense-grand-converted');
+  if (convertedGrandEl) convertedGrandEl.textContent = '';
   const headerTotal = document.getElementById('trip-total-amt');
-  if (headerTotal) headerTotal.textContent = '¥' + grand.toLocaleString();
+  if (headerTotal) headerTotal.textContent = fmtTwdOneLine(grandTotals);
 
-  renderSettlement();
-}
+  // 摘要卡片
+  const summaryTotalsEl = document.getElementById('summary-totals');
+  const summaryConvertedEl = document.getElementById('summary-converted');
+  if (summaryTotalsEl) summaryTotalsEl.innerHTML = fmtTwdMain(grandTotals);
+  if (summaryConvertedEl) summaryConvertedEl.textContent = '';
 
-function renderSettlement(){
-  const grid = document.getElementById('settle-grid');
-  const sugEl = document.getElementById('settle-suggestions');
-  if (!grid) return;
-  const paid = {}, owed = {};
-  people.forEach(p => { paid[p] = 0; owed[p] = 0; });
-  expenseEntries.forEach(e => {
-    paid[e.paidBy] = (paid[e.paidBy] || 0) + e.amt;
-    const share = e.amt / e.splitWith.length;
-    e.splitWith.forEach(p => { owed[p] = (owed[p] || 0) + share; });
-  });
-  const net = {};
-  people.forEach(p => { net[p] = Math.round((paid[p] - owed[p]) * 100) / 100; });
-
-  grid.innerHTML = people.map(p => `
-    <div class="settle-card">
-      <div class="settle-name">${p}</div>
-      <div class="settle-amt">¥${Math.round(paid[p]).toLocaleString()}</div>
-      <div class="settle-sub">應攤 ¥${Math.round(owed[p]).toLocaleString()}</div>
-    </div>`).join('');
-
-  const creditors = people.filter(p => net[p] > 0.5).map(p => ({p, amt: net[p]})).sort((a,b) => b.amt - a.amt);
-  const debtors = people.filter(p => net[p] < -0.5).map(p => ({p, amt: -net[p]})).sort((a,b) => b.amt - a.amt);
-  const settlements = [];
-  let ci = 0, di = 0;
-  while (ci < creditors.length && di < debtors.length) {
-    const amt = Math.min(creditors[ci].amt, debtors[di].amt);
-    settlements.push({from: debtors[di].p, to: creditors[ci].p, amt: Math.round(amt)});
-    creditors[ci].amt -= amt;
-    debtors[di].amt -= amt;
-    if (creditors[ci].amt < 0.5) ci++;
-    if (debtors[di].amt < 0.5) di++;
+  // 預算進度
+  const progressEl = document.getElementById('budget-progress');
+  if (progressEl) {
+    if (budgetTwd > 0) {
+      const pct = Math.min(100, Math.round((totalInTwd / budgetTwd) * 100));
+      const remaining = budgetTwd - totalInTwd;
+      const over = remaining < 0;
+      progressEl.innerHTML = `
+        <div style="background:var(--white);border:1px solid var(--line);border-radius:8px;height:10px;overflow:hidden;margin-bottom:6px;">
+          <div style="width:${pct}%;height:100%;background:${over ? 'var(--vermilion)' : 'var(--moss)'};"></div>
+        </div>
+        <div style="font-size:12.5px;color:${over ? 'var(--vermilion)' : 'var(--ink-soft)'};">
+          已花 NT$${Math.round(totalInTwd).toLocaleString()} ／ 預算 NT$${budgetTwd.toLocaleString()}・${over ? '超出' : '還剩'} NT$${Math.abs(Math.round(remaining)).toLocaleString()}
+        </div>`;
+    } else {
+      progressEl.innerHTML = '';
+    }
   }
-  sugEl.innerHTML = settlements.length
-    ? settlements.map(s => `<div class="settle-row"><span>${s.from}</span><span>→</span><b>${s.to}</b><span style="margin-left:auto;">¥${s.amt.toLocaleString()}</span></div>`).join('')
-    : `<div class="meal-tbd">目前不需要轉帳，帳都算平了</div>`;
+
+  // 依分類小計
+  const catBreakdownEl = document.getElementById('category-breakdown');
+  if (catBreakdownEl) {
+    const all = fixedExpenses.concat(expenseEntries);
+    const byCategory = {};
+    all.forEach(e => {
+      if (!byCategory[e.category]) byCategory[e.category] = {};
+      byCategory[e.category][e.currency] = (byCategory[e.category][e.currency] || 0) + shareAmt(e);
+    });
+    const rows = getCategories()
+      .filter(c => byCategory[c.key])
+      .map(c => `
+        <div class="expense-row">
+          <span class="e-desc">${c.emoji} ${c.label}</span>
+          <span class="e-amt">${fmtTwdMain(byCategory[c.key])}</span>
+        </div>`).join('');
+    catBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
+  }
 }
 
-renderPeopleChips();
+renderPickerRows();
 renderExpenses();
 
 function selectPanel(key){
