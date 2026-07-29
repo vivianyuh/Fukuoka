@@ -1589,5 +1589,47 @@ panels.addEventListener('click', (e) => {
   block.querySelectorAll(`.plan-body[data-pi="${pi}"]`).forEach(b => b.classList.toggle('on', b.dataset.oi === btn.dataset.oi));
 });
 </script>
+<!-- === 今日行程自動高亮與定位 === -->
+<style>
+  .day-card.is-today {
+    border: 2px solid #3b82f6 !important; /* 藍色亮框 */
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important; /* 發光效果 */
+    position: relative;
+  }
+  .day-card.is-today::before {
+    content: "● TODAY";
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 12px;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const todayStr = `${month}/${date}`;
+
+    const dayCards = document.querySelectorAll('.day-card');
+
+    dayCards.forEach(card => {
+      if (card.textContent.includes(todayStr)) {
+        card.classList.add('is-today');
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+      }
+    });
+  });
+</script>
+<!-- === 高亮程式碼結束 === -->
 </body>
 </html>
