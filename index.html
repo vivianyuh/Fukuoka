@@ -880,6 +880,7 @@ const prep = [
     title:"交通預訂", accent:"var(--steel)",
     items:[
       {text:"由布院之森 / 由布號 特急指定席預約（11/8）", detail:"熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。", priority:"必辦"},
+      {text:"訂位 肉屋 肉一 Nikuichi 薬院燒肉（11/6 晚餐）", detail:"超人氣名店，官網通常需提前約 1 個半月才訂得到位，建議盡快上官網訂位。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
       {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者划算。", priority:""},
       {text:"確認 11/6 昭和巴士（West Coast Liner）最新去回程時刻", detail:"Plan A／Plan B 皆需再核對，避免錯過末班車。", priority:""},
@@ -953,13 +954,20 @@ const days = [
     date:"11/6", wd:"五", theme:"抵達福岡・糸島夫婦岩", accent:"var(--steel)",
     weather:"沿海風大，夫婦岩海邊拍照建議帶擋風外套，太陽下山後氣溫會明顯下降。",
     stops:[
-      {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"}
+      {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"抵達福岡機場", tag:"FLIGHT", map:"福岡空港"},
+      {time:"13:00", place:"皮皮租車取車", note:"", tag:"CAR"},
+      {time:"13:30", place:"天神會合", note:"會合前可以先在車站買點小東西吃", tag:"MEET", map:"西鉄福岡(天神)駅"},
+      {time:"午餐", place:"浜焼き 白浜家（芥屋）", note:"糸島芥屋人氣海鮮燒烤・牡蠣小屋，開車前往，會合後直接出發", tag:"CAR", map:"浜焼き 白浜家"}
     ],
     plans:[
       {
-        label:"去程・回程巴士方案",
-        options:["Plan A", "Plan B", "Plan C"],
+        label:"去程・回程巴士方案（備案參考）",
+        options:["Plan C（已確定）", "Plan A", "Plan B"],
         bodies:[
+          `<div class="leg"><span class="t">13:00</span><span class="p">皮皮去取租車${mapA('西鉄福岡(天神)駅')}</span></div>
+           <div class="leg"><span class="t">13:30</span><span class="p">天神會合${mapA('西鉄福岡(天神)駅')}</span></div>
+           <div class="leg"><span class="t">午餐</span><span class="p">開車前往 浜焼き 白浜家（芥屋）${mapA('浜焼き 白浜家')}</span></div>
+           <div class="note-box">✅ 已確定・自駕/租車，跟皮皮一起去。時間彈性，不受巴士班次限制。會合前可先在天神車站買點小東西吃。二見浦沿岸與夫婦岩周邊都有付費停車場。</div>`,
           `<div class="leg"><span class="t">13:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">14:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">14:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
@@ -967,15 +975,15 @@ const days = [
           `<div class="leg"><span class="t">14:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
            <div class="leg"><span class="t">15:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
            <div class="leg"><span class="t">15:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`,
-          `<div class="note-box">Plan C・自駕/租車，跟皮皮一起去。時間彈性，不受巴士班次限制，二見浦沿岸與夫婦岩周邊都有付費停車場。</div>`
+           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`
         ]
       }
     ],
     fare:"IC 卡直達：去程 1,150 円／回程 1,150 円　｜　回程轉車：巴士 730 円＋地鐵 570 円",
     note:"去程／回程皆為 West Coast Liner 昭和巴士（直達）。在博多巴士總站 3 樓 32 號月台搭車，發車前請再核對最新巴士時刻表。",
     meals:[
-      {type:"午餐建議", name:"糸島海鮮堂 二見ヶ浦本店", note:"就在夫妻岩巴士站附近，海景座位能直接望見夫婦岩，招牌是滿滿海鮮丼／鮪魚丼。假日人多，建議早點去或錯開尖峰。", map:"糸島海鮮堂 二見ヶ浦本店"}
+      {type:"午餐・已確定", name:"浜焼き 白浜家（芥屋）", note:"糸島芥屋人氣海鮮燒烤・牡蠣小屋，可現烤海鮮、生蠔，鄰近芥屋海水浴場，開車前往。營業時間平日 11:00-21:00（LO20:00）、假日 11:00-22:00（LO21:00）。", map:"浜焼き 白浜家"},
+      {type:"晚餐・已確定", name:"肉屋 肉一 Nikuichi（薬院燒肉）", note:"超人氣薬院燒肉名店，招牌黑毛和牛拼盤評價很高。⚠️ 官網通常需提前約 1 個半月訂位，記得盡快先訂位。還車後從市區前往即可。", map:"肉屋 肉一 薬院"}
     ]
   },
   {
@@ -1459,7 +1467,13 @@ expensePanel.innerHTML = `
     <div class="field-label">備註</div>
     <input type="text" id="e-note" placeholder="選填，例如：長榮 BR106/BR105 來回機票" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);margin-bottom:4px;">
 
-    <button style="width:100%;margin-top:12px;" onclick="addExpense()">加入</button>
+    <button style="width:100%;margin-top:12px;" id="add-expense-btn" onclick="submitExpense()">加入</button>
+    <div id="cancel-edit-row" style="display:none;text-align:center;margin-top:8px;">
+      <span style="font-size:12px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;" onclick="cancelEdit()">取消編輯</span>
+    </div>
+
+    <div class="field-label" style="margin-top:22px;">依付款方式小計</div>
+    <div id="payment-breakdown"></div>
 
     <div class="field-label" style="margin-top:22px;">其他花費記錄・存在這台裝置的瀏覽器裡</div>
     <div id="expense-groups"></div>
@@ -1495,31 +1509,68 @@ function pickCategory(key){
 }
 function pickPaymentMethod(key){ lastPaymentMethod = key; renderPickerRows(); }
 
-function addExpense(){
+let editingIndex = null;
+
+function submitExpense(){
   const dateInput = document.getElementById('e-date');
   const date = dateInput.value;
   const amtInput = document.getElementById('e-amt');
   const noteInput = document.getElementById('e-note');
   const amt = parseFloat(amtInput.value);
   if (isNaN(amt) || amt <= 0) return;
-  expenseEntries.push({
+  const entry = {
     date, amt,
     note: noteInput.value.trim(),
     category: lastCategory,
     paymentMethod: lastPaymentMethod,
     currency: lastCurrency
-  });
+  };
+  if (editingIndex !== null) {
+    expenseEntries[editingIndex] = entry;
+    editingIndex = null;
+    document.getElementById('add-expense-btn').textContent = '加入';
+    document.getElementById('cancel-edit-row').style.display = 'none';
+    showToast('已更新這筆花費 ✓');
+  } else {
+    expenseEntries.push(entry);
+    showToast('已新增一筆花費 ✓');
+  }
   amtInput.value = '';
   noteInput.value = '';
   saveExpenses();
   renderExpenses();
-  showToast('已新增一筆花費 ✓');
   const summaryEl = document.getElementById('summary-totals');
   if (summaryEl && summaryEl.scrollIntoView) summaryEl.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
+function editExpense(idx){
+  const e = expenseEntries[idx];
+  if (!e) return;
+  editingIndex = idx;
+  document.getElementById('e-date').value = e.date;
+  document.getElementById('e-amt').value = e.amt;
+  document.getElementById('e-note').value = e.note || '';
+  lastCategory = e.category;
+  lastPaymentMethod = e.paymentMethod;
+  lastCurrency = e.currency;
+  renderPickerRows();
+  document.getElementById('add-expense-btn').textContent = '更新這一筆';
+  document.getElementById('cancel-edit-row').style.display = 'block';
+  document.getElementById('add-expense-btn').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function cancelEdit(){
+  editingIndex = null;
+  document.getElementById('e-amt').value = '';
+  document.getElementById('e-note').value = '';
+  document.getElementById('add-expense-btn').textContent = '加入';
+  document.getElementById('cancel-edit-row').style.display = 'none';
+}
+
 function deleteExpense(idx){
   expenseEntries.splice(idx, 1);
+  if (editingIndex === idx) cancelEdit();
+  else if (editingIndex !== null && idx < editingIndex) editingIndex--;
   saveExpenses();
   renderExpenses();
 }
@@ -1527,6 +1578,7 @@ function deleteExpense(idx){
 function resetExpenses(){
   if (!confirm('確定要清除所有「新增其他花費」的記錄嗎？已確定花費（機票、住宿）不會受影響。這個動作無法復原。')) return;
   expenseEntries = [];
+  cancelEdit();
   saveExpenses();
   renderExpenses();
 }
@@ -1655,6 +1707,7 @@ function renderExpenses(){
       <div class="expense-row">
         <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span></span>
         <span class="e-amt">${fmtRowAmt(e.amt, e.currency)}</span>
+        <span class="e-del" style="background:var(--white);color:var(--steel);border:1px solid var(--line);margin-right:4px;" onclick="editExpense(${e.idx})">✎</span>
         <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
       </div>`;
   }).join('') : `<div class="meal-tbd">還沒有其他花費記錄</div>`;
@@ -1713,6 +1766,26 @@ function renderExpenses(){
           <span class="e-amt">${fmtTwdMain(byCategory[c.key])}</span>
         </div>`).join('');
     catBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
+  }
+
+  // 依付款方式小計
+  const payBreakdownEl = document.getElementById('payment-breakdown');
+  if (payBreakdownEl) {
+    const all = fixedExpenses.concat(expenseEntries);
+    const byPayment = {};
+    all.forEach(e => {
+      const key = e.paymentMethod || 'cash';
+      if (!byPayment[key]) byPayment[key] = {};
+      byPayment[key][e.currency] = (byPayment[key][e.currency] || 0) + shareAmt(e);
+    });
+    const rows = PAYMENT_METHODS
+      .filter(m => byPayment[m.key])
+      .map(m => `
+        <div class="expense-row">
+          <span class="e-desc">${m.emoji} ${m.label}</span>
+          <span class="e-amt">${fmtTwdMain(byPayment[m.key])}</span>
+        </div>`).join('');
+    payBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
   }
 }
 
