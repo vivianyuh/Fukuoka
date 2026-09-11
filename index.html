@@ -957,8 +957,8 @@ const days = [
       {time:"08:00→11:15", place:"長榮 BR106　TPE → FUK", note:"✈️ 抵達福岡機場！行李入境後先衝向飯店", tag:"FLIGHT", map:"福岡空港"},
       {time:"13:00", place:"皮皮租車取車", note:"", tag:"CAR"},
       {time:"13:30", place:"🚗 皮皮接送會合", note:"落地後先到飯店 check-in、放好行李 🧳，再出發跟皮皮會合上車！確切上車地點還沒定，要看 check-in 完成的時間才能決定 📍待確認", tag:"MEET"},
-      {time:"14:20", place:"抵達 浜焼き 白浜家（芥屋）", note:"🦪 午餐時間！牡蠣小屋・海鮮丼・BBQ，停留約 60 分鐘。尚未訂位（尚未開放訂位）", tag:"CAR", map:"浜焼き 白浜家"},
-      {time:"15:20", place:"離開白浜家", note:"", tag:"CAR"},
+      {time:"14:20", place:"抵達 糸島海鮮堂 二見ヶ浦本店", note:"🦪 午餐時間！海景座位海鮮丼名店，就在二見浦・夫婦岩生活圈內，停留約 60 分鐘。位置離下午行程很近，車程可能比原本估算更省時", tag:"CAR", map:"糸島海鮮堂 二見ヶ浦本店"},
+      {time:"15:20", place:"離開糸島海鮮堂", note:"", tag:"CAR"},
       {time:"15:30", place:"LONDON BUS CAFE", note:"🍦 拍照／吃冰淇淋，停留約 10 分鐘", tag:"CAR", map:"LONDON BUS CAFE 糸島"},
       {time:"15:44", place:"Blue Roof", note:"🥤 糸島果汁吧，停留約 10 分鐘（平日營業至 17:00）", tag:"CAR", map:"Blue Roof 糸島"},
       {time:"15:55", place:"ITOSHIMA FARM HOUSE UOVO", note:"🥚 拍照／甜點，停留約 10 分鐘（平日營業至 18:00）", tag:"CAR", map:"糸島ファームハウス UOVO"},
@@ -970,30 +970,11 @@ const days = [
       {time:"19:00", place:"完成還車", note:"✅ 已確認 19:00 還車", tag:"CAR"},
       {time:"19:30", place:"🥩 晚餐・肉屋 肉一 Nikuichi（薬院燒肉）", note:"超人氣薬院燒肉名店，招牌黑毛和牛拼盤。記得提早訂位！", tag:"DINNER", map:"肉屋 肉一 薬院"}
     ],
-    plans:[
-      {
-        label:"去程・回程巴士方案（備案參考，目前採自駕）",
-        options:["Plan C（已確定・自駕）", "Plan A", "Plan B"],
-        bodies:[
-          `<div class="leg"><span class="t">13:00</span><span class="p">皮皮去取租車</span></div>
-           <div class="leg"><span class="t">13:30</span><span class="p">博多接 2 位（上車地點 TBC）</span></div>
-           <div class="leg"><span class="t">14:20</span><span class="p">抵達 浜焼き 白浜家（芥屋）${mapA('浜焼き 白浜家')}</span></div>
-           <div class="note-box">✅ 已確定・自駕/租車，跟皮皮一起去。19:00 還車。上車地點還要看飯店 check-in 時間再決定；白浜家目前尚未開放訂位。</div>`,
-          `<div class="leg"><span class="t">13:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
-           <div class="leg"><span class="t">14:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
-           <div class="leg"><span class="t">14:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan A（最晚直達車）：17:32 二見浦 PALMBEACH 前 → 18:35 博多巴士總站　${linkA('West Coast Liner 官方時刻表(PDF)', 'https://www.showa-bus.jp/wp-content/uploads/2025/09/0_04_westcoastliner_20251001.pdf')}</div>`,
-          `<div class="leg"><span class="t">14:28</span><span class="p">博多巴士總站(博多站) 發車${mapA('博多バスターミナル')}</span></div>
-           <div class="leg"><span class="t">15:37</span><span class="p">二見浦 PALMBEACH 前${mapA('二見ヶ浦 PALM BEACH the garden')}</span></div>
-           <div class="leg"><span class="t">15:38</span><span class="p">二見浦・月與太陽糸島茶房前（夫妻岩）${mapA('夫婦岩 二見ヶ浦')}</span></div>
-           <div class="note-box">回程・Plan B（西之浦線＋地鐵，最晚班次）：18:21 二見浦・月與太陽糸島茶房前 → 19:01 九大學研都市 → 轉地鐵筑肥線（天神・中洲川端・博多・福岡空港）→ 約 20:00 抵博多　${linkA('二見浦公車站所有路線查詢', 'https://transfer.navitime.biz/showa-bus/pc/diagram/LinkSearch?nodeId=00292044')}</div>`
-        ]
-      }
-    ],
+    plans:[],
     fare:"",
-    note:"⚠️ 還有 2 件事還沒確定：① 13:30 博多接人的上車地點（要等飯店 check-in 時間確定）② 白浜家目前尚未開放訂位，需持續關注訂位開放時間。",
+    note:"⚠️ 還有事還沒確定：13:30 博多接人的上車地點（要等飯店 check-in 時間確定）。午餐已換成糸島海鮮堂 二見ヶ浦本店，建議確認一下是否需要訂位。",
     meals:[
-      {type:"午餐・尚未訂位", name:"浜焼き 白浜家（芥屋）", note:"糸島芥屋人氣海鮮燒烤・牡蠣小屋，可現烤海鮮、生蠔，鄰近芥屋海水浴場，開車前往。營業時間平日 11:00-21:00（LO20:00）、假日 11:00-22:00（LO21:00）。目前尚未開放訂位（尚未確認開放時間）。", map:"浜焼き 白浜家"},
+      {type:"午餐・已確定", name:"糸島海鮮堂 二見ヶ浦本店", note:"2023年開幕的人氣海鮮丼餐廳，面海景觀座位，就在福岡市西區小田，剛好在二見浦・夫婦岩生活圈內。這個位置比原本規劃的芥屋更靠近下午行程，車程可能可以再省一些時間。", map:"糸島海鮮堂 二見ヶ浦本店"},
       {type:"晚餐・已確定", name:"肉屋 肉一 Nikuichi（薬院燒肉）", note:"超人氣薬院燒肉名店，招牌黑毛和牛拼盤評價很高。⚠️ 官網通常需提前約 1 個半月訂位，記得盡快先訂位。還車後從市區前往即可。", map:"肉屋 肉一 薬院"}
     ]
   },
