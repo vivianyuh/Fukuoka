@@ -1004,7 +1004,29 @@ const days = [
     ]
   },
   {
-    date:"11/8", wd:"日", theme:"由布院", accent:"var(--gold)",
+    date:"11/8", wd:"日", theme:"門司港・唐戸市場・皿倉山", accent:"var(--moss)",
+    weather:"皿倉山夜景行程海拔較高，晚上山頂風大氣溫比市區低不少，務必多帶一件保暖外套。",
+    stops:[
+      {time:"09:00", place:"博多 發車（JR Sonic）", note:"", tag:"JR", map:"博多駅"},
+      {time:"09:37", place:"小倉 抵達", note:"", tag:"JR", map:"小倉駅"},
+      {time:"09:45", place:"小倉 發車", note:"搭鹿兒島本線，對面月台直接換車", tag:"JR", map:"小倉駅"},
+      {time:"09:50", place:"門司港 抵達", note:"", tag:"JR", map:"門司港駅"},
+      {time:"10:15", place:"🚢 搭関門連絡船前往唐戸市場（下関）", note:"門司港棧橋搭渡輪過海峽，約5分鐘航程即可抵達對岸山口縣下関", tag:"FERRY", map:"唐戸市場"},
+      {time:"10:30", place:"🐡 唐戸市場・活きいき馬関街", note:"週日限定屋台活動！8:00-15:00，握壽司、海鮮丼、河豚料理應有盡有，很適合當午餐，記得挑週日才有這個熱鬧場面", tag:"MARKET", map:"唐戸市場"},
+      {time:"12:30", place:"搭渡輪返回門司港", note:"", tag:"FERRY", map:"門司港駅"},
+      {time:"下午", place:"門司港懷舊區散步", note:"舊門司稅關、藍翼門司橋、國際友好紀念圖書館等", tag:"WALK", map:"門司港レトロ"},
+      {time:"下午", place:"八幡站 → 皿倉山纜車山麓站", note:"轉搭接駁巴士上山，首班 17:05、末班 20:15，逢 5 分／25 分各一班", tag:"BUS", map:"皿倉山ケーブルカー山麓駅"}
+    ],
+    plans:[],
+    fare:"",
+    note:"可考慮購買 JR Kyushu Mobile Pass（福岡廣域）。車資只需另付皿倉山入場費。唐戸市場的「活きいき馬関街」屋台活動只有五六日／國定假日才有，特地把這天排在週日就是為了配合。",
+    meals:[
+      {type:"午餐・已確定", name:"唐戸市場 活きいき馬関街", note:"週日限定的海鮮屋台祭典，現握壽司、海鮮丼、河豚料理，邊走邊吃，很熱鬧。", map:"唐戸市場"},
+      {type:"門司港名物・備選/下午茶", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯。如果中午已經在唐戸市場吃飽，這個可以當下午茶或改天再吃。", map:"門司港 燒咖哩 咖哩本舖"}
+    ]
+  },
+  {
+    date:"11/9", wd:"一", theme:"由布院", accent:"var(--gold)",
     weather:"山區日夜溫差大，早晚明顯轉冷，建議洋蔥式穿法，晚間搭車回程可多帶件外套。",
     stops:[],
     plans:[
@@ -1036,23 +1058,6 @@ const days = [
     meals:[
       {type:"午餐/晚餐建議", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。", map:"由布まぶし心"},
       {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
-    ]
-  },
-  {
-    date:"11/9", wd:"一", theme:"門司港・皿倉山", accent:"var(--moss)",
-    weather:"皿倉山夜景行程海拔較高，晚上山頂風大氣溫比市區低不少，務必多帶一件保暖外套。",
-    stops:[
-      {time:"09:00", place:"博多 發車（JR Sonic）", note:"", tag:"JR", map:"博多駅"},
-      {time:"09:37", place:"小倉 抵達", note:"", tag:"JR", map:"小倉駅"},
-      {time:"09:45", place:"小倉 發車", note:"搭鹿兒島本線，對面月台直接換車", tag:"JR", map:"小倉駅"},
-      {time:"09:50", place:"門司港 抵達", note:"", tag:"JR", map:"門司港駅"},
-      {time:"下午", place:"八幡站 → 皿倉山纜車山麓站", note:"轉搭接駁巴士上山，首班 17:05、末班 20:15，逢 5 分／25 分各一班", tag:"BUS", map:"皿倉山ケーブルカー山麓駅"}
-    ],
-    plans:[],
-    fare:"",
-    note:"可考慮購買 JR Kyushu Mobile Pass（福岡廣域）。車資只需另付皿倉山入場費。",
-    meals:[
-      {type:"門司港名物午餐", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯。「咖哩本舖」評價最穩、「プリンセスピピ」需現場登記排隊，兩間都在車站附近。", map:"門司港 燒咖哩 咖哩本舖"}
     ]
   },
   {
@@ -1148,7 +1153,7 @@ days.forEach((d, i) => {
   const tab = document.createElement('div');
   tab.className = 'tab';
   tab.dataset.key = String(i);
-  tab.innerHTML = `<div class="d-num">DAY ${i+1}${isToday ? '<span class="today-badge">TODAY</span>' : ''}</div><div class="d-date">${d.date}</div><div class="d-theme">${d.wd}・${d.theme}</div>`;
+  tab.innerHTML = `<div class="d-num">DAY ${i+1}${isToday ? '<span class="today-badge">TODAY</span>' : ''}</div><div class="d-date">${d.date}（${d.wd}）</div><div class="d-theme">${d.theme}</div>`;
   tab.onclick = () => selectPanel(String(i));
   board.appendChild(tab);
 
