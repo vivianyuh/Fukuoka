@@ -220,6 +220,12 @@
   }
   .stop-place{font-weight:700; font-size:15px; margin:2px 0 3px;}
   .stop-note{font-size:13px; color:var(--ink-soft); line-height:1.55;}
+  .stop-maybe{opacity:0.72;}
+  .stop-maybe::before{
+    background:transparent;
+    border-style:dashed;
+  }
+  .stop-maybe .stop-place{font-style:italic;}
   .map-link{
     display:inline-flex;
     align-items:center;
@@ -879,12 +885,11 @@ const prep = [
   {
     title:"交通預訂", accent:"var(--steel)",
     items:[
-      {text:"由布院之森 / 由布號 特急指定席預約（11/8）", detail:"熱門觀光列車，旺季常額滿，建議提前 1 個月開放訂票時就先預約去回程座位。", priority:"必辦"},
+      {text:`由布院之森 / 由布號 特急指定席預約（11/9）`, detail:`熱門觀光列車，旺季常額滿。開放訂票日：<b>10/9</b>（出發日往前一個月的同一天，日本時間約上午10點開放，建議一開放就搶訂）。訂票時選「QRチケレス」的那個優惠選項，比窗口價格便宜，也不用換紙本票，手機出示QR Code直接進站。${linkA('JR九州網路訂票系統', 'https://www.jrkyushu.co.jp/yoyaku/')}`, priority:"必辦"},
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
       {text:"訂位 炉端ノいとおかし（11/10 09:00 早餐）", detail:"六本松人氣排隊早餐，完全預約制，現場恕不接待。⚠️ 要等下個月10號才開放訂位，記得那天一開放就去搶訂。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
       {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者划算。", priority:""},
-      {text:"確認 11/6 昭和巴士（West Coast Liner）最新去回程時刻", detail:"Plan A／Plan B 皆需再核對，避免錯過末班車。", priority:""},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
   },
@@ -980,25 +985,34 @@ const days = [
     ]
   },
   {
-    date:"11/7", wd:"六", theme:"太宰府", accent:"var(--vermilion)",
+    date:"11/7", wd:"六", theme:"太宰府（上午）・下午晚上逛街", accent:"var(--vermilion)",
     weather:"表參道戶外步行時間長，白天太陽下不算冷，但午後轉陰或起風會降溫，建議帶件薄外套備用。",
-    stops:[],
+    stops:[
+      {time:"上午", place:"出發前往太宰府", note:"時間彈性，不特別配合班次；如果剛好碰到旅人號 tabito 就搭，沒碰到就搭一般轉乘（西鐵天神大牟田線→二日市→太宰府線）", tag:"TRAIN", map:"西鉄福岡(天神)駅"},
+      {time:"約30分後", place:"太宰府站 抵達", note:"", tag:"TRAIN", map:"太宰府駅"},
+      {time:"抵達後", place:"表參道散策", note:"梅枝餅、伴手禮、拍照，抓 30-40 分鐘", tag:"WALK", map:"太宰府表参道"},
+      {time:"接著", place:"太宰府天滿宮參拜", note:"心字池、樓門、本殿、摸御神牛祈福，抓 45-60 分鐘", tag:"WALK", map:"太宰府天満宮"},
+      {time:"🤔 考慮中", place:"竈門神社（還沒確定要不要去）", note:"《鬼滅之刃》聖地、結緣能量景點，賞楓期景色也不錯。需另外搭公車或計程車，單程約10-15分鐘，來回加參拜大概要多抓1~1.5小時，會壓縮到下午逛街時間", tag:"MAYBE", map:"竈門神社"},
+      {time:"中午前後", place:"搭車返回市區", note:"西鐵太宰府線→（二日市轉車）→西鐵天神站，回程車程與去程相近", tag:"TRAIN", map:"太宰府駅"},
+      {time:"下午～晚上", place:"🛍️ 天神／博多逛街", note:"下午晚上都留給逛街，路線還沒排，之後可以再排", tag:"SHOP", map:"天神"}
+    ],
     plans:[
       {
-        label:"前往太宰府方案",
-        options:["旅人號 tabito", "一般轉乘"],
+        label:"前往太宰府方案（時間彈性，碰到旅人號就搭）",
+        options:["一般轉乘（主要方案）", "旅人號 tabito（有碰到就搭）"],
         bodies:[
-          `<div class="leg"><span class="t">09:48</span><span class="p">西鐵天神站 發車（太宰府觀光列車 旅人 tabito）${mapA('西鉄福岡(天神)駅')}</span></div>
-           <div class="leg"><span class="t">10:17</span><span class="p">太宰府站 抵達${mapA('太宰府駅')}</span></div>
-           <div class="note-box">若能提早出門可不必搭旅人號，但仍需再確認可搭乘之班次。</div>`,
           `<div class="leg"><span class="t">—</span><span class="p">博多站 → 西鐵福岡（天神）站${mapA('西鉄福岡(天神)駅')}</span></div>
            <div class="leg"><span class="t">—</span><span class="p">西鐵天神大牟田線（急行或特急）→ 二日市站${mapA('西鉄二日市駅')}</span></div>
-           <div class="leg"><span class="t">—</span><span class="p">走到對面月台，轉西鐵太宰府線 → 太宰府站${mapA('太宰府駅')}</span></div>`
+           <div class="leg"><span class="t">—</span><span class="p">走到對面月台，轉西鐵太宰府線 → 太宰府站${mapA('太宰府駅')}</span></div>
+           <div class="note-box">班次密集（約10-15分鐘一班），不用配合特定時刻，時間彈性。</div>`,
+          `<div class="leg"><span class="t">09:48</span><span class="p">西鐵天神站 發車（太宰府觀光列車 旅人 tabito）${mapA('西鉄福岡(天神)駅')}</span></div>
+           <div class="leg"><span class="t">10:17</span><span class="p">太宰府站 抵達${mapA('太宰府駅')}</span></div>
+           <div class="note-box">目前只查到 09:48 這班，班次少，需另外確認是否要加收指定席料金。如果時間剛好配合得上就搭，沒配合上就走一般轉乘。</div>`
         ]
       }
     ],
     fare:"",
-    note:"出發前請再查詢一次旅人號最新時刻表與班次。",
+    note:"出發前請再查詢一次旅人號最新時刻表與班次。上午太宰府抓到中午前結束，下午晚上留給天神／博多逛街，逛街路線還沒排，之後可以再一起規劃。",
     meals:[
       {type:"表參道小吃", name:"梅枝餅（かさの家 / 寺田屋 / やす武）", note:"太宰府必吃名物，現烤紅豆餅一個約 120 円，表參道上多家分店都有排隊，かさの家評價最高、寺田屋可內用配抹茶。", map:"かさの家 太宰府"},
       {type:"順道一嚐", name:"Fukuya 明太子茶泡飯／一蘭合格拉麵", note:"表參道上可嚐明太子料理，一蘭太宰府店限定「合格拉麵」也蠻多人排隊。", map:"ふくや 太宰府"}
@@ -1015,15 +1029,17 @@ const days = [
       {time:"10:15", place:"🚢 搭関門連絡船前往唐戸市場（下関）", note:"門司港棧橋搭渡輪過海峽，約5分鐘航程即可抵達對岸山口縣下関", tag:"FERRY", map:"唐戸市場"},
       {time:"10:30", place:"🐡 唐戸市場・活きいき馬関街", note:"週日限定屋台活動！8:00-15:00，握壽司、海鮮丼、河豚料理應有盡有，很適合當午餐，記得挑週日才有這個熱鬧場面", tag:"MARKET", map:"唐戸市場"},
       {time:"12:30", place:"搭渡輪返回門司港", note:"", tag:"FERRY", map:"門司港駅"},
+      {time:"12:45", place:"🍛 午餐・燒咖哩", note:"咖哩本舖 or プリンセスピピ，門司港代表美食，起司焗烤咖哩飯", tag:"LUNCH", map:"門司港 燒咖哩 咖哩本舖"},
       {time:"下午", place:"門司港懷舊區散步", note:"舊門司稅關、藍翼門司橋、國際友好紀念圖書館等", tag:"WALK", map:"門司港レトロ"},
-      {time:"下午", place:"八幡站 → 皿倉山纜車山麓站", note:"轉搭接駁巴士上山，首班 17:05、末班 20:15，逢 5 分／25 分各一班", tag:"BUS", map:"皿倉山ケーブルカー山麓駅"}
+      {time:"15:20", place:"門司港 → 小倉 → 八幡", note:"建議這個時間離開門司港，JR約32分鐘到八幡，抓16:00前後抵達接駁車站", tag:"JR", map:"門司港駅"},
+      {time:"16:00起", place:"八幡站 → 皿倉山纜車山麓站", note:`免費接駁巴士，約10分鐘車程。週日班次 9:45～20:15（山麓駅末班），整天都有車，不用趕特定一班。纜車山麓駅發車約每20分鐘一班，11-3月營運到20:00（上行末班19:20）。${linkA('接駁巴士時刻表', 'https://www.sarakurayama-cablecar.co.jp/shuttlebus/')}　${linkA('纜車時刻表', 'https://www.sarakurayama-cablecar.co.jp/timetable/')}`, tag:"BUS", map:"皿倉山ケーブルカー山麓駅"}
     ],
     plans:[],
     fare:"",
     note:"可考慮購買 JR Kyushu Mobile Pass（福岡廣域）。車資只需另付皿倉山入場費。唐戸市場的「活きいき馬関街」屋台活動只有五六日／國定假日才有，特地把這天排在週日就是為了配合。",
     meals:[
-      {type:"午餐・已確定", name:"唐戸市場 活きいき馬関街", note:"週日限定的海鮮屋台祭典，現握壽司、海鮮丼、河豚料理，邊走邊吃，很熱鬧。", map:"唐戸市場"},
-      {type:"門司港名物・備選/下午茶", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯。如果中午已經在唐戸市場吃飽，這個可以當下午茶或改天再吃。", map:"門司港 燒咖哩 咖哩本舖"}
+      {type:"市場體驗・現吃海鮮", name:"唐戸市場 活きいき馬関街", note:"週日限定的海鮮屋台祭典，現握壽司、海鮮丼、河豚料理，邊走邊吃當小點心體驗，很熱鬧。", map:"唐戸市場"},
+      {type:"午餐・已確定", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯，回到門司港後當午餐吃。「咖哩本舖」評價最穩、「プリンセスピピ」需現場登記排隊，兩間都在車站附近。", map:"門司港 燒咖哩 咖哩本舖"}
     ]
   },
   {
@@ -1185,7 +1201,7 @@ days.forEach((d, i) => {
     let stopsHtml = '';
     (d.stops || []).forEach(s => {
       stopsHtml += `
-        <div class="stop" style="--accent:${d.accent}">
+        <div class="stop${s.tag === 'MAYBE' ? ' stop-maybe' : ''}" style="--accent:${d.accent}">
           ${s.tag ? `<span class="tag" style="--accent:${d.accent}">${s.tag}</span>` : ''}
           <div class="stop-time">${s.time}</div>
           <div class="stop-place">${s.place}${s.map ? mapA(s.map) : ''}</div>
@@ -1210,7 +1226,7 @@ days.forEach((d, i) => {
   let stopsHtml = '';
   d.stops.forEach(s => {
     stopsHtml += `
-      <div class="stop" style="--accent:${d.accent}">
+      <div class="stop${s.tag === 'MAYBE' ? ' stop-maybe' : ''}" style="--accent:${d.accent}">
         ${s.tag ? `<span class="tag" style="--accent:${d.accent}">${s.tag}</span>` : ''}
         <div class="stop-time">${s.time}</div>
         <div class="stop-place">${s.place}${s.map ? mapA(s.map) : ''}</div>
