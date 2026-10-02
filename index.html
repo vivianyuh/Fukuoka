@@ -889,7 +889,7 @@ const prep = [
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
       {text:"訂位 炉端ノいとおかし（11/10 09:00 早餐）", detail:"六本松人氣排隊早餐，完全預約制，現場恕不接待。⚠️ 要等下個月10號才開放訂位，記得那天一開放就去搶訂。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
-      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/9 門司港・皿倉山）", detail:"若當天會搭多段 JR，可比較單程票與周遊券何者划算。", priority:""},
+      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 門司港・皿倉山）", detail:"這天還會搭関門連絡船去唐戸市場（渡輪不算在JR Pass內），若JR段數不多，也可以比較單程票是否更划算。", priority:""},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
   },
@@ -985,16 +985,17 @@ const days = [
     ]
   },
   {
-    date:"11/7", wd:"六", theme:"太宰府（上午）・下午晚上逛街", accent:"var(--vermilion)",
+    date:"11/7", wd:"六", theme:"太宰府・竈門神社（上午）・下午晚上逛街", accent:"var(--vermilion)",
     weather:"表參道戶外步行時間長，白天太陽下不算冷，但午後轉陰或起風會降溫，建議帶件薄外套備用。",
     stops:[
       {time:"上午", place:"出發前往太宰府", note:"時間彈性，不特別配合班次；如果剛好碰到旅人號 tabito 就搭，沒碰到就搭一般轉乘（西鐵天神大牟田線→二日市→太宰府線）", tag:"TRAIN", map:"西鉄福岡(天神)駅"},
       {time:"約30分後", place:"太宰府站 抵達", note:"", tag:"TRAIN", map:"太宰府駅"},
       {time:"抵達後", place:"表參道散策", note:"梅枝餅、伴手禮、拍照，抓 30-40 分鐘", tag:"WALK", map:"太宰府表参道"},
       {time:"接著", place:"太宰府天滿宮參拜", note:"心字池、樓門、本殿、摸御神牛祈福，抓 45-60 分鐘", tag:"WALK", map:"太宰府天満宮"},
-      {time:"🤔 考慮中", place:"竈門神社（還沒確定要不要去）", note:"《鬼滅之刃》聖地、結緣能量景點，賞楓期景色也不錯。需另外搭公車或計程車，單程約10-15分鐘，來回加參拜大概要多抓1~1.5小時，會壓縮到下午逛街時間", tag:"MAYBE", map:"竈門神社"},
-      {time:"中午前後", place:"搭車返回市區", note:"西鐵太宰府線→（二日市轉車）→西鐵天神站，回程車程與去程相近", tag:"TRAIN", map:"太宰府駅"},
-      {time:"下午～晚上", place:"🛍️ 天神／博多逛街", note:"下午晚上都留給逛街，路線還沒排，之後可以再排", tag:"SHOP", map:"天神"}
+      {time:"✅ 接著", place:"前往竈門神社", note:"從太宰府站搭西鐵巴士（或計程車）前往，車程約10-15分鐘", tag:"BUS", map:"竈門神社"},
+      {time:"抵達後", place:"竈門神社參拜", note:"《鬼滅之刃》聖地、結緣能量景點，賞楓期景色也不錯，抓 30-45 分鐘", tag:"WALK", map:"竈門神社"},
+      {time:"下午", place:"搭車返回市區", note:"竈門神社→太宰府站（巴士/計程車）→西鐵太宰府線→（二日市轉車）→西鐵天神站", tag:"TRAIN", map:"太宰府駅"},
+      {time:"下午稍晚～晚上", place:"🛍️ 天神／博多逛街", note:"因為加了竈門神社，逛街時間會稍微晚一點開始，路線還沒排，之後可以再排", tag:"SHOP", map:"天神"}
     ],
     plans:[
       {
@@ -1012,7 +1013,7 @@ const days = [
       }
     ],
     fare:"",
-    note:"出發前請再查詢一次旅人號最新時刻表與班次。上午太宰府抓到中午前結束，下午晚上留給天神／博多逛街，逛街路線還沒排，之後可以再一起規劃。",
+    note:"出發前請再查詢一次旅人號最新時刻表與班次。上午太宰府天滿宮＋竈門神社，抓到下午前結束，下午晚上留給天神／博多逛街，逛街路線還沒排，之後可以再一起規劃。",
     meals:[
       {type:"表參道小吃", name:"梅枝餅（かさの家 / 寺田屋 / やす武）", note:"太宰府必吃名物，現烤紅豆餅一個約 120 円，表參道上多家分店都有排隊，かさの家評價最高、寺田屋可內用配抹茶。", map:"かさの家 太宰府"},
       {type:"順道一嚐", name:"Fukuya 明太子茶泡飯／一蘭合格拉麵", note:"表參道上可嚐明太子料理，一蘭太宰府店限定「合格拉麵」也蠻多人排隊。", map:"ふくや 太宰府"}
@@ -1045,7 +1046,13 @@ const days = [
   {
     date:"11/9", wd:"一", theme:"由布院", accent:"var(--gold)",
     weather:"山區日夜溫差大，早晚明顯轉冷，建議洋蔥式穿法，晚間搭車回程可多帶件外套。",
-    stops:[],
+    stops:[
+      {time:"11:31", place:"抵達由布院站", note:"沿湯之坪街道往金鱗湖方向走去美術館", tag:"JR", map:"由布院駅"},
+      {time:"12:20", place:"🎨 COMICO ART MUSEUM YUFUIN", note:`✅ 預約時段 12:20。隈研吾設計，展出村上隆／杉本博司作品，參觀抓1-1.5小時。時段每20分鐘一班（11:00/11:20/11:40/12:00/12:20...）。${linkA('線上預約', 'https://reserva.be/comicoartmuseumyufuin')}`, tag:"MUSEUM", map:"COMICO ART MUSEUM YUFUIN"},
+      {time:"接著", place:"🍽️ 午餐・由布まぶし心（金鱗湖店）", note:"繼續往金鱗湖方向走，順路吃午餐", tag:"LUNCH", map:"由布まぶし心 金鱗湖"},
+      {time:"吃完後", place:"金鱗湖散步", note:"湯之坪街道的盡頭，繞湖走走約15-20分鐘", tag:"WALK", map:"金鱗湖"},
+      {time:"再之後", place:"往回走逛湯之坪街道", note:"原路往回走，慢慢逛剛剛沒逛到的店、買伴手禮、吃小吃，直到回車站", tag:"WALK", map:"湯の坪街道"}
+    ],
     plans:[
       {
         label:"去程車次選擇",
@@ -1073,7 +1080,7 @@ const days = [
     fare:"",
     note:"特急列車須事先完成 JR 預約，建議及早訂位。",
     meals:[
-      {type:"午餐/晚餐建議", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。", map:"由布まぶし心"},
+      {type:"午餐・已確定（金鱗湖店）", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。選金鱗湖店，從美術館過去順路不用走回頭路。", map:"由布まぶし心 金鱗湖"},
       {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
     ]
   },
@@ -1389,8 +1396,9 @@ function totalsToTwdJpy(totals){
   const jpy = (totals.JPY || 0) + convertAmt(totals.TWD || 0, 'TWD');
   return {twd, jpy};
 }
-function fmtRowAmt(amt, fromCur){
+function fmtRowAmt(amt, fromCur, noConvert){
   const {twd, jpy} = toTwdJpy(amt, fromCur);
+  if (noConvert) return `NT$${Math.round(twd).toLocaleString()}`;
   return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
 }
 function fmtTwdMain(totals){
@@ -1404,7 +1412,7 @@ function fmtTwdOneLine(totals){
 
 // 已確定花費：直接寫死在頁面裡，不受瀏覽器/裝置影響，任何人打開都看得到
 const fixedExpenses = [
-  {date:'2026-03-18', category:'flight', note:'福岡來回機票（長榮 BR106/BR105）', amt:13657, currency:'TWD', paymentMethod:'card'},
+  {date:'2026-03-18', category:'flight', note:'福岡來回機票（長榮 BR106/BR105）', amt:13657, currency:'TWD', paymentMethod:'card', noConvert:true},
   {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜（每人）', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2}
 ];
 
@@ -1697,7 +1705,7 @@ function renderFixedExpenses(){
     return `
       <div class="expense-row">
         <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.note}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span>${totalNote}</span>
-        <span class="e-amt">${fmtRowAmt(displayAmt, e.currency)}</span>
+        <span class="e-amt">${fmtRowAmt(displayAmt, e.currency, e.noConvert)}</span>
       </div>`;
   }).join('');
   const totals = sumByCurrency(fixedExpenses);
@@ -1723,7 +1731,7 @@ function renderExpenses(){
     return `
       <div class="expense-row">
         <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span></span>
-        <span class="e-amt">${fmtRowAmt(e.amt, e.currency)}</span>
+        <span class="e-amt">${fmtRowAmt(e.amt, e.currency, e.noConvert)}</span>
         <span class="e-del" style="background:var(--white);color:var(--steel);border:1px solid var(--line);margin-right:4px;" onclick="editExpense(${e.idx})">✎</span>
         <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
       </div>`;
