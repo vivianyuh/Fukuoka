@@ -885,7 +885,8 @@ const prep = [
   {
     title:"交通預訂", accent:"var(--steel)",
     items:[
-      {text:`由布院之森 / 由布號 特急指定席預約（11/9）`, detail:`熱門觀光列車，旺季常額滿。開放訂票日：<b>10/9</b>（出發日往前一個月的同一天，日本時間約上午10點開放，建議一開放就搶訂）。訂票時選「QRチケレス」的那個優惠選項，比窗口價格便宜，也不用換紙本票，手機出示QR Code直接進站。${linkA('JR九州網路訂票系統', 'https://www.jrkyushu.co.jp/yoyaku/')}`, priority:"必辦"},
+      {text:`提前註冊 JR九州Web會員＋登錄信用卡`, detail:`為了 10/9 搶由布院之森，建議<b>提前幾天</b>（不要當天）就先把會員註冊好、信用卡登錄進會員資料，搶票當天選卡才能秒選。${linkA('會員註冊頁面', 'https://train.yoyaku.jrkyushu.co.jp/jr/pc/member/NewMember')}`, priority:"必辦"},
+      {text:`由布院之森 / 由布號 特急指定席預約（11/9）`, detail:`熱門觀光列車，旺季常額滿。開放訂票日：<b>10/9</b>（出發日往前一個月的同一天，日本時間約上午10點開放，建議一開放就搶訂）。搶票當天技巧：①<b>不要太早登入會員</b>（幾分鐘沒動作會自動登出，建議快9點台灣時間才登入）②搜尋時務必<b>勾選「乗換えなし（不要換乘）」</b>，不然系統會優先推薦轉乘新幹線的方案 ③選「<b>九州ネットきっぷ（QR）</b>」比窗口價格便宜，也不用換紙本票，手機出示QR Code直接進站（僅限博多～由布院區間，你們的路線適用）。${linkA('JR九州網路訂票系統（直接訂票）', 'https://train.yoyaku.jrkyushu.co.jp/jr/pc/Top')}`, priority:"必辦"},
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
       {text:"訂位 炉端ノいとおかし（11/10 09:00 早餐）", detail:"六本松人氣排隊早餐，完全預約制，現場恕不接待。⚠️ 要等下個月10號才開放訂位，記得那天一開放就去搶訂。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
@@ -906,10 +907,7 @@ const prep = [
   {
     title:"通訊與App", accent:"var(--gold)",
     items:[
-      {text:"預訂網路分享機或 eSIM／實體 SIM 卡", detail:"", priority:"必辦"},
-      {text:"下載 Google 地圖離線地圖（福岡・北九州・由布院一帶）", detail:"", priority:""},
-      {text:"下載乘換案內類 App（Yahoo!乗換案内 或 Google Maps 皆可查日本電車巴士）", detail:"", priority:""},
-      {text:"下載翻譯 App（Google 翻譯拍照翻譯功能）", detail:"", priority:""}
+      {text:"買 eSIM", detail:"", priority:"必辦"}
     ]
   },
   {
@@ -1401,8 +1399,9 @@ function fmtRowAmt(amt, fromCur, noConvert){
   if (noConvert) return `NT$${Math.round(twd).toLocaleString()}`;
   return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
 }
-function fmtTwdMain(totals){
+function fmtTwdMain(totals, noConvert){
   const {twd, jpy} = totalsToTwdJpy(totals);
+  if (noConvert) return `NT$${Math.round(twd).toLocaleString()}`;
   return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
 }
 function fmtTwdOneLine(totals){
@@ -1779,16 +1778,18 @@ function renderExpenses(){
   if (catBreakdownEl) {
     const all = fixedExpenses.concat(expenseEntries);
     const byCategory = {};
+    const catNoConvert = {};
     all.forEach(e => {
       if (!byCategory[e.category]) byCategory[e.category] = {};
       byCategory[e.category][e.currency] = (byCategory[e.category][e.currency] || 0) + shareAmt(e);
+      if (e.noConvert) catNoConvert[e.category] = true;
     });
     const rows = getCategories()
       .filter(c => byCategory[c.key])
       .map(c => `
         <div class="expense-row">
           <span class="e-desc">${c.emoji} ${c.label}</span>
-          <span class="e-amt">${fmtTwdMain(byCategory[c.key])}</span>
+          <span class="e-amt">${fmtTwdMain(byCategory[c.key], catNoConvert[c.key])}</span>
         </div>`).join('');
     catBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
   }
