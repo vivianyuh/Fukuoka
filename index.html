@@ -1868,13 +1868,48 @@ function saveShop(){ try { localStorage.setItem(SHOP_KEY, JSON.stringify(shopIte
 let shopItems = loadShop();
 let shopTab = 'me';
 let shopPendingPhoto = null;
+const photoCache = {};
+let photoDB = null;
+function openPhotoDB(){
+  return new Promise(res => {
+    try {
+      const rq = indexedDB.open('fukuoka_photos', 1);
+      rq.onupgradeneeded = () => rq.result.createObjectStore('p');
+      rq.onsuccess = () => { photoDB = rq.result; res(true); };
+      rq.onerror = () => res(false);
+    } catch(e){ res(false); }
+  });
+}
+function idbPut(id, data){
+  return new Promise(res => {
+    if (!photoDB) return res(false);
+    try {
+      const tx = photoDB.transaction('p','readwrite');
+      tx.objectStore('p').put(data, id);
+      tx.oncomplete = () => res(true);
+      tx.onerror = tx.onabort = () => res(false);
+    } catch(e){ res(false); }
+  });
+}
+function idbDel(id){ try { if (photoDB) photoDB.transaction('p','readwrite').objectStore('p').delete(id); } catch(e){} }
+function idbLoadAll(){
+  return new Promise(res => {
+    if (!photoDB) return res();
+    try {
+      const rq = photoDB.transaction('p').objectStore('p').openCursor();
+      rq.onsuccess = () => { const c = rq.result; if (c){ photoCache[c.key] = c.value; c.continue(); } else res(); };
+      rq.onerror = () => res();
+    } catch(e){ res(); }
+  });
+}
+function photoSrc(it){ return it.photoId ? (photoCache[it.photoId] || '') : (it.photo || ''); }
 const shopPanel = document.getElementById('section-shopping');
 function escHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function shopRow(it, i, showWho){
   return `
     <div class="shop-item${it.done?' done':''}">
       <div class="shop-box" onclick="toggleShop(${i})">${it.done?'✓':''}</div>
-      ${it.photo ? `<img class="shop-thumb" src="${it.photo}" onclick="viewShopPhoto(${i})" alt="">` : ''}
+      ${photoSrc(it) ? `<img class="shop-thumb" src="${photoSrc(it)}" onclick="viewShopPhoto(${i})" alt="">` : ''}
       <div class="shop-txt" onclick="toggleShop(${i})">${escHtml(it.text)}</div>
       <button class="shop-del" onclick="delShop(${i})" aria-label="刪除">✕</button>
     </div>`;
@@ -1917,16 +1952,23 @@ function addShop(){
   const v = inp.value.trim();
   if (!v) return;
   const item = {text:v, done:false, type:shopTab};
-  if (shopPendingPhoto) item.photo = shopPendingPhoto;
+
   if (shopTab === 'other'){
     item.who = (document.getElementById('shop-who').value || '').trim();
     if (!item.who){ showToast('請先填「誰」'); document.getElementById('shop-who').focus(); return; }
   }
-  shopItems.push(item);
-  if (!saveShop()){ shopItems.pop(); showToast('空間不足，存不下這張照片'); return; }
-  shopPendingPhoto = null;
-  renderShop();
-  document.getElementById('shop-input').focus();
+  const finish = () => { shopItems.push(item); saveShop(); shopPendingPhoto = null; renderShop(); document.getElementById('shop-input').focus(); };
+  if (shopPendingPhoto){
+    const id = 'ph' + Date.now() + Math.random().toString(36).slice(2,6);
+    idbPut(id, shopPendingPhoto).then(ok => {
+      if (ok){ item.photoId = id; photoCache[id] = shopPendingPhoto; }
+      else { item.photo = shopPendingPhoto; if (!(() => { shopItems.push(item); const r = saveShop(); shopItems.pop(); return r; })()){ showToast('空間不足，存不下這張照片'); return; } }
+      finish();
+    });
+    return;
+  }
+  finish();
+  return;
 }
 function onShopPhoto(inp){
   const f = inp.files && inp.files[0];
@@ -1934,11 +1976,11 @@ function onShopPhoto(inp){
   const img = new Image();
   const url = URL.createObjectURL(f);
   img.onload = () => {
-    const max = 480, r = Math.min(1, max / Math.max(img.width, img.height));
+    const max = 1280, r = Math.min(1, max / Math.max(img.width, img.height));
     const c = document.createElement('canvas');
     c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    shopPendingPhoto = c.toDataURL('image/jpeg', 0.7);
+    shopPendingPhoto = c.toDataURL('image/jpeg', 0.85);
     URL.revokeObjectURL(url);
     const t = (document.getElementById('shop-input') || {}).value || '';
     const w = (document.getElementById('shop-who') || {}).value || '';
@@ -1957,12 +1999,13 @@ function viewShopPhoto(i){
     o.onclick = () => o.classList.remove('show');
     document.body.appendChild(o);
   }
-  o.innerHTML = `<img src="${shopItems[i].photo}" alt="">`;
+  o.innerHTML = `<img src="${photoSrc(shopItems[i])}" alt="">`;
   o.classList.add('show');
 }
 function toggleShop(i){ shopItems[i].done = !shopItems[i].done; saveShop(); renderShop(); }
-function delShop(i){ shopItems.splice(i,1); saveShop(); renderShop(); }
+function delShop(i){ const g = shopItems[i]; if (g && g.photoId){ idbDel(g.photoId); delete photoCache[g.photoId]; } shopItems.splice(i,1); saveShop(); renderShop(); }
 renderShop();
+openPhotoDB().then(idbLoadAll).then(renderShop);
 
 function selectSection(sec){
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'section-' + sec));
