@@ -773,6 +773,17 @@
     .d-theme{font-size:12px;}
     .meal-type{font-size:11px;}
   }
+  /* driver overlay */
+  .driver-btn{margin-top:6px; padding:5px 10px; border-radius:8px; border:1px solid var(--ink-soft); background:transparent; color:var(--ink); font-size:12.5px; cursor:pointer;}
+  #driver-overlay{position:fixed; inset:0; z-index:9999; background:#fff; color:#111; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; gap:18px;}
+  #driver-overlay.show{display:flex;}
+  #driver-overlay .d-lead{font-size:20px;}
+  #driver-overlay .d-name{font-size:34px; font-weight:800; line-height:1.3;}
+  #driver-overlay .d-en{font-size:18px; color:#444;}
+  #driver-overlay .d-addr{font-size:28px; font-weight:700; line-height:1.5;}
+  #driver-overlay .d-tel{font-size:22px;}
+  #driver-overlay .d-close{margin-top:10px; padding:12px 28px; font-size:16px; border-radius:10px; border:1px solid #888; background:#f3f3f3; color:#111;}
+  #driver-overlay a{color:#0645ad; font-size:16px;}
 </style>
 </head>
 <body>
@@ -794,6 +805,15 @@
   </header>
 
   <div class="hotel-card" id="hotel-card"></div>
+  <div id="driver-overlay" onclick="this.classList.remove('show')">
+    <div class="d-lead">この住所までお願いします。</div>
+    <div class="d-name">ザ・ベーシックス福岡</div>
+    <div class="d-en">THE BASICS FUKUOKA</div>
+    <div class="d-addr">〒812-0013<br>福岡県福岡市博多区<br>博多駅東2-14-1</div>
+    <div class="d-tel">TEL 092-412-1234</div>
+    <a href="https://www.google.com/maps/search/?api=1&query=THE+BASICS+FUKUOKA" target="_blank" onclick="event.stopPropagation()">Google Maps</a>
+    <button class="d-close">閉じる / 關閉</button>
+  </div>
 
   <div class="section" id="section-prep"></div>
   <div class="section" id="section-packing"></div>
@@ -872,6 +892,7 @@ hotelCard.innerHTML = `
     <div>
       <div class="hotel-name">THE BASICS FUKUOKA${mapA('THE BASICS FUKUOKA')}</div>
       <div class="hotel-address">福岡県福岡市博多区博多駅東2-14-1（博多站步行約7分鐘）</div>
+      <button class="driver-btn" onclick="document.getElementById('driver-overlay').classList.add('show')">🚕 給司機看</button>
     </div>
   </div>
   <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
@@ -885,8 +906,8 @@ const prep = [
   {
     title:"交通預訂", accent:"var(--steel)",
     items:[
-      {text:`提前註冊 JR九州Web會員＋登錄信用卡`, detail:`為了 10/9 搶由布院之森，建議<b>提前幾天</b>（不要當天）就先把會員註冊好、信用卡登錄進會員資料，搶票當天選卡才能秒選。${linkA('會員註冊頁面', 'https://train.yoyaku.jrkyushu.co.jp/jr/pc/member/NewMember')}`, priority:"必辦"},
-      {text:`由布院之森 / 由布號 特急指定席預約（11/9）`, detail:`熱門觀光列車，旺季常額滿。開放訂票日：<b>10/9</b>（出發日往前一個月的同一天，日本時間約上午10點開放，建議一開放就搶訂）。搶票當天技巧：①<b>不要太早登入會員</b>（幾分鐘沒動作會自動登出，建議快9點台灣時間才登入）②搜尋時務必<b>勾選「乗換えなし（不要換乘）」</b>，不然系統會優先推薦轉乘新幹線的方案 ③選「<b>九州ネットきっぷ（QR）</b>」比窗口價格便宜，也不用換紙本票，手機出示QR Code直接進站（僅限博多～由布院區間，你們的路線適用）。${linkA('JR九州網路訂票系統（直接訂票）', 'https://train.yoyaku.jrkyushu.co.jp/jr/pc/Top')}`, priority:"必辦"},
+      {text:"✅ 由布院之森 來回票已訂好（11/9）", detail:"10/9 已完成訂票。當天記得手機截圖保存 QR Code / 預約確認信，進站前確認發車月台。", priority:""},
+      {text:"✅ COMICO ART MUSEUM 已預約（11/9 12:20）", detail:"記得截圖預約確認，提早幾分鐘到場報到。", priority:""},
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
       {text:"訂位 炉端ノいとおかし（11/10 09:00 早餐）", detail:"六本松人氣排隊早餐，完全預約制，現場恕不接待。⚠️ 要等下個月10號才開放訂位，記得那天一開放就去搶訂。", priority:"必辦"},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
@@ -1053,30 +1074,18 @@ const days = [
     ],
     plans:[
       {
-        label:"去程車次選擇",
-        options:["由布院之森 1", "由布院之森 3", "由布號"],
+        label:"✅ 已訂車票",
+        options:["去程：由布院之森 1", "回程：由布院之森 6"],
         bodies:[
           `<div class="leg"><span class="t">09:17</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
            <div class="leg"><span class="t">11:31</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
-          `<div class="leg"><span class="t">10:11</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
-           <div class="leg"><span class="t">12:27</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`,
-          `<div class="leg"><span class="t">12:14</span><span class="p">博多 發車${mapA('博多駅')}</span></div>
-           <div class="leg"><span class="t">14:33</span><span class="p">由布院 抵達${mapA('由布院駅')}</span></div>`
-        ]
-      },
-      {
-        label:"回程車次選擇",
-        options:["由布院之森 6", "由布號 6"],
-        bodies:[
           `<div class="leg"><span class="t">17:17</span><span class="p">由布院 發車${mapA('由布院駅')}</span></div>
-           <div class="leg"><span class="t">19:27</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`,
-          `<div class="leg"><span class="t">19:27</span><span class="p">由布院 發車${mapA('由布院駅')}</span></div>
-           <div class="leg"><span class="t">21:34</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`
+           <div class="leg"><span class="t">19:27</span><span class="p">博多 抵達${mapA('博多駅')}</span></div>`
         ]
       }
     ],
     fare:"",
-    note:"特急列車須事先完成 JR 預約，建議及早訂位。",
+    note:"✅ 來回特急指定席已訂好，記得保存 QR Code / 確認信。",
     meals:[
       {type:"午餐・已確定（金鱗湖店）", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。選金鱗湖店，從美術館過去順路不用走回頭路。", map:"由布まぶし心 金鱗湖"},
       {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
@@ -1271,7 +1280,7 @@ const EXPENSE_KEY = 'fukuoka_pretrip_expenses_v1';
 const CATEGORY_KEY = 'fukuoka_categories_v1';
 const CATEGORY_CURRENCY_DEFAULT = {
   flight:'TWD', insurance:'TWD', esim:'TWD',
-  stay:'JPY', ticket:'JPY', other:'JPY'
+  stay:'JPY', transport:'JPY', ticket:'JPY', other:'JPY'
 };
 
 const BUDGET_KEY = 'fukuoka_budget_twd_v1';
@@ -1295,6 +1304,7 @@ function onBudgetChange(){
 const DEFAULT_CATEGORIES = [
   {key:'flight', emoji:'✈️', label:'機票'},
   {key:'stay', emoji:'🏨', label:'住宿'},
+  {key:'transport', emoji:'🚆', label:'交通'},
   {key:'esim', emoji:'📶', label:'網路/eSIM'},
   {key:'insurance', emoji:'🛡️', label:'保險'},
   {key:'ticket', emoji:'🎫', label:'門票/預約'},
@@ -1412,7 +1422,9 @@ function fmtTwdOneLine(totals){
 // 已確定花費：直接寫死在頁面裡，不受瀏覽器/裝置影響，任何人打開都看得到
 const fixedExpenses = [
   {date:'2026-03-18', category:'flight', note:'福岡來回機票（長榮 BR106/BR105）', amt:13657, currency:'TWD', paymentMethod:'card', noConvert:true},
-  {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜（每人）', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2}
+  {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜（每人）', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2},
+  {date:'2026-10-09', category:'transport', note:'由布院列車（由布院之森 來回，每人）', amt:11200, currency:'JPY', paymentMethod:'card'},
+  {date:'2026-10-09', category:'ticket', note:'COMICO ART MUSEUM YUFUIN 門票（每人）', amt:1700, currency:'JPY', paymentMethod:'card'}
 ];
 
 let expenseEntries = loadExpenses(); // [{date, amt, category, note, paymentMethod, currency}]
