@@ -785,26 +785,49 @@
   #driver-overlay .d-close{margin-top:10px; padding:12px 28px; font-size:16px; border-radius:10px; border:1px solid var(--ink-soft); background:transparent; color:var(--ink);}
   #driver-overlay a{color:var(--ink); text-decoration:underline; font-size:16px;}
   /* shopping list */
-  .shop-add{display:flex; gap:8px; margin:6px 0 14px;}
-  .shop-add input{flex:1; min-width:0; padding:10px 12px; font-size:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-family:inherit;}
-  .shop-add button{padding:10px 16px; border:none; border-radius:10px; background:var(--vermilion); color:#fff; font-size:15px; cursor:pointer; font-family:inherit;}
-  .shop-item{display:flex; align-items:center; gap:10px; padding:11px 12px; background:var(--panel); border:1px solid var(--line); border-radius:10px; margin-bottom:8px;}
-  .shop-item .shop-box{width:22px; height:22px; flex:none; border:2px solid var(--ink-soft); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff;}
-  .shop-item.done .shop-box{background:var(--vermilion); border-color:var(--vermilion);}
-  .shop-item .shop-txt{flex:1; font-size:15px; word-break:break-word; cursor:pointer;}
-  .shop-item.done .shop-txt{text-decoration:line-through; color:var(--ink-soft);}
-  .shop-item .shop-del{background:none; border:none; color:var(--ink-soft); font-size:18px; padding:4px 8px; cursor:pointer;}
-  .shop-empty{color:var(--ink-soft); font-size:14px; padding:18px 4px;}
-  .shop-tabs{display:flex; gap:6px; margin:10px 0 4px;}
+  .shop-tabs{display:flex; gap:6px; margin:10px 0 8px;}
   .shop-tabs button{flex:1; padding:9px 0; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink-soft); font-size:14.5px; font-family:inherit; cursor:pointer;}
   .shop-tabs button.active{background:var(--ink); color:var(--bg); border-color:var(--ink);}
-  .shop-who{font-weight:700; font-size:14px; margin:14px 2px 6px; color:var(--ink);}
-  .shop-cam{padding:0 !important; width:44px; flex:none; background:var(--panel) !important; border:1px solid var(--line) !important; color:var(--ink) !important; font-size:20px !important; overflow:hidden;}
+  .shop-form{display:flex; flex-direction:column; gap:8px; margin-bottom:12px;}
+  .shop-row{display:flex; gap:8px;}
+  .shop-form input, .shop-form select, #shop-edit input, #shop-edit select{flex:1; min-width:0; padding:10px 12px; font-size:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-family:inherit;}
+  .shop-addbtn{flex:1; padding:10px 16px; border:none; border-radius:10px; background:var(--vermilion); color:#fff; font-size:15px; cursor:pointer; font-family:inherit;}
+  .shop-cam{padding:0 !important; width:44px; height:44px; flex:none; background:var(--panel); border:1px solid var(--line); border-radius:10px; color:var(--ink); font-size:20px; overflow:hidden; cursor:pointer;}
   .shop-cam img{width:100%; height:100%; object-fit:cover; display:block;}
+  .shop-sum{display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; padding:10px 12px; margin-bottom:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; font-size:13px; color:var(--ink-soft);}
+  .shop-sum b{color:var(--ink);}
+  .shop-chips{display:flex; gap:6px; overflow-x:auto; margin-bottom:10px; padding-bottom:2px;}
+  .shop-chips button{flex:none; padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--panel); color:var(--ink-soft); font-size:13px; font-family:inherit; cursor:pointer;}
+  .shop-chips button.active{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .shop-item{display:flex; align-items:center; gap:10px; padding:10px 8px 10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:10px; margin-bottom:8px;}
+  .shop-item .shop-box{width:22px; height:22px; flex:none; border:2px solid var(--ink-soft); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; cursor:pointer;}
+  .shop-item.done .shop-box{background:var(--vermilion); border-color:var(--vermilion);}
+  .shop-main{flex:1; min-width:0; cursor:pointer;}
+  .shop-txt{font-size:15px; word-break:break-word;}
+  .shop-qty{color:var(--vermilion); font-weight:700;}
+  .shop-sub{font-size:12px; color:var(--ink-soft); margin-top:2px; word-break:break-word;}
+  .shop-item.done .shop-txt{text-decoration:line-through; color:var(--ink-soft);}
+  .shop-item.done{opacity:.7;}
+  .shop-ico{background:none; border:none; color:var(--ink-soft); font-size:17px; padding:6px; cursor:pointer;}
   .shop-thumb{width:44px; height:44px; flex:none; object-fit:cover; border-radius:8px; cursor:zoom-in;}
+  .shop-who{font-weight:700; font-size:14px; margin:14px 2px 6px; color:var(--ink); display:flex; justify-content:space-between;}
+  .shop-who-sum{font-weight:400; color:var(--ink-soft); font-size:12.5px;}
+  .shop-empty{color:var(--ink-soft); font-size:14px; padding:18px 4px;}
+  .shop-tools{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .shop-tools button{flex:1 1 auto; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-size:13.5px; font-family:inherit; cursor:pointer;}
   #shop-photo-overlay{position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; padding:16px;}
   #shop-photo-overlay.show{display:flex;}
   #shop-photo-overlay img{max-width:100%; max-height:100%; border-radius:10px;}
+  #shop-edit{position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.5); display:none; align-items:flex-end; justify-content:center;}
+  #shop-edit.show{display:flex;}
+  .se-card{width:100%; max-width:560px; max-height:92vh; overflow:auto; background:var(--bg); color:var(--ink); border-radius:16px 16px 0 0; padding:16px 16px calc(16px + env(safe-area-inset-bottom,0)); display:flex; flex-direction:column; gap:10px;}
+  .se-title{font-weight:700; font-size:16px;}
+  .se-photo{align-items:center;}
+  .se-photo button, .se-cancel, .se-save{padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-size:14.5px; font-family:inherit; cursor:pointer; flex:none;}
+  .se-cancel, .se-save{flex:1;}
+  .se-save{background:var(--vermilion); color:#fff; border-color:var(--vermilion);}
+  #se-photo-prev{flex:1; min-width:0; font-size:13px; color:var(--ink-soft);}
+  #se-photo-prev img{width:56px; height:56px; object-fit:cover; border-radius:8px; display:block;}
 </style>
 </head>
 <body>
@@ -932,7 +955,7 @@ const prep = [
       {text:"✅ 由布院之森 來回票已訂好（11/9）", detail:"10/9 已完成訂票。當天記得手機截圖保存 QR Code / 預約確認信，進站前確認發車月台。", priority:""},
       {text:"✅ COMICO ART MUSEUM 已預約（11/9 12:20）", detail:"記得截圖預約確認，提早幾分鐘到場報到。", priority:""},
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
-      {text:"訂位 炉端ノいとおかし（11/10 09:00 早餐）", detail:"六本松人氣排隊早餐，完全預約制，現場恕不接待。⚠️ 要等下個月10號才開放訂位，記得那天一開放就去搶訂。", priority:"必辦"},
+      {text:"✅ 炉端ノいとおかし 已訂位（11/10 09:00 早餐）", detail:"訂位完成，完全預約制，當天記得準時抵達。", priority:""},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
       {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 門司港・皿倉山）", detail:"這天還會搭関門連絡船去唐戸市場（渡輪不算在JR Pass內），若JR段數不多，也可以比較單程票是否更划算。", priority:""},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
@@ -961,6 +984,18 @@ const prep = [
       {text:"準備輕便雨具", detail:"", priority:""},
       {text:"帶一雙好走的鞋", detail:"太宰府、由布院、門司港皆需步行不少路。", priority:""},
       {text:"轉接插頭／充電器（日本為 A 型插座、110V）", detail:"", priority:""}
+    ]
+  },
+  {
+    title:"🌙 出發前一天最後確認", accent:"var(--gold)",
+    items:[
+      {text:"把所有 QR Code 截圖存進手機相簿", detail:"由布院之森去程／回程、COMICO 美術館入館 QR，從信箱截圖後存到相簿，建議建一個「福岡票券」相簿。進站、入館時直接出示，不用翻信箱，也不怕沒訊號。", priority:"必辦"},
+      {text:"把這個網頁開過一次（離線備用）", detail:"連上網路把行程網頁完整打開一次，之後沒訊號（山區、地下街）也能開。購物清單另外按「備份」存一份檔案。", priority:"必辦"},
+      {text:"下載 Google 地圖離線地圖（福岡、由布院、北九州）", detail:"Google 地圖 → 個人資料 → 離線地圖 → 自行選擇區域。", priority:""},
+      {text:"行動電源、手機、相機電池充飽", detail:"", priority:""},
+      {text:"確認 eSIM 已安裝且可啟用", detail:"出發前先安裝好，落地後再開啟漫遊／切換。", priority:""},
+      {text:"線上 Check-in 或確認登機證（BR106）", detail:"", priority:""},
+      {text:"最後確認皮皮接送的會合時間與地點", detail:"11/6 13:30，地點仍待確認。", priority:""}
     ]
   }
 ];
@@ -1118,11 +1153,11 @@ const days = [
     date:"11/10", wd:"二", theme:"購物", accent:"var(--steel)",
     weather:"多以室內商場移動為主，但店與店之間移動仍會吹到風，建議帶件方便穿脫的外套。",
     stops:[
-      {time:"09:00", place:"🍳 早餐・炉端ノいとおかし", note:"六本松人氣排隊早餐，完全預約制（現場排隊恕不接待），招牌銀鮭定食。⚠️ 尚未訂位，要等下個月10號才開放訂位", tag:"BREAKFAST", map:"炉端ノいとおかし"}
+      {time:"09:00", place:"🍳 早餐・炉端ノいとおかし", note:"✅ 已訂位 09:00。六本松人氣排隊早餐，完全預約制（現場排隊恕不接待），招牌銀鮭定食。", tag:"BREAKFAST", map:"炉端ノいとおかし"}
     ], plans:[], fare:"", note:"", empty:true,
     placeholderText:"早餐後的購物路線還沒排 — 需要我幫忙安排博多／天神一帶的購物路線嗎？",
     meals:[
-      {type:"早餐・尚未開放訂位", name:"炉端ノいとおかし", note:"福岡市中央區六本松，超人氣排隊早餐名店，招牌是炭燒銀鮭定食、土鍋炊飯，完全預約制，現場恕不接待候位。⚠️ 要等下個月10號才開放訂位，記得屆時盡快訂 09:00。", map:"炉端ノいとおかし"},
+      {type:"早餐・已確定訂位 09:00", name:"炉端ノいとおかし", note:"福岡市中央區六本松，超人氣排隊早餐名店，招牌是炭燒銀鮭定食、土鍋炊飯，完全預約制，現場恕不接待候位。訂位已完成（09:00），當天準時抵達即可。", map:"炉端ノいとおかし"},
       {type:"晚餐建議", name:"大山牛腸鍋（天神 ONE BLDG. 店／KITTE博多店）", note:"博多招牌牛腸鍋名店，交通方便，逛街後順路。", map:"博多もつ鍋 おおやま 天神"},
       {type:"備選", name:"一蘭拉麵 中洲川端總本店 / 華味鳥水炊鍋", note:"想吃拉麵可選一蘭總本店的「味集中座位」；想吃雞肉鍋可選博多華味鳥。", map:"一蘭ラーメン 中洲川端総本店"}
     ]
@@ -1861,15 +1896,29 @@ function selectPanel(key){
   if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
 }
 
-// --- 購物清單 tab (localStorage) ---
+// --- 離線快取（需要同資料夾有 sw.js；沒有也不影響使用）---
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+
+// --- 購物清單 tab (localStorage + IndexedDB 照片) ---
 const SHOP_KEY = 'fukuoka_shopping_v1';
 function loadShop(){ try { return JSON.parse(localStorage.getItem(SHOP_KEY)) || []; } catch(e){ return []; } }
 function saveShop(){ try { localStorage.setItem(SHOP_KEY, JSON.stringify(shopItems)); return true; } catch(e){ return false; } }
+function newShopId(){ return 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 let shopItems = loadShop();
+shopItems.forEach(it => { if (!it.id) it.id = newShopId(); });
+const SHOP_PLACES = ['藥妝店','百貨・商場','超市・便利商店','市集・商店街','機場','其他'];
 let shopTab = 'me';
+let shopFilter = '';
 let shopPendingPhoto = null;
+let shopDraft = {who:'', text:'', note:'', price:'', qty:'1', place:''};
+let shopEditId = null;
+let shopEditPhoto;   // undefined=不變, null=移除, string=新照片
 const photoCache = {};
 let photoDB = null;
+const shopPanel = document.getElementById('section-shopping');
+
 function openPhotoDB(){
   return new Promise(res => {
     try {
@@ -1903,95 +1952,169 @@ function idbLoadAll(){
   });
 }
 function photoSrc(it){ return it.photoId ? (photoCache[it.photoId] || '') : (it.photo || ''); }
-const shopPanel = document.getElementById('section-shopping');
+function dropPhoto(it){ if (it.photoId){ idbDel(it.photoId); delete photoCache[it.photoId]; } delete it.photoId; delete it.photo; }
+function readPhoto(file){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const max = 1280, r = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+    img.src = url;
+  });
+}
+// 回傳要寫進 item 的照片欄位；失敗回傳 null
+async function storePhoto(dataUrl){
+  const id = 'ph' + Date.now() + Math.random().toString(36).slice(2,6);
+  if (await idbPut(id, dataUrl)){ photoCache[id] = dataUrl; return {photoId:id}; }
+  return {photo:dataUrl};
+}
+
+function fmtYen(n){ return '¥' + Math.round(n).toLocaleString(); }
+function fmtTwd(n){ return 'NT$' + Math.round(n).toLocaleString(); }
+function priceBoth(jpy){ return `${fmtYen(jpy)}（≈${fmtTwd(jpy * exchangeRate)}）`; }
 function escHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function shopRow(it, i, showWho){
+function itemTotal(it){ const p = Number(it.price) || 0; const q = Number(it.qty) || 1; return p * q; }
+function sortUndoneFirst(arr){ return arr.map((x,i)=>({x,i})).sort((a,b) => (a.x.done - b.x.done) || (a.i - b.i)).map(o => o.x); }
+
+function shopRow(it){
+  const q = Number(it.qty) || 1;
+  const sub = [];
+  if (it.place) sub.push(escHtml(it.place));
+  if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 ? `（${fmtYen(it.price)}×${q}）` : ''));
+  if (it.note) sub.push(escHtml(it.note));
+  const src = photoSrc(it);
   return `
     <div class="shop-item${it.done?' done':''}">
-      <div class="shop-box" onclick="toggleShop(${i})">${it.done?'✓':''}</div>
-      ${photoSrc(it) ? `<img class="shop-thumb" src="${photoSrc(it)}" onclick="viewShopPhoto(${i})" alt="">` : ''}
-      <div class="shop-txt" onclick="toggleShop(${i})">${escHtml(it.text)}</div>
-      <button class="shop-del" onclick="delShop(${i})" aria-label="刪除">✕</button>
+      <div class="shop-box" onclick="toggleShop('${it.id}')">${it.done?'✓':''}</div>
+      ${src ? `<img class="shop-thumb" src="${src}" onclick="viewShopPhoto('${it.id}')" alt="">` : ''}
+      <div class="shop-main" onclick="toggleShop('${it.id}')">
+        <div class="shop-txt">${escHtml(it.text)}${q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
+        ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
+      </div>
+      <button class="shop-ico" onclick="openShopEdit('${it.id}')" aria-label="編輯">✎</button>
+      <button class="shop-ico" onclick="delShop('${it.id}')" aria-label="刪除">✕</button>
     </div>`;
 }
 function renderShop(){
   const isMe = shopTab === 'me';
-  const idx = shopItems.map((it,i) => ({it,i})).filter(o => (o.it.type || 'me') === shopTab);
-  const left = idx.filter(o => !o.it.done).length;
+  const tabItems = shopItems.filter(it => (it.type || 'me') === shopTab);
+  const places = SHOP_PLACES.filter(p => tabItems.some(it => it.place === p));
+  if (shopFilter && !places.includes(shopFilter)) shopFilter = '';
+  const vis = tabItems.filter(it => !shopFilter || it.place === shopFilter);
+  const left = tabItems.filter(it => !it.done).length;
+  const totalAll = tabItems.reduce((s,it) => s + itemTotal(it), 0);
+  const totalLeft = tabItems.filter(it => !it.done).reduce((s,it) => s + itemTotal(it), 0);
+
   let listHtml = '';
   if (isMe){
-    listHtml = idx.map(o => shopRow(o.it, o.i)).join('');
+    listHtml = sortUndoneFirst(vis).map(shopRow).join('');
   } else {
     const groups = {};
-    idx.forEach(o => { const w = o.it.who || '未指定'; (groups[w] = groups[w] || []).push(o); });
-    listHtml = Object.keys(groups).map(w => `
-      <div class="shop-who">${escHtml(w)}（${groups[w].filter(o=>!o.it.done).length}/${groups[w].length}）</div>
-      ${groups[w].map(o => shopRow(o.it, o.i)).join('')}`).join('');
+    vis.forEach(it => { const w = it.who || '未指定'; (groups[w] = groups[w] || []).push(it); });
+    listHtml = Object.keys(groups).map(w => {
+      const g = groups[w];
+      const sum = g.reduce((s,it) => s + itemTotal(it), 0);
+      return `<div class="shop-who">${escHtml(w)}（${g.filter(it=>!it.done).length}/${g.length}）${sum>0 ? `<span class="shop-who-sum">${fmtYen(sum)}</span>` : ''}</div>${sortUndoneFirst(g).map(shopRow).join('')}`;
+    }).join('');
   }
-  const prevWho = (document.getElementById('shop-who') || {}).value || '';
+  const d = shopDraft;
   shopPanel.innerHTML = `
     <h2 class="day-title">日本購物清單</h2>
-    <span class="day-sub">${idx.length ? `還有 ${left} 項沒買` : '想到什麼就先記下來，逛街時邊買邊勾'}</span>
+    <span class="day-sub">${tabItems.length ? `還有 ${left} 項沒買` : '想到什麼就先記下來，逛街時邊買邊勾'}</span>
     <div class="shop-tabs">
       <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買</button>
       <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買</button>
     </div>
-    <div class="shop-add">
-      ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(prevWho)}" style="flex:0 0 72px" enterkeyhint="next">`}
-      <input id="shop-input" type="text" placeholder="${isMe?'輸入想買的東西':'要買什麼'}" enterkeyhint="done" onkeydown="if(event.key==='Enter')addShop()">
-      <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
-      <button onclick="addShop()">加入</button>
+    <div class="shop-form">
+      <div class="shop-row">
+        ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
+        <input id="shop-input" type="text" placeholder="${isMe?'想買的東西':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
+      </div>
+      <div class="shop-row">
+        <input type="text" placeholder="備註（規格、口味、尺寸…）" value="${escHtml(d.note)}" oninput="shopDraft.note=this.value">
+      </div>
+      <div class="shop-row">
+        <input type="number" inputmode="numeric" placeholder="單價 ¥" value="${escHtml(d.price)}" oninput="shopDraft.price=this.value" style="flex:1.2">
+        <input type="number" inputmode="numeric" placeholder="數量" value="${escHtml(d.qty)}" oninput="shopDraft.qty=this.value" style="flex:0.8">
+        <select onchange="shopDraft.place=this.value" style="flex:1.4">
+          <option value="">買哪裡</option>
+          ${SHOP_PLACES.map(p => `<option value="${p}"${d.place===p?' selected':''}>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="shop-row">
+        <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
+        <button class="shop-addbtn" onclick="addShop()">加入</button>
+      </div>
+      <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
     </div>
-    <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
+    ${totalAll > 0 ? `<div class="shop-sum"><div>預估總額　<b>${priceBoth(totalAll)}</b></div><div>還沒買　<b>${priceBoth(totalLeft)}</b></div></div>` : ''}
+    ${places.length > 1 ? `<div class="shop-chips"><button class="${!shopFilter?'active':''}" onclick="setShopFilter('')">全部</button>${places.map(p => `<button class="${shopFilter===p?'active':''}" onclick="setShopFilter('${p}')">${p}</button>`).join('')}</div>` : ''}
     ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
-    <div class="note-box" style="margin-top:14px">清單存在這支手機的瀏覽器裡，換手機或清除瀏覽資料就會消失。</div>`;
+    <div class="shop-tools">
+      <button onclick="copyShopText()">複製清單文字</button>
+      <button onclick="clearBoughtShop()">清掉已買</button>
+      <button onclick="backupShop()">備份</button>
+      <button onclick="document.getElementById('shop-restore').click()">還原</button>
+      <input id="shop-restore" type="file" accept=".json,application/json" style="display:none" onchange="restoreShop(this)">
+    </div>
+    <div class="note-box" style="margin-top:14px">清單和照片存在這支手機的瀏覽器裡，換手機或清除瀏覽資料就會消失。出發前建議按「備份」存一份檔案。</div>`;
 }
-function setShopTab(t){ shopTab = t; renderShop(); }
-function addShop(){
-  const inp = document.getElementById('shop-input');
-  const v = inp.value.trim();
-  if (!v) return;
-  const item = {text:v, done:false, type:shopTab};
+function setShopTab(t){ shopTab = t; shopFilter = ''; renderShop(); }
+function setShopFilter(p){ shopFilter = p; renderShop(); }
 
+async function addShop(){
+  const text = shopDraft.text.trim();
+  if (!text) { showToast('請先輸入品項'); return; }
+  const item = {id:newShopId(), text, done:false, type:shopTab};
   if (shopTab === 'other'){
-    item.who = (document.getElementById('shop-who').value || '').trim();
-    if (!item.who){ showToast('請先填「誰」'); document.getElementById('shop-who').focus(); return; }
+    item.who = shopDraft.who.trim();
+    if (!item.who){ showToast('請先填「誰」'); const w = document.getElementById('shop-who'); if (w) w.focus(); return; }
   }
-  const finish = () => { shopItems.push(item); saveShop(); shopPendingPhoto = null; renderShop(); document.getElementById('shop-input').focus(); };
-  if (shopPendingPhoto){
-    const id = 'ph' + Date.now() + Math.random().toString(36).slice(2,6);
-    idbPut(id, shopPendingPhoto).then(ok => {
-      if (ok){ item.photoId = id; photoCache[id] = shopPendingPhoto; }
-      else { item.photo = shopPendingPhoto; if (!(() => { shopItems.push(item); const r = saveShop(); shopItems.pop(); return r; })()){ showToast('空間不足，存不下這張照片'); return; } }
-      finish();
-    });
-    return;
-  }
-  finish();
-  return;
+  if (shopDraft.note.trim()) item.note = shopDraft.note.trim();
+  const price = parseFloat(shopDraft.price); if (price > 0) item.price = price;
+  const qty = parseInt(shopDraft.qty, 10); if (qty > 1) item.qty = qty;
+  if (shopDraft.place) item.place = shopDraft.place;
+  if (shopPendingPhoto) Object.assign(item, await storePhoto(shopPendingPhoto));
+  shopItems.push(item);
+  if (!saveShop()){ shopItems.pop(); dropPhoto(item); showToast('空間不足，存不下這筆'); return; }
+  shopPendingPhoto = null;
+  shopDraft.text = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
+  renderShop();
+  const inp = document.getElementById('shop-input'); if (inp) inp.focus();
 }
-function onShopPhoto(inp){
+async function onShopPhoto(inp){
   const f = inp.files && inp.files[0];
   if (!f) return;
-  const img = new Image();
-  const url = URL.createObjectURL(f);
-  img.onload = () => {
-    const max = 1280, r = Math.min(1, max / Math.max(img.width, img.height));
-    const c = document.createElement('canvas');
-    c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    shopPendingPhoto = c.toDataURL('image/jpeg', 0.85);
-    URL.revokeObjectURL(url);
-    const t = (document.getElementById('shop-input') || {}).value || '';
-    const w = (document.getElementById('shop-who') || {}).value || '';
-    renderShop();
-    document.getElementById('shop-input').value = t;
-    const we = document.getElementById('shop-who'); if (we) we.value = w;
-  };
-  img.onerror = () => showToast('無法讀取這張照片');
-  img.src = url;
+  try { shopPendingPhoto = await readPhoto(f); renderShop(); } catch(e){ showToast('無法讀取這張照片'); }
 }
-function viewShopPhoto(i){
+function findShop(id){ return shopItems.find(it => it.id === id); }
+function toggleShop(id){ const it = findShop(id); if (!it) return; it.done = !it.done; saveShop(); renderShop(); }
+function delShop(id){
+  const it = findShop(id); if (!it) return;
+  if (!confirm(`刪除「${it.text}」？`)) return;
+  dropPhoto(it);
+  shopItems = shopItems.filter(x => x.id !== id);
+  saveShop(); renderShop();
+}
+function clearBoughtShop(){
+  const done = shopItems.filter(it => it.done && (it.type || 'me') === shopTab);
+  if (!done.length){ showToast('目前沒有已買的項目'); return; }
+  if (!confirm(`清掉 ${done.length} 個已買項目？`)) return;
+  done.forEach(dropPhoto);
+  shopItems = shopItems.filter(it => !done.includes(it));
+  saveShop(); renderShop();
+}
+function viewShopPhoto(id, direct){
+  const it = findShop(id);
+  const src = direct || (it && photoSrc(it));
+  if (!src) return;
   let o = document.getElementById('shop-photo-overlay');
   if (!o){
     o = document.createElement('div');
@@ -1999,11 +2122,140 @@ function viewShopPhoto(i){
     o.onclick = () => o.classList.remove('show');
     document.body.appendChild(o);
   }
-  o.innerHTML = `<img src="${photoSrc(shopItems[i])}" alt="">`;
+  o.innerHTML = `<img src="${src}" alt="">`;
   o.classList.add('show');
 }
-function toggleShop(i){ shopItems[i].done = !shopItems[i].done; saveShop(); renderShop(); }
-function delShop(i){ const g = shopItems[i]; if (g && g.photoId){ idbDel(g.photoId); delete photoCache[g.photoId]; } shopItems.splice(i,1); saveShop(); renderShop(); }
+
+// 編輯
+function openShopEdit(id){
+  const it = findShop(id); if (!it) return;
+  shopEditId = id; shopEditPhoto = undefined;
+  let o = document.getElementById('shop-edit');
+  if (!o){ o = document.createElement('div'); o.id = 'shop-edit'; document.body.appendChild(o); }
+  const isOther = (it.type || 'me') === 'other';
+  o.innerHTML = `
+    <div class="se-card">
+      <div class="se-title">編輯項目</div>
+      ${isOther ? `<input id="se-who" type="text" placeholder="誰" value="${escHtml(it.who || '')}">` : ''}
+      <input id="se-text" type="text" placeholder="品項" value="${escHtml(it.text)}">
+      <input id="se-note" type="text" placeholder="備註" value="${escHtml(it.note || '')}">
+      <div class="shop-row">
+        <input id="se-price" type="number" inputmode="numeric" placeholder="單價 ¥" value="${it.price || ''}">
+        <input id="se-qty" type="number" inputmode="numeric" placeholder="數量" value="${it.qty || 1}">
+      </div>
+      <select id="se-place"><option value="">買哪裡</option>${SHOP_PLACES.map(p => `<option value="${p}"${it.place===p?' selected':''}>${p}</option>`).join('')}</select>
+      <div class="shop-row se-photo">
+        <div id="se-photo-prev">${photoSrc(it) ? `<img src="${photoSrc(it)}" alt="">` : '<span>無照片</span>'}</div>
+        <button onclick="document.getElementById('se-file').click()">換照片</button>
+        <button onclick="removeEditPhoto()">移除</button>
+        <input id="se-file" type="file" accept="image/*" style="display:none" onchange="onEditPhoto(this)">
+      </div>
+      <div class="shop-row">
+        <button class="se-cancel" onclick="closeShopEdit()">取消</button>
+        <button class="se-save" onclick="saveShopEdit()">儲存</button>
+      </div>
+    </div>`;
+  o.classList.add('show');
+}
+function closeShopEdit(){ const o = document.getElementById('shop-edit'); if (o) o.classList.remove('show'); shopEditId = null; }
+async function onEditPhoto(inp){
+  const f = inp.files && inp.files[0]; if (!f) return;
+  try {
+    shopEditPhoto = await readPhoto(f);
+    document.getElementById('se-photo-prev').innerHTML = `<img src="${shopEditPhoto}" alt="">`;
+  } catch(e){ showToast('無法讀取這張照片'); }
+}
+function removeEditPhoto(){ shopEditPhoto = null; document.getElementById('se-photo-prev').innerHTML = '<span>無照片</span>'; }
+async function saveShopEdit(){
+  const it = findShop(shopEditId); if (!it) return closeShopEdit();
+  const text = document.getElementById('se-text').value.trim();
+  if (!text){ showToast('品項不能是空的'); return; }
+  const whoEl = document.getElementById('se-who');
+  if (whoEl){ const w = whoEl.value.trim(); if (!w){ showToast('請填「誰」'); return; } it.who = w; }
+  it.text = text;
+  const note = document.getElementById('se-note').value.trim();
+  if (note) it.note = note; else delete it.note;
+  const price = parseFloat(document.getElementById('se-price').value);
+  if (price > 0) it.price = price; else delete it.price;
+  const qty = parseInt(document.getElementById('se-qty').value, 10);
+  if (qty > 1) it.qty = qty; else delete it.qty;
+  const place = document.getElementById('se-place').value;
+  if (place) it.place = place; else delete it.place;
+  if (shopEditPhoto !== undefined){
+    dropPhoto(it);
+    if (shopEditPhoto) Object.assign(it, await storePhoto(shopEditPhoto));
+  }
+  saveShop(); closeShopEdit(); renderShop();
+}
+
+// 匯出文字
+function shopListText(){
+  const items = shopItems.filter(it => (it.type || 'me') === shopTab);
+  const line = it => {
+    const q = Number(it.qty) || 1;
+    let t = `${it.done ? '☑' : '☐'} ${it.text}${q > 1 ? ' ×' + q : ''}`;
+    const extra = [];
+    if (it.place) extra.push(it.place);
+    if (itemTotal(it) > 0) extra.push(fmtYen(itemTotal(it)));
+    if (it.note) extra.push(it.note);
+    if (extra.length) t += `（${extra.join('・')}）`;
+    return t;
+  };
+  if (shopTab === 'me') return `【福岡購物清單｜自己要買】\n` + sortUndoneFirst(items).map(line).join('\n');
+  const groups = {};
+  items.forEach(it => { const w = it.who || '未指定'; (groups[w] = groups[w] || []).push(it); });
+  return `【福岡購物清單｜幫別人買】\n` + Object.keys(groups).map(w => `\n▍${w}\n` + sortUndoneFirst(groups[w]).map(line).join('\n')).join('\n');
+}
+async function copyShopText(){
+  if (!shopItems.some(it => (it.type || 'me') === shopTab)){ showToast('清單是空的'); return; }
+  const txt = shopListText();
+  try { await navigator.clipboard.writeText(txt); showToast('已複製，可以貼到 LINE'); return; } catch(e){}
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+  showToast(ok ? '已複製，可以貼到 LINE' : '複製失敗，請改用備份');
+}
+
+// 備份／還原（含照片）
+function backupShop(){
+  if (!shopItems.length){ showToast('清單是空的，不需要備份'); return; }
+  const data = {app:'fukuoka-shopping', version:1, exportedAt:new Date().toISOString(),
+    items: shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } return c; })};
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a');
+  const d = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = `福岡購物清單備份_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  showToast('已產生備份檔，請存到「檔案」或雲端');
+}
+function restoreShop(inp){
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = async () => {
+    try {
+      const data = JSON.parse(rd.result);
+      if (!data || data.app !== 'fukuoka-shopping' || !Array.isArray(data.items)) throw new Error('bad');
+      if (!confirm(`還原 ${data.items.length} 個項目？目前的購物清單會被取代。`)) { inp.value = ''; return; }
+      shopItems.forEach(dropPhoto);
+      const out = [];
+      for (const raw of data.items){
+        const it = Object.assign({}, raw);
+        const pd = it.photoData; delete it.photoData;
+        if (!it.id) it.id = newShopId();
+        if (pd){ delete it.photoId; Object.assign(it, await storePhoto(pd)); }
+        out.push(it);
+      }
+      shopItems = out; saveShop(); renderShop();
+      showToast('已還原');
+    } catch(e){ showToast('這不是有效的備份檔'); }
+    inp.value = '';
+  };
+  rd.readAsText(f);
+}
 renderShop();
 openPhotoDB().then(idbLoadAll).then(renderShop);
 
