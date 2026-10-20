@@ -22,10 +22,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="福岡行程">
 <meta name="theme-color" content="#1F2A3C">
+<meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    color-scheme:light;
     --bg:#F1ECE1;
     --panel:#FBF8F2;
     --ink:#1F2A3C;
@@ -36,18 +38,6 @@
     --gold:#B98A2E;
     --steel:#3E6285;
     --white:#FFFFFF;
-  }
-  [data-theme="dark"]{
-    --bg:#161A22;
-    --panel:#1F2530;
-    --ink:#ECE7DC;
-    --ink-soft:#98A1B0;
-    --line:rgba(236,231,220,0.14);
-    --vermilion:#E0703A;
-    --moss:#7FA378;
-    --gold:#D4A64C;
-    --steel:#6B93BC;
-    --white:#262D3A;
   }
   body, .tab, .panel, .prep-group, .plan-block, .meal-card, .hotel-card, .fare, .note-box, .expense-box, .weather-tip{
     transition: background-color .25s ease, color .25s ease, border-color .25s ease;
@@ -828,6 +818,30 @@
   .se-save{background:var(--vermilion); color:#fff; border-color:var(--vermilion);}
   #se-photo-prev{flex:1; min-width:0; font-size:13px; color:var(--ink-soft);}
   #se-photo-prev img{width:56px; height:56px; object-fit:cover; border-radius:8px; display:block;}
+  /* expense redesign */
+  .exp-summary{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin:12px 0 18px;}
+  .exp-sum-label{font-size:13px; color:var(--ink-soft); margin-bottom:4px;}
+  .exp-sum-amt{font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700;}
+  .exp-summary .exp-sum-amt{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .exp-budget{display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:var(--ink-soft);}
+  .exp-budget input{width:110px; font-family:'JetBrains Mono',monospace; font-size:13px; border:1px solid var(--line); border-radius:4px; padding:6px 8px; background:var(--white); color:var(--ink);}
+  .exp-section-title{font-weight:700; font-size:15px; margin:0 2px 8px;}
+  .exp-list{margin-bottom:14px;}
+  .exp-fold{background:var(--panel); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden;}
+  .exp-fold > summary{padding:14px 16px; font-size:14.5px; font-weight:600; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center;}
+  .exp-fold > summary::-webkit-details-marker{display:none;}
+  .exp-fold > summary::after{content:'›'; font-size:20px; color:var(--ink-soft); transition:transform .15s;}
+  .exp-fold[open] > summary::after{transform:rotate(90deg);}
+  .exp-fold-body{padding:2px 16px 16px;}
+  .exp-tools{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+  .exp-group-title{font-size:13px; font-weight:700; color:var(--ink-soft); margin:14px 0 2px;}
+  .exp-group-title:first-child{margin-top:4px;}
+  .exp-section-note{font-weight:400; font-size:12px; color:var(--ink-soft); margin-left:8px;}
+  .exp-more{margin:10px 0 0;}
+  .exp-more > summary{font-size:13px; color:var(--ink-soft); cursor:pointer; padding:6px 0; list-style:none;}
+  .exp-more > summary::-webkit-details-marker{display:none;}
+  .exp-more > summary::before{content:'＋ '; }
+  .exp-more[open] > summary::before{content:'－ ';}
 </style>
 </head>
 <body>
@@ -843,8 +857,6 @@
         BR106&nbsp; TPE 08:00 → FUK 11:15<br>
         <b>11/6 (五) — 11/11 (三)</b> · 六天五夜
       </div>
-      <button id="theme-toggle" onclick="toggleTheme()" aria-label="切換深色模式"
-        style="flex:none; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-size:16px; cursor:pointer; touch-action:manipulation;">🌙</button>
     </div>
   </header>
 
@@ -880,26 +892,6 @@
 </nav>
 
 <script>
-// --- 深色模式 ---
-const THEME_KEY = 'fukuoka_theme_v1';
-function applyTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme);
-  const btn = document.getElementById('theme-toggle');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
-}
-function toggleTheme(){
-  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  try { localStorage.setItem(THEME_KEY, next); } catch(e){}
-}
-(function initTheme(){
-  let saved = null;
-  try { saved = localStorage.getItem(THEME_KEY); } catch(e){}
-  const preferred = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  applyTheme(preferred);
-})();
-
 // --- 小提示訊息 (toast) ---
 function showToast(msg){
   let toast = document.getElementById('app-toast');
@@ -943,10 +935,6 @@ hotelCard.innerHTML = `
   </div>
   <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
 `;
-const totalBadge = document.createElement('div');
-totalBadge.className = 'trip-total';
-totalBadge.innerHTML = `行前花費　<b id="trip-total-amt">¥0</b>`;
-hotelCard.appendChild(totalBadge);
 
 const prep = [
   {
@@ -983,7 +971,6 @@ const prep = [
       {text:"查詢 11 月福岡・由布院當地氣溫，洋蔥式穿法", detail:"日夜溫差較大，早晚山區（皿倉山、由布院）會更涼，建議帶薄外套或針織衫。", priority:""},
       {text:"準備輕便雨具", detail:"", priority:""},
       {text:"帶一雙好走的鞋", detail:"太宰府、由布院、門司港皆需步行不少路。", priority:""},
-      {text:"轉接插頭／充電器（日本為 A 型插座、110V）", detail:"", priority:""}
     ]
   },
   {
@@ -993,9 +980,7 @@ const prep = [
       {text:"把這個網頁開過一次（離線備用）", detail:"連上網路把行程網頁完整打開一次，之後沒訊號（山區、地下街）也能開。購物清單另外按「備份」存一份檔案。", priority:"必辦"},
       {text:"下載 Google 地圖離線地圖（福岡、由布院、北九州）", detail:"Google 地圖 → 個人資料 → 離線地圖 → 自行選擇區域。", priority:""},
       {text:"行動電源、手機、相機電池充飽", detail:"", priority:""},
-      {text:"確認 eSIM 已安裝且可啟用", detail:"出發前先安裝好，落地後再開啟漫遊／切換。", priority:""},
       {text:"線上 Check-in 或確認登機證（BR106）", detail:"", priority:""},
-      {text:"最後確認皮皮接送的會合時間與地點", detail:"11/6 13:30，地點仍待確認。", priority:""}
     ]
   }
 ];
@@ -1470,10 +1455,15 @@ function totalsToTwdJpy(totals){
   const jpy = (totals.JPY || 0) + convertAmt(totals.TWD || 0, 'TWD');
   return {twd, jpy};
 }
-function fmtRowAmt(amt, fromCur, noConvert){
-  const {twd, jpy} = toTwdJpy(amt, fromCur);
-  if (noConvert) return `NT$${Math.round(twd).toLocaleString()}`;
-  return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
+function fmtRowAmt(amt, fromCur){
+  return fromCur === 'JPY' ? `¥${Math.round(amt).toLocaleString()}` : `NT$${Math.round(amt).toLocaleString()}`;
+}
+// 依幣別各自顯示，不做換算（日幣在上、台幣在下）
+function fmtNative(totals){
+  const parts = [];
+  if (totals.JPY) parts.push(`¥${Math.round(totals.JPY).toLocaleString()}`);
+  if (totals.TWD) parts.push(`NT$${Math.round(totals.TWD).toLocaleString()}`);
+  return parts.length ? parts.join('<br>') : '—';
 }
 function fmtTwdMain(totals, noConvert){
   const {twd, jpy} = totalsToTwdJpy(totals);
@@ -1481,16 +1471,16 @@ function fmtTwdMain(totals, noConvert){
   return `NT$${Math.round(twd).toLocaleString()}<span class="e-payer" style="display:block;text-align:right;">（≈¥${Math.round(jpy).toLocaleString()}）</span>`;
 }
 function fmtTwdOneLine(totals){
-  const {twd, jpy} = totalsToTwdJpy(totals);
-  return `NT$${Math.round(twd).toLocaleString()}（≈¥${Math.round(jpy).toLocaleString()}）`;
+  const {twd} = totalsToTwdJpy(totals);
+  return `約 NT$${Math.round(twd).toLocaleString()}`;
 }
 
 // 已確定花費：直接寫死在頁面裡，不受瀏覽器/裝置影響，任何人打開都看得到
 const fixedExpenses = [
-  {date:'2026-03-18', category:'flight', note:'福岡來回機票（長榮 BR106/BR105）', amt:13657, currency:'TWD', paymentMethod:'card', noConvert:true},
-  {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜（每人）', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2},
-  {date:'2026-10-09', category:'transport', note:'由布院列車（由布院之森 來回，每人）', amt:11200, currency:'JPY', paymentMethod:'card'},
-  {date:'2026-10-09', category:'ticket', note:'COMICO ART MUSEUM YUFUIN 門票（每人）', amt:1700, currency:'JPY', paymentMethod:'card'}
+  {date:'2026-03-18', category:'flight', note:'機票', amt:13657, currency:'TWD', paymentMethod:'card', noConvert:true},
+  {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2},
+  {date:'2026-10-09', category:'transport', note:'由布院之森', amt:11200, currency:'JPY', paymentMethod:'card'},
+  {date:'2026-10-09', category:'ticket', note:'COMICO ART MUSEUM YUFUIN 門票', amt:1700, currency:'JPY', paymentMethod:'card'}
 ];
 
 let expenseEntries = loadExpenses(); // [{date, amt, category, note, paymentMethod, currency}]
@@ -1500,87 +1490,102 @@ let lastCurrency = 'JPY';
 
 const expensePanel = document.getElementById('section-expense');
 expensePanel.innerHTML = `
-  <h2 class="day-title">行前費用記錄</h2>
-  <span class="day-sub">出發前的機票、住宿、eSIM、保險等花費・下方「新增其他花費」存在這台裝置的瀏覽器裡，重新整理不會消失，但換裝置/瀏覽器看不到</span>
-  <div class="reset-row" style="justify-content:space-between;">
-    <div style="display:flex;gap:8px;">
-      <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="exportExpenses()">匯出備份</button>
-      <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="toggleImportBox()">匯入備份</button>
-    </div>
-    <button class="reset-btn" onclick="resetExpenses()">清除所有新增花費</button>
+  <h2 class="day-title">行前費用</h2>
+  <span class="day-sub">出發前已花的錢。新增的記錄只存在這支手機。</span>
+
+  <div class="exp-summary">
+    <div class="exp-sum-label">目前總花費</div>
+    <div id="summary-totals" class="exp-sum-amt"></div>
+    <div class="field-hint" id="summary-converted"></div>
+    <div id="budget-progress"></div>
   </div>
-  <div id="export-box" style="display:none; margin-bottom:14px;">
+
+  <div class="exp-section-title">花費明細<span class="exp-section-note">金額皆為每人</span></div>
+  <div class="expense-box exp-list">
+    <div id="exp-currency-groups"></div>
+    <div id="fixed-expense-list" style="display:none"></div>
+    <div id="expense-groups" style="display:none"></div>
+    <div id="exp-subtotals" style="display:none"></div>
+  </div>
+
+  <details class="exp-fold" id="add-details">
+    <summary>＋ 新增花費</summary>
+    <div class="exp-fold-body">
+      <div class="field-label">類別</div>
+      <div class="cat-row" id="cat-row"></div>
+
+      <div class="expense-add">
+        <input type="number" class="e-amt-input" id="e-amt" placeholder="金額" style="flex:1;">
+        <input type="date" id="e-date"
+          style="font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);">
+      </div>
+
+      <details class="exp-more">
+        <summary id="more-sum">更多選項（付款方式、幣別）</summary>
+        <div class="field-label">付款方式</div>
+        <div class="cat-row" id="pay-method-row"></div>
+        <div class="field-label">幣別</div>
+        <div class="cat-row" id="currency-row"></div>
+      </details>
+
+      <div class="field-label">備註（選填）</div>
+      <input type="text" id="e-note" placeholder="例如：eSIM、旅平險" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);">
+
+      <button style="width:100%;margin-top:12px;" id="add-expense-btn" onclick="submitExpense()">加入</button>
+      <div id="cancel-edit-row" style="display:none;text-align:center;margin-top:8px;">
+        <span style="font-size:12px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;" onclick="cancelEdit()">取消編輯</span>
+      </div>
+    </div>
+  </details>
+
+  <details class="exp-fold">
+    <summary>分類統計</summary>
+    <div class="exp-fold-body">
+      <div class="field-label">依分類</div>
+      <div id="category-breakdown"></div>
+      <div id="pay-breakdown-wrap">
+        <div class="field-label" style="margin-top:16px;">依付款方式</div>
+        <div id="payment-breakdown"></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exp-fold" id="rate-details">
+    <summary>匯率與備份</summary>
+    <div class="exp-fold-body">
+      <div class="field-label">匯率（1 日圓 = 多少台幣）</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <span style="font-size:13px;color:var(--ink-soft);">¥1 =</span>
+        <input type="number" step="0.0001" id="exchange-rate-input" value="${exchangeRate}" onchange="onRateChange()"
+          style="width:90px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--white);color:var(--ink);">
+        <span style="font-size:13px;color:var(--ink-soft);">NT$</span>
+      </div>
+      <div class="field-label">預算（台幣，選填）</div>
+      <div class="exp-budget" style="margin:0 0 16px;">
+        <span>NT$</span>
+        <input type="number" id="budget-input" value="${budgetTwd || ''}" placeholder="例如：50000" onchange="onBudgetChange()">
+      </div>
+      <div class="exp-tools">
+        <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="exportExpenses()">匯出備份</button>
+        <button class="reset-btn" style="border-color:var(--steel);color:var(--steel);" onclick="toggleImportBox()">匯入備份</button>
+        <button class="reset-btn" onclick="resetExpenses()">清除新增花費</button>
+      </div>
+      <div id="export-box" style="display:none; margin-bottom:14px;">
     <textarea id="export-textarea" readonly style="width:100%;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:8px;background:var(--white);color:var(--ink);"></textarea>
     <button style="width:100%;margin-top:8px;" onclick="copyExportText()">複製文字</button>
     <div class="field-hint">也已經自動幫你下載一份備份檔案，兩種方式都可以用來換裝置時匯入</div>
   </div>
-  <div id="import-box" style="display:none; margin-bottom:14px;">
+      <div id="import-box" style="display:none; margin-bottom:14px;">
     <textarea id="import-textarea" placeholder="貼上之前匯出的備份文字" style="width:100%;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:8px;background:var(--white);color:var(--ink);"></textarea>
     <button style="width:100%;margin-top:8px;" onclick="importExpenses()">確認匯入</button>
   </div>
-
-  <div class="expense-box" style="margin-bottom:14px;">
-    <div class="field-label">目前為止花了多少</div>
-    <div id="summary-totals" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;margin-bottom:4px;"></div>
-    <div class="field-hint" id="summary-converted" style="margin-bottom:14px;"></div>
-
-    <div class="field-label">預算（台幣，選填）</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <span style="font-size:13px;color:var(--ink-soft);">NT$</span>
-      <input type="number" id="budget-input" value="${budgetTwd || ''}" placeholder="例如：50000" onchange="onBudgetChange()"
-        style="width:120px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--white);color:var(--ink);">
     </div>
-    <div id="budget-progress"></div>
-  </div>
+  </details>
 
-  <div class="expense-box" style="margin-bottom:14px;">
-    <div class="field-label">依分類小計</div>
-    <div id="category-breakdown"></div>
-  </div>
-
-  <div class="expense-box">
-    <div class="field-label">匯率設定（1 日圓 = 多少台幣，可自行修改）</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-      <span style="font-size:13px;color:var(--ink-soft);">¥1 =</span>
-      <input type="number" step="0.0001" id="exchange-rate-input" value="${exchangeRate}" onchange="onRateChange()"
-        style="width:90px;font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--white);color:var(--ink);">
-      <span style="font-size:13px;color:var(--ink-soft);">NT$</span>
-    </div>
-
-    <div class="field-label">已確定花費・固定顯示，不受裝置影響</div>
-    <div id="fixed-expense-list"></div>
-    <div class="expense-sub" style="border-top:1px dashed var(--line);"><span>已確定小計</span><span id="fixed-expense-total">¥0</span></div>
-
-    <div class="field-label" style="margin-top:22px;">新增其他花費</div>
-    <div class="cat-row" id="cat-row"></div>
-
-    <div class="expense-add">
-      <input type="number" class="e-amt-input" id="e-amt" placeholder="¥ 金額" style="flex:1;">
-      <input type="date" id="e-date"
-        style="font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);">
-    </div>
-
-    <div class="field-label">付款方式</div>
-    <div class="cat-row" id="pay-method-row"></div>
-
-    <div class="field-label">幣別</div>
-    <div class="cat-row" id="currency-row"></div>
-
-    <div class="field-label">備註</div>
-    <input type="text" id="e-note" placeholder="選填，例如：長榮 BR106/BR105 來回機票" style="width:100%;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);margin-bottom:4px;">
-
-    <button style="width:100%;margin-top:12px;" id="add-expense-btn" onclick="submitExpense()">加入</button>
-    <div id="cancel-edit-row" style="display:none;text-align:center;margin-top:8px;">
-      <span style="font-size:12px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;" onclick="cancelEdit()">取消編輯</span>
-    </div>
-
-    <div class="field-label" style="margin-top:22px;">依付款方式小計</div>
-    <div id="payment-breakdown"></div>
-
-    <div class="field-label" style="margin-top:22px;">其他花費記錄・存在這台裝置的瀏覽器裡</div>
-    <div id="expense-groups"></div>
-    <div class="expense-sub"><span>全部行前花費總計</span><span id="expense-grand-total">¥0</span></div>
-    <div class="field-hint" id="expense-grand-converted" style="text-align:right;"></div>
+  <div style="display:none">
+    <span id="fixed-expense-total"></span>
+    <span id="expense-grand-total"></span>
+    <span id="expense-grand-converted"></span>
   </div>
 `;
 
@@ -1600,8 +1605,16 @@ function renderPickerRows(){
   document.getElementById('currency-row').innerHTML = CURRENCIES.map(c => `
     <span class="cat-btn ${c.key === lastCurrency ? 'on' : ''}" onclick="pickCurrency('${c.key}')">${c.sign} ${c.key}</span>
   `).join('');
+  updateMoreSummary();
 }
 
+function updateMoreSummary(){
+  const el = document.getElementById('more-sum');
+  const pm = PAYMENT_METHODS.find(m => m.key === lastPaymentMethod);
+  if (el && pm) el.textContent = `更多選項：${pm.emoji} ${pm.label}・${lastCurrency === 'JPY' ? '日幣 ¥' : '台幣 NT$'}`;
+  const amt = document.getElementById('e-amt');
+  if (amt) amt.placeholder = lastCurrency === 'JPY' ? '金額（日幣 ¥）' : '金額（台幣 NT$）';
+}
 function pickCurrency(key){ lastCurrency = key; renderPickerRows(); }
 
 function pickCategory(key){
@@ -1656,6 +1669,7 @@ function editExpense(idx){
   lastPaymentMethod = e.paymentMethod;
   lastCurrency = e.currency;
   renderPickerRows();
+  document.getElementById('add-details').open = true;
   document.getElementById('add-expense-btn').textContent = '更新這一筆';
   document.getElementById('cancel-edit-row').style.display = 'block';
   document.getElementById('add-expense-btn').scrollIntoView({behavior:'smooth', block:'center'});
@@ -1776,26 +1790,64 @@ function renderFixedExpenses(){
     const dateLabel = e.date ? e.date.slice(5).replace('-', '/') : '';
     const hasSplit = e.splitCount && e.splitCount > 1;
     const totalTwdJpy = toTwdJpy(e.amt, e.currency);
-    const totalNote = hasSplit
-      ? `<span class="e-payer">${e.splitCount}人合計 NT$${Math.round(totalTwdJpy.twd).toLocaleString()}（≈¥${Math.round(totalTwdJpy.jpy).toLocaleString()}）</span>` : '';
+    const totalNote = '';
     const displayAmt = hasSplit ? e.amt / e.splitCount : e.amt;
     return `
       <div class="expense-row">
         <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.note}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span>${totalNote}</span>
-        <span class="e-amt">${fmtRowAmt(displayAmt, e.currency, e.noConvert)}</span>
+        <span class="e-amt">${fmtRowAmt(displayAmt, e.currency)}</span>
       </div>`;
   }).join('');
   const totals = sumByCurrency(fixedExpenses);
-  subEl.innerHTML = fmtTwdMain(totals);
+  subEl.innerHTML = '';
   return totals;
 }
 
+function openRateFold(){
+  const d = document.getElementById('rate-details'); if (!d) return;
+  d.open = true;
+  const i = document.getElementById('exchange-rate-input');
+  d.scrollIntoView({behavior:'smooth', block:'center'});
+  if (i) setTimeout(() => i.focus(), 300);
+}
+function expRowHtml(e, fixedItem, idx){
+  const c = catInfo(e.category);
+  const pm = PAYMENT_METHODS.find(m => m.key === e.paymentMethod) || PAYMENT_METHODS[0];
+  const dateLabel = e.date ? e.date.slice(5).replace('-', '/') : '無日期';
+  const title = fixedItem ? e.note : (e.note ? e.note : c.label);
+  const amt = shareAmt(e);
+  return `
+    <div class="expense-row">
+      <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}${pm.key === 'cash' ? '・💵 現金' : ''}</span></span>
+      <span class="e-amt">${fmtRowAmt(amt, e.currency)}</span>
+      ${fixedItem ? '' : `<span class="e-del" style="background:var(--white);color:var(--steel);border:1px solid var(--line);margin-right:4px;" onclick="editExpense(${idx})">✎</span><span class="e-del" onclick="deleteExpense(${idx})">×</span>`}
+    </div>`;
+}
+function renderCurrencyGroups(){
+  const el = document.getElementById('exp-currency-groups');
+  if (!el) return;
+  const all = fixedExpenses.map(e => ({e, fixed:true, idx:-1}))
+    .concat(expenseEntries.map((e, idx) => ({e, fixed:false, idx})));
+  const defs = [{cur:'JPY', title:'日幣花費', sub:'日幣小計'}, {cur:'TWD', title:'台幣花費', sub:'台幣小計'}];
+  el.innerHTML = defs.map(d => {
+    const items = all.filter(o => o.e.currency === d.cur)
+      .sort((a,b) => (a.e.date || '9999').localeCompare(b.e.date || '9999'));
+    if (!items.length) return '';
+    const total = items.reduce((sum,o) => sum + shareAmt(o.e), 0);
+    const approx = d.cur === 'JPY' ? `<span class="e-payer" style="display:block;text-align:right;">≈ NT$${Math.round(total * exchangeRate).toLocaleString()}</span>` : '';
+    return `
+      <div class="exp-group-title">${d.title}</div>
+      ${items.map(o => expRowHtml(o.e, o.fixed, o.idx)).join('')}
+      <div class="expense-sub"><span>${d.sub}</span><span style="text-align:right;">${fmtRowAmt(total, d.cur)}${approx}</span></div>`;
+  }).join('');
+}
 function renderExpenses(){
   const groupsEl = document.getElementById('expense-groups');
   const grandEl = document.getElementById('expense-grand-total');
   if (!groupsEl) return;
 
   const fixedTotals = renderFixedExpenses();
+  renderCurrencyGroups();
 
   const withIdx = expenseEntries.map((e, idx) => ({...e, idx}))
     .sort((a,b) => (b.date || '').localeCompare(a.date || ''));
@@ -1808,11 +1860,11 @@ function renderExpenses(){
     return `
       <div class="expense-row">
         <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span></span>
-        <span class="e-amt">${fmtRowAmt(e.amt, e.currency, e.noConvert)}</span>
+        <span class="e-amt">${fmtRowAmt(e.amt, e.currency)}</span>
         <span class="e-del" style="background:var(--white);color:var(--steel);border:1px solid var(--line);margin-right:4px;" onclick="editExpense(${e.idx})">✎</span>
         <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
       </div>`;
-  }).join('') : `<div class="meal-tbd">還沒有其他花費記錄</div>`;
+  }).join('') : '';
 
   const dynamicTotals = sumByCurrency(expenseEntries);
   const grandTotals = {};
@@ -1820,7 +1872,7 @@ function renderExpenses(){
   Object.keys(dynamicTotals).forEach(cur => { grandTotals[cur] = (grandTotals[cur] || 0) + dynamicTotals[cur]; });
   const totalInTwd = (grandTotals.JPY ? convertAmt(grandTotals.JPY, 'JPY') : 0) + (grandTotals.TWD || 0);
 
-  grandEl.innerHTML = fmtTwdMain(grandTotals);
+  grandEl.innerHTML = '';
   const convertedGrandEl = document.getElementById('expense-grand-converted');
   if (convertedGrandEl) convertedGrandEl.textContent = '';
   const headerTotal = document.getElementById('trip-total-amt');
@@ -1829,8 +1881,15 @@ function renderExpenses(){
   // 摘要卡片
   const summaryTotalsEl = document.getElementById('summary-totals');
   const summaryConvertedEl = document.getElementById('summary-converted');
-  if (summaryTotalsEl) summaryTotalsEl.innerHTML = fmtTwdMain(grandTotals);
-  if (summaryConvertedEl) summaryConvertedEl.textContent = '';
+  if (summaryTotalsEl) summaryTotalsEl.textContent = `約 NT$${Math.round(totalInTwd).toLocaleString()}`;
+  if (summaryConvertedEl) summaryConvertedEl.innerHTML = grandTotals.JPY ? `日幣依 ¥1 = NT$${exchangeRate} 換算　<span style="text-decoration:underline;cursor:pointer;color:var(--steel);" onclick="openRateFold()">修改匯率</span>` : '';
+  const subEl2 = document.getElementById('exp-subtotals');
+  if (subEl2){
+    const rows = [];
+    if (grandTotals.JPY) rows.push(`<div class="expense-sub"><span>日幣小計</span><span>¥${Math.round(grandTotals.JPY).toLocaleString()}</span></div>`);
+    if (grandTotals.TWD) rows.push(`<div class="expense-sub"><span>台幣小計</span><span>NT$${Math.round(grandTotals.TWD).toLocaleString()}</span></div>`);
+    subEl2.innerHTML = rows.join('');
+  }
 
   // 預算進度
   const progressEl = document.getElementById('budget-progress');
@@ -1867,7 +1926,7 @@ function renderExpenses(){
       .map(c => `
         <div class="expense-row">
           <span class="e-desc">${c.emoji} ${c.label}</span>
-          <span class="e-amt">${fmtTwdMain(byCategory[c.key], catNoConvert[c.key])}</span>
+          <span class="e-amt">${fmtNative(byCategory[c.key])}</span>
         </div>`).join('');
     catBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
   }
@@ -1887,9 +1946,11 @@ function renderExpenses(){
       .map(m => `
         <div class="expense-row">
           <span class="e-desc">${m.emoji} ${m.label}</span>
-          <span class="e-amt">${fmtTwdMain(byPayment[m.key])}</span>
+          <span class="e-amt">${fmtNative(byPayment[m.key])}</span>
         </div>`).join('');
     payBreakdownEl.innerHTML = rows || `<div class="meal-tbd">還沒有花費記錄</div>`;
+    const wrap = document.getElementById('pay-breakdown-wrap');
+    if (wrap) wrap.style.display = Object.keys(byPayment).length > 1 ? '' : 'none';
   }
 }
 
