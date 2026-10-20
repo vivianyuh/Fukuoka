@@ -945,13 +945,14 @@ const prep = [
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
       {text:"✅ 炉端ノいとおかし 已訂位（11/10 09:00 早餐）", detail:"訂位完成，完全預約制，當天記得準時抵達。", priority:""},
       {text:"確認太宰府觀光列車「旅人 tabito」最新時刻（11/7）", detail:"", priority:""},
-      {text:"評估是否購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 門司港・皿倉山）", detail:"¥3,500／連續2天，只算自由席。11/8 的 JR 段（博多→小倉 Sonic ¥1,910、小倉→門司港、門司港→八幡、八幡→博多）加總約 ¥4,000～5,000，約略打平到小省。注意：需護照（短期滯在章）、要走有人閘門出示畫面、截圖不算要有網路，由布院之森不適用，11/9 用不到。北九州三日券已評估過不買。", priority:""},
+      {text:"購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 使用）", detail:`已決定購買。¥3,500／連續 2 天，只能搭自由席，11/8 當天啟用（購買後 1 個月內啟用皆可）。注意：①需護照（短期滯在章）②要走有人閘門出示手機畫面，截圖不算、需要有網路 ③由布院之森不適用，11/9 用不到。可在 JR 九州官網、KKday、Klook 購買。${linkA('JR 九州官網 Mobile Pass', 'https://www.jrkyushu.co.jp/chinese/railpass/mobilepass.html')}`, priority:"必辦"},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
   },
   {
     title:"證件與金錢", accent:"var(--vermilion)",
     items:[
+      {text:"登錄 Visit Japan Web（入境審查＋海關申報）", detail:`事先線上填好，入境福岡機場時掃 QR Code 就能過關，不用在飛機上填紙本。步驟：建立帳號 → 登錄護照 → 填入境日期（11/6）、航班（BR106）、住宿（THE BASICS FUKUOKA）→ 完成「入境審查」和「海關申報」兩個登錄，取得 QR Code。建議出發前一週到前一天完成，並把兩個 QR Code 截圖存相簿。${linkA('Visit Japan Web 官網', 'https://www.vjw.digital.go.jp/')}`, priority:"必辦"},
       {text:"護照效期確認（建議 6 個月以上）", detail:"", priority:"必辦"},
       {text:"護照、機票、訂房證明各留一份電子備份", detail:"存雲端或手機相簿，遺失時方便處理。", priority:""},
       {text:"兌換日圓現金", detail:"郊區小店、巴士、神社香油錢等常僅收現金。", priority:""},
@@ -1096,15 +1097,15 @@ const days = [
       {time:"13:45起", place:"門司港懷舊區散步", note:"舊門司稅關、藍翼門司橋、國際友好紀念圖書館等，約逛 1 小時多", tag:"WALK", map:"門司港レトロ"},
       {time:"14:50", place:"門司港 → 小倉", note:"JR約13分鐘，在小倉下車逛逛（若買一張直達八幡的車票，中途不能出站，建議分兩段買票或用 IC 卡）", tag:"JR", map:"門司港駅"},
       {time:"15:05", place:"🏯 小倉散步", note:"小倉城、旦過市場、車站周邊逛街，約 1.5 小時。各景點營業與最後入場時間請出發前再確認，旦過市場下午有些店會提早收。", tag:"WALK", map:"小倉城"},
-      {time:"約16:30前", place:"小倉 → 八幡", note:"搭 JR 鹿兒島本線往八幡方向，約15～20分鐘。時間是抓大概，實際班次請在 Google 地圖查「小倉→八幡」，目標是 16:55 前抵達八幡站，趕搭 17:05 接駁車", tag:"JR", map:"小倉駅"},
+      {time:"約16:30前", place:"小倉 → 八幡", note:`搭 JR 鹿兒島本線往八幡方向，約15～20分鐘。時間是抓大概，實際班次請查下面連結，目標是 16:55 前抵達八幡站，趕搭 17:05 接駁車。${linkA('Google 地圖查班次', 'https://www.google.com/maps/dir/?api=1&origin=%E5%B0%8F%E5%80%89%E9%A7%85&destination=%E5%85%AB%E5%B9%A1%E9%A7%85&travelmode=transit')}`, tag:"JR", map:"小倉駅"},
       {time:"17:05", place:"八幡站 → 皿倉山纜車山麓站", note:`✅ 搭 17:05 免費接駁巴士，約10分鐘車程。纜車山麓駅發車約每20分鐘一班，11-3月營運到20:00（上行末班19:20）。${linkA('接駁巴士時刻表', 'https://www.sarakurayama-cablecar.co.jp/shuttlebus/')}　${linkA('纜車時刻表', 'https://www.sarakurayama-cablecar.co.jp/timetable/')}`, tag:"BUS", map:"皿倉山ケーブルカー山麓駅"},
       {time:"17:30", place:"🌆 皿倉山山頂・日落到夜景", note:"11/8 日落約 17:10 前後，山頂欣賞天色變化到夜景亮起，約 1.5 小時。山頂風大，記得帶保暖外套。", tag:"VIEW", map:"皿倉山 山頂展望台"},
       {time:"19:00", place:"搭纜車下山", note:"週日傍晚可能排隊，建議提早幾分鐘到纜車站。山麓駅約 19:15 抵達。", tag:"CABLE", map:"皿倉山ケーブルカー山麓駅"},
-      {time:"19:15", place:"接駁巴士回八幡 → 黑崎 → 搭 Sonic 回博多", note:"接駁巴士約 19:30 回八幡站，往黑崎換搭特急 Sonic 回博多（黑崎是 Sonic 固定停靠站）。⚠️ 末班車時刻我沒查到，出發前請確認黑崎出發的班次。", tag:"JR", map:"黒崎駅"}
+      {time:"19:15", place:"接駁巴士回八幡 → 黑崎 → 搭 Sonic 回博多", note:`接駁巴士約 19:30 回八幡站，往黑崎換搭特急 Sonic 回博多（黑崎是 Sonic 固定停靠站）。⚠️ 末班車時刻我沒查到，出發前請查黑崎出發的班次，並確認 Sonic 是否在你搭得到的時間內。${linkA('Google 地圖查班次', 'https://www.google.com/maps/dir/?api=1&origin=%E9%BB%92%E5%B4%8E%E9%A7%85&destination=%E5%8D%9A%E5%A4%9A%E9%A7%85&travelmode=transit')}`, tag:"JR", map:"黒崎駅"}
     ],
     plans:[],
     fare:"",
-    note:"可評估 JR Kyushu Mobile Pass（福岡廣域，¥3,500／連續2天，自由席），這天 JR 段約略打平到小省，皿倉山另付入場費。唐戸市場的「活きいき馬関街」屋台活動只有五六日／國定假日才有，特地把這天排在週日就是為了配合。",
+    note:"已決定購買 JR Kyushu Mobile Pass（福岡廣域，¥3,500／連續2天，自由席），11/8 當天啟用，皿倉山另付入場費。進站要走有人閘門出示手機畫面，需帶護照。唐戸市場的「活きいき馬関街」屋台活動只有五六日／國定假日才有，特地把這天排在週日就是為了配合。",
     meals:[
       {type:"市場體驗・現吃海鮮", name:"唐戸市場 活きいき馬関街", note:"週日限定的海鮮屋台祭典，現握壽司、海鮮丼、河豚料理，邊走邊吃當小點心體驗，很熱鬧。", map:"唐戸市場"},
       {type:"午餐・已確定", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯，回到門司港後當午餐吃。「咖哩本舖」評價最穩、「プリンセスピピ」需現場登記排隊，兩間都在車站附近。", map:"門司港 燒咖哩 咖哩本舖"}
@@ -1114,6 +1115,7 @@ const days = [
     date:"11/9", wd:"一", theme:"由布院", accent:"var(--gold)",
     weather:"山區日夜溫差大，早晚明顯轉冷，建議洋蔥式穿法，晚間搭車回程可多帶件外套。",
     stops:[
+      {time:"09:17", place:"🚆 博多站發車（由布院之森1號）", note:"✅ 已訂位。飯店走到博多站約7分鐘，建議 08:50 前到站，先確認月台並準備好 QR Code（出發前先截圖存相簿）。", tag:"JR", map:"博多駅"},
       {time:"11:31", place:"抵達由布院站", note:"沿湯之坪街道往金鱗湖方向走去美術館", tag:"JR", map:"由布院駅"},
       {time:"12:20", place:"🎨 COMICO ART MUSEUM YUFUIN", note:`✅ 預約時段 12:20。隈研吾設計，展出村上隆／杉本博司作品，參觀抓1-1.5小時。時段每20分鐘一班（11:00/11:20/11:40/12:00/12:20...）。${linkA('線上預約', 'https://reserva.be/comicoartmuseumyufuin')}`, tag:"MUSEUM", map:"COMICO ART MUSEUM YUFUIN"},
       {time:"接著", place:"🍽️ 午餐・由布まぶし心（金鱗湖店）", note:"繼續往金鱗湖方向走，順路吃午餐", tag:"LUNCH", map:"由布まぶし心 金鱗湖"},
@@ -1159,11 +1161,12 @@ const days = [
     date:"11/11", wd:"三", theme:"賦歸", accent:"var(--ink-soft)",
     weather:"機場室內空調偏冷，登機前建議薄外套不要收進託運行李。",
     stops:[
+      {time:"09:30", place:"🚕 退房，搭計程車前往福岡機場", note:"請飯店櫃檯幫忙叫車，或到博多站前排班處搭車。從博多站周邊到機場約 15～20 分鐘，車資大約 ¥1,500～2,000（估計值，依路況而定）。", tag:"TAXI", map:"福岡空港 国際線ターミナル"},
+      {time:"約09:50", place:"抵達福岡機場國際線", note:"辦理登機、託運行李。航班 12:15 起飛，約 10:15 前完成報到比較安心。", tag:"AIRPORT", map:"福岡空港 国際線ターミナル"},
       {time:"12:15→13:50", place:"長榮 BR105　FUK → TPE", note:"抵達桃園機場", tag:"FLIGHT", map:"福岡空港"}
     ],
     plans:[], fare:"", note:"中午起飛，建議至少提前 2 小時抵達機場辦理登機（約 10:15 前到）。",
-    empty:true,
-    placeholderText:"上午還有一段空檔（約到 10:00 左右）— 要不要幫你排在飯店附近做最後採買，或安排寄放行李後的短程行程？"
+    meals:[]
   }
 ];
 
