@@ -2066,9 +2066,8 @@ function toggleShopDone(){ shopDoneOpen = !shopDoneOpen; renderShop(); }
 function stepQty(id, d){ const it = findShop(id); if (!it) return; const q = Math.max(1, (Number(it.qty) || 1) + d); if (q > 1) it.qty = q; else delete it.qty; saveShop(); renderShop(); }
 function shopMatch(it){
   const q = shopSearch.trim().toLowerCase(); if (!q) return true;
-  return [it.text, it.store, it.note, it.who, it.place].some(v => v && String(v).toLowerCase().includes(q));
+  return [it.text, it.store, it.note, it.who].some(v => v && String(v).toLowerCase().includes(q));
 }
-let shopGroup = lsGet('fukuoka_shop_group_v1', true);
 let shopAskExp = lsGet('fukuoka_shop_askexp_v1', true);
 let shopBudget = lsGet('fukuoka_shop_budget_v1', 0);
 let whoList = lsGet('fukuoka_shop_who_v1', []);
@@ -2076,26 +2075,9 @@ shopItems.forEach(it => { if (it.who && !whoList.includes(it.who)) whoList.push(
 function rememberWho(w){ if (!w) return; whoList = [w].concat(whoList.filter(x => x !== w)); lsSet('fukuoka_shop_who_v1', whoList); }
 function pickWho(i){ const w = whoList[i]; shopDraft.who = (shopDraft.who === w) ? '' : w; renderShop(); }
 function toggleShopMore(){ shopMore = !shopMore; renderShop(); }
-function shopMoreOpen(){ const d = shopDraft; return shopMore || d.store || d.note || d.price || (d.qty && d.qty !== '1') || d.place; }
-function toggleShopGroup(){ shopGroup = !shopGroup; lsSet('fukuoka_shop_group_v1', shopGroup); renderShop(); }
+function shopMoreOpen(){ const d = shopDraft; return shopMore || d.store || d.note || d.price || (d.qty && d.qty !== '1'); }
 function toggleAskExp(){ shopAskExp = !shopAskExp; lsSet('fukuoka_shop_askexp_v1', shopAskExp); renderShop(); }
 function setShopBudget(v){ const n = parseFloat(v); shopBudget = n > 0 ? n : 0; lsSet('fukuoka_shop_budget_v1', shopBudget); renderShop(); }
-function askAmount(msg, def){
-  return new Promise(res => {
-    let o = document.getElementById('ask-amount'); if (o) o.remove();
-    o = document.createElement('div'); o.id = 'ask-amount';
-    o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
-    o.innerHTML = '<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:20px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);"><div id="aa-msg" style="font-size:15px;line-height:1.6;margin-bottom:12px;"></div><input id="aa-in" type="number" inputmode="numeric" placeholder="實際金額 ¥" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px;font-family:inherit;margin-bottom:14px;"><div style="display:flex;gap:10px;"><button id="aa-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">不記帳</button><button id="aa-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">記到花費</button></div><button id="aa-undo" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">誤按了，改回「還沒買」</button></div>';
-    document.body.appendChild(o);
-    o.querySelector('#aa-msg').textContent = msg;
-    const inp = o.querySelector('#aa-in'); inp.value = def > 0 ? def : ''; setTimeout(() => inp.focus(), 50);
-    const done = v => { o.remove(); res(v); };
-    o.querySelector('#aa-yes').onclick = () => { const n = parseFloat(inp.value); done(n > 0 ? n : null); };
-    o.querySelector('#aa-no').onclick = () => done(null);
-    o.querySelector('#aa-undo').onclick = () => done('undo');
-    o.onclick = e => { if (e.target === o) done(null); };
-  });
-}
 let buyList = [];   // [{src, ref}]  ref=原有 entry，null=新加
 function openBuy(id){
   const it = findShop(id); if (!it) return;
@@ -2180,16 +2162,6 @@ function settleHtml(){
       <div class="shop-settle-sub">${allPaid ? '✅ 已收款' : '還沒收：' + fmtYen(unpaid) + '（≈' + fmtTwd(unpaid * exchangeRate) + '）'}${noPrice ? `・${noPrice} 項沒填價格` : ''}</div></div>
       <button onclick="copyBill(${i})">複製明細</button><button onclick="togglePaid(${i})">${allPaid ? '取消收款' : '已收款'}</button></div>`;
   }).join('') + `</div>`;
-}
-async function logShopExpense(it){
-  const amt = await askAmount(`「${it.text}」實際花了多少日圓？記到花費頁`, itemTotal(it));
-  if (amt === 'undo'){ it.done = false; saveShop(); renderShop(); showToast('已改回還沒買'); return; }
-  if (!amt) return;
-  expenseEntries.push({date: todayISO(), amt, note: '購物：' + it.text, category: 'shopping', paymentMethod: 'cash', currency: 'JPY'});
-  saveExpenses(); if (typeof renderExpenses === 'function') renderExpenses();
-  if (!(itemTotal(it) > 0)) it.price = Math.round(amt / (Number(it.qty) || 1));
-  it.logged = true; saveShop(); renderShop();
-  showToast('已記到花費 ✓');
 }
 let shopEditPhoto;   // undefined=不變, null=移除, string=新照片
 const photoCache = {};
@@ -2282,7 +2254,6 @@ function shopRow(it){
   const q = Number(it.qty) || 1;
   const sub = [];
   if (it.store) sub.push('🏬 ' + escHtml(it.store));
-  if (it.place) sub.push(escHtml(it.place));
   if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 ? `（${fmtYen(it.price)}×${q}）` : ''));
   if (it.note) sub.push(escHtml(it.note));
   if (it.paid) sub.push('💰已收款');
@@ -2297,7 +2268,7 @@ function shopRow(it){
         ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>×${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
       </div>
       ${it.store ? `<a class="shop-ico" href="${shopMapUrl(storeQuery(it.store))}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
-      ${(it.type || 'me') === 'other' && it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
+      ${it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
       <button class="shop-ico" onclick="openShopEdit('${it.id}')" aria-label="編輯">✎</button>
       <button class="shop-ico" onclick="delShop('${it.id}')" aria-label="刪除">✕</button>
     </div>`;
@@ -2305,22 +2276,12 @@ function shopRow(it){
 function renderShop(){
   const isMe = shopTab === 'me';
   const tabItems = shopItems.filter(it => (it.type || 'me') === shopTab);
-  const places = SHOP_PLACES.filter(p => tabItems.some(it => it.place === p));
-  if (shopFilter && !places.includes(shopFilter)) shopFilter = '';
-  const vis = tabItems.filter(it => (!shopFilter || it.place === shopFilter) && shopMatch(it));
+  const vis = tabItems.filter(shopMatch);
   const left = tabItems.filter(it => !it.done).length;
   const totalAll = tabItems.reduce((s,it) => s + itemTotal(it), 0);
   const totalLeft = tabItems.filter(it => !it.done).reduce((s,it) => s + itemTotal(it), 0);
 
   const renderGroups = items => {
-    if (isMe && shopGroup && !shopFilter){
-      const order = SHOP_PLACES.concat(['']);
-      return order.map(pl => {
-        const g = items.filter(it => (it.place || '') === pl);
-        if (!g.length) return '';
-        return `<div class="shop-who">${escHtml(pl || '未指定店家')}（${g.length}）</div>${g.map(shopRow).join('')}`;
-      }).join('');
-    }
     if (isMe) return items.map(shopRow).join('');
     const groups = {};
     items.forEach(it => { const w = it.who || '未指定'; (groups[w] = groups[w] || []).push(it); });
@@ -2368,10 +2329,6 @@ function renderShop(){
       <div class="shop-row">
         <input type="number" inputmode="numeric" placeholder="單價 ¥" value="${escHtml(d.price)}" oninput="shopDraft.price=this.value" style="flex:1.2">
         <input type="number" inputmode="numeric" placeholder="數量" value="${escHtml(d.qty)}" oninput="shopDraft.qty=this.value" style="flex:0.8">
-        <select onchange="shopDraft.place=this.value" style="flex:1.4">
-          <option value="">買哪裡</option>
-          ${SHOP_PLACES.map(p => `<option value="${p}"${d.place===p?' selected':''}>${p}</option>`).join('')}
-        </select>
       </div>` : ''}
       <div class="shop-row">
         <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
@@ -2382,13 +2339,10 @@ function renderShop(){
     ${totalAll > 0 ? `<div class="shop-sum"><div>預估總額　<b>${priceBoth(totalAll)}</b></div><div>還沒買　<b>${priceBoth(totalLeft)}</b></div></div>` : ''}
     <div class="shop-budget">購物預算（自己要買）NT$ <input type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="選填" onchange="setShopBudget(this.value)">
       ${shopBudget > 0 ? (() => { const all = shopItems.filter(x => (x.type || 'me') === 'me').reduce((t,x)=>t+itemTotal(x),0) * exchangeRate; const diff = shopBudget - all; return `<div class="shop-budget-bar"><i style="width:${Math.min(100, Math.round(all/shopBudget*100))}%" class="${diff<0?'over':''}"></i></div><div class="shop-budget-txt${diff<0?' over':''}">自己要買預估 ≈${fmtTwd(all)}・${diff<0?'超出':'還剩'} ${fmtTwd(Math.abs(diff))}</div>`; })() : ''}
-    </div>
-    ${places.length > 1 ? `<div class="shop-chips"><button class="${!shopFilter?'active':''}" onclick="setShopFilter('')">全部</button>${places.map(p => `<button class="${shopFilter===p?'active':''}" onclick="setShopFilter('${p}')">${p}</button>`).join('')}</div>` : ''}
-    ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
+    </div>    ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
     ${!isMe ? settleHtml() : ''}
     <div class="shop-opts">
-      ${isMe ? `<label><input type="checkbox" ${shopGroup?'checked':''} onchange="toggleShopGroup()"> 依店家分組</label>` : ''}
-      <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際金額（自己的會記到花費頁）</label>
+      <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際價格與照片</label>
     </div>
     <div class="shop-tools">
       <button onclick="copyShopText()">複製清單文字</button>
@@ -2414,13 +2368,12 @@ async function addShop(){
   if (shopDraft.note.trim()) item.note = shopDraft.note.trim();
   const price = parseFloat(shopDraft.price); if (price > 0) item.price = price;
   const qty = parseInt(shopDraft.qty, 10); if (qty > 1) item.qty = qty;
-  if (shopDraft.place) item.place = shopDraft.place;
   if (shopPendingPhoto) Object.assign(item, await storePhoto(shopPendingPhoto));
   if (item.who) rememberWho(item.who);
   shopItems.push(item);
   if (!saveShop()){ shopItems.pop(); dropPhoto(item); showToast('空間不足，存不下這筆'); return; }
   shopPendingPhoto = null;
-  shopDraft.text = ''; shopDraft.store = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1'; shopDraft.place = '';
+  shopDraft.text = ''; shopDraft.store = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
   renderShop();
   const inp = document.getElementById('shop-input'); if (inp) inp.focus();
 }
@@ -2434,7 +2387,7 @@ function toggleShop(id){
   const it = findShop(id); if (!it) return;
   it.done = !it.done; saveShop(); renderShop();
   if (it.done && !shopDoneOpen && !shopSearch.trim()) showToast('已移到下方「已買」');
-  if (it.done && shopAskExp && !it.logged){ if ((it.type || 'me') === 'other') { if (!it.priced) openBuy(it.id); } else logShopExpense(it); }
+  if (it.done && shopAskExp) openBuy(it.id);
 }
 function delShop(id){
   const idx = shopItems.findIndex(x => x.id === id);
@@ -2500,7 +2453,6 @@ function openShopEdit(id){
         <input id="se-price" type="number" inputmode="numeric" placeholder="單價 ¥" value="${it.price || ''}">
         <input id="se-qty" type="number" inputmode="numeric" placeholder="數量" value="${it.qty || 1}">
       </div>
-      <select id="se-place"><option value="">買哪裡</option>${SHOP_PLACES.map(p => `<option value="${p}"${it.place===p?' selected':''}>${p}</option>`).join('')}</select>
       <div class="shop-row se-photo">
         <div id="se-photo-prev">${photoSrc(it) ? `<img src="${photoSrc(it)}" alt="">` : '<span>無照片</span>'}</div>
         <button onclick="document.getElementById('se-file').click()">換照片</button>
@@ -2538,8 +2490,6 @@ async function saveShopEdit(){
   if (price > 0) it.price = price; else delete it.price;
   const qty = parseInt(document.getElementById('se-qty').value, 10);
   if (qty > 1) it.qty = qty; else delete it.qty;
-  const place = document.getElementById('se-place').value;
-  if (place) it.place = place; else delete it.place;
   if (shopEditPhoto !== undefined){
     dropPhoto(it);
     if (shopEditPhoto) Object.assign(it, await storePhoto(shopEditPhoto));
@@ -2555,7 +2505,6 @@ function shopListText(){
     let t = `${it.done ? '☑' : '☐'} ${it.text}${q > 1 ? ' ×' + q : ''}`;
     const extra = [];
     if (it.store) extra.push(it.store);
-    if (it.place) extra.push(it.place);
     if (itemTotal(it) > 0) extra.push(fmtYen(itemTotal(it)));
     if (it.note) extra.push(it.note);
     if (extra.length) t += `（${extra.join('・')}）`;
