@@ -864,6 +864,13 @@
 .shop-budget-txt.over{color:#b00020;font-weight:700}
 .shop-opts{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;font-size:13px}
 .shop-opts input{margin-right:6px}
+.shop-settle{margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.shop-settle-title{font-weight:700;margin-bottom:8px;font-size:14px}
+.shop-settle-row{display:flex;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;flex-wrap:wrap}
+.shop-settle-row:first-of-type{border-top:none}
+.shop-settle-main{flex:1 1 100%}
+.shop-settle-sub{font-size:12.5px;opacity:.75;margin-top:2px}
+.shop-settle-row button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;font-family:inherit}
 </style>
 </head>
 <body>
@@ -2070,11 +2077,80 @@ function askAmount(msg, def){
     o.onclick = e => { if (e.target === o) done(null); };
   });
 }
+let buyPhoto;   // undefined=不變, null=移除, string=新照片
+function openBuy(id){
+  const it = findShop(id); if (!it) return;
+  buyPhoto = undefined;
+  let o = document.getElementById('buy-modal'); if (o) o.remove();
+  o = document.createElement('div'); o.id = 'buy-modal';
+  o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;';
+  const cur = itemTotal(it);
+  o.innerHTML = `<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:18px;max-width:360px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);">
+    <div id="bm-msg" style="font-size:15px;line-height:1.6;margin-bottom:10px;"></div>
+    <input id="bm-amt" type="number" inputmode="numeric" placeholder="實際總價 ¥（含數量）" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px;font-family:inherit;margin-bottom:10px;">
+    <button id="bm-cam" style="width:100%;padding:11px;border-radius:10px;border:1px dashed var(--line);background:var(--panel);color:var(--ink);font-size:14px;font-family:inherit;margin-bottom:8px;">📷 拍收據／商品與價格</button>
+    <div id="bm-prev" style="margin-bottom:10px;"></div>
+    <input id="bm-file" type="file" accept="image/*" style="display:none">
+    <div style="display:flex;gap:10px;"><button id="bm-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">略過</button><button id="bm-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">儲存</button></div></div>`;
+  document.body.appendChild(o);
+  o.querySelector('#bm-msg').textContent = `「${it.text}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
+  const amt = o.querySelector('#bm-amt'); if (cur > 0) amt.value = cur;
+  const prev = o.querySelector('#bm-prev');
+  const showPrev = src => { prev.innerHTML = src ? `<img src="${src}" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:10px;background:#0001;"><button id="bm-rm" style="margin-top:6px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;">移除照片</button>` : ''; const rm = prev.querySelector('#bm-rm'); if (rm) rm.onclick = () => { buyPhoto = null; showPrev(''); }; };
+  showPrev(receiptSrc(it));
+  const file = o.querySelector('#bm-file');
+  o.querySelector('#bm-cam').onclick = () => file.click();
+  file.onchange = async () => { const f = file.files && file.files[0]; if (!f) return; try { buyPhoto = await readPhoto(f); showPrev(buyPhoto); } catch(e){ showToast('無法讀取這張照片'); } file.value = ''; };
+  o.querySelector('#bm-no').onclick = () => o.remove();
+  o.onclick = e => { if (e.target === o) o.remove(); };
+  o.querySelector('#bm-yes').onclick = async () => {
+    const n = parseFloat(amt.value);
+    if (n > 0){ it.price = Math.round(n / (Number(it.qty) || 1) * 100) / 100; it.priced = true; }
+    if (buyPhoto !== undefined){ dropReceipt(it); if (buyPhoto) Object.assign(it, await storeReceipt(buyPhoto)); }
+    saveShop(); renderShop(); o.remove(); showToast('已儲存 ✓');
+  };
+}
+let settleNames = [];
+function settleData(){
+  const g = {};
+  shopItems.filter(it => (it.type || 'me') === 'other' && it.done).forEach(it => { const w = it.who || '未指定'; (g[w] = g[w] || []).push(it); });
+  return g;
+}
+function copyBill(i){
+  const w = settleNames[i]; const g = settleData()[w]; if (!g) return;
+  const lines = g.map(it => `・${it.text}${(Number(it.qty)||1) > 1 ? ' ×' + it.qty : ''}　${itemTotal(it) > 0 ? fmtYen(itemTotal(it)) : '（未填價格）'}`);
+  const tot = g.reduce((t,it) => t + itemTotal(it), 0);
+  const txt = `${w} 代購明細\n${lines.join('\n')}\n合計 ${fmtYen(tot)}（約 ${fmtTwd(tot * exchangeRate)}，匯率 ${exchangeRate}）`;
+  const done = () => showToast('已複製，可以貼到 LINE');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => showToast('複製失敗'));
+  else showToast('複製失敗');
+}
+function togglePaid(i){
+  const w = settleNames[i]; const g = settleData()[w]; if (!g) return;
+  const allPaid = g.every(it => it.paid);
+  g.forEach(it => { it.paid = !allPaid; });
+  saveShop(); renderShop();
+}
+function settleHtml(){
+  const g = settleData(); settleNames = Object.keys(g);
+  if (!settleNames.length) return '';
+  return `<div class="shop-settle"><div class="shop-settle-title">💰 代購結算（已買的）</div>` + settleNames.map((w,i) => {
+    const arr = g[w];
+    const tot = arr.reduce((t,it) => t + itemTotal(it), 0);
+    const unpaid = arr.filter(it => !it.paid).reduce((t,it) => t + itemTotal(it), 0);
+    const allPaid = arr.every(it => it.paid);
+    const noPrice = arr.filter(it => !(itemTotal(it) > 0)).length;
+    return `<div class="shop-settle-row"><div class="shop-settle-main"><b>${escHtml(w)}</b>　${arr.length} 項・${fmtYen(tot)}（≈${fmtTwd(tot * exchangeRate)}）
+      <div class="shop-settle-sub">${allPaid ? '✅ 已收款' : '還沒收：' + fmtYen(unpaid) + '（≈' + fmtTwd(unpaid * exchangeRate) + '）'}${noPrice ? `・${noPrice} 項沒填價格` : ''}</div></div>
+      <button onclick="copyBill(${i})">複製明細</button><button onclick="togglePaid(${i})">${allPaid ? '取消收款' : '已收款'}</button></div>`;
+  }).join('') + `</div>`;
+}
 async function logShopExpense(it){
   const amt = await askAmount(`「${it.text}」實際花了多少日圓？記到花費頁`, itemTotal(it));
   if (!amt) return;
   expenseEntries.push({date: todayISO(), amt, note: '購物：' + it.text, category: 'shopping', paymentMethod: 'cash', currency: 'JPY'});
   saveExpenses(); if (typeof renderExpenses === 'function') renderExpenses();
+  if (!(itemTotal(it) > 0)) it.price = Math.round(amt / (Number(it.qty) || 1));
   it.logged = true; saveShop(); renderShop();
   showToast('已記到花費 ✓');
 }
@@ -2117,6 +2193,10 @@ function idbLoadAll(){
 }
 function photoSrc(it){ return it.photoId ? (photoCache[it.photoId] || '') : (it.photo || ''); }
 function dropPhoto(it){ if (it.photoId){ idbDel(it.photoId); delete photoCache[it.photoId]; } delete it.photoId; delete it.photo; }
+function receiptSrc(it){ return it.receiptId ? (photoCache[it.receiptId] || '') : (it.receipt || ''); }
+function dropReceipt(it){ if (it.receiptId){ idbDel(it.receiptId); delete photoCache[it.receiptId]; } delete it.receiptId; delete it.receipt; }
+function dropAllPhotos(it){ dropPhoto(it); dropReceipt(it); }
+async function storeReceipt(dataUrl){ const r = await storePhoto(dataUrl); return r.photoId ? {receiptId: r.photoId} : {receipt: r.photo}; }
 function readPhoto(file){
   return new Promise((res, rej) => {
     const img = new Image();
@@ -2161,6 +2241,7 @@ function shopRow(it){
   if (it.place) sub.push(escHtml(it.place));
   if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 ? `（${fmtYen(it.price)}×${q}）` : ''));
   if (it.note) sub.push(escHtml(it.note));
+  if (it.paid) sub.push('💰已收款');
   const src = photoSrc(it);
   return `
     <div class="shop-item${it.done?' done':''}">
@@ -2171,6 +2252,7 @@ function shopRow(it){
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
       </div>
       ${it.store ? `<a class="shop-ico" href="${shopMapUrl(storeQuery(it.store))}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
+      ${(it.type || 'me') === 'other' && it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
       <button class="shop-ico" onclick="openShopEdit('${it.id}')" aria-label="編輯">✎</button>
       <button class="shop-ico" onclick="delShop('${it.id}')" aria-label="刪除">✕</button>
     </div>`;
@@ -2251,9 +2333,10 @@ function renderShop(){
     </div>
     ${places.length > 1 ? `<div class="shop-chips"><button class="${!shopFilter?'active':''}" onclick="setShopFilter('')">全部</button>${places.map(p => `<button class="${shopFilter===p?'active':''}" onclick="setShopFilter('${p}')">${p}</button>`).join('')}</div>` : ''}
     ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
+    ${!isMe ? settleHtml() : ''}
     <div class="shop-opts">
       ${isMe ? `<label><input type="checkbox" ${shopGroup?'checked':''} onchange="toggleShopGroup()"> 依店家分組</label>` : ''}
-      <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問是否記帳</label>
+      <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際金額（自己的會記到花費頁）</label>
     </div>
     <div class="shop-tools">
       <button onclick="copyShopText()">複製清單文字</button>
@@ -2298,7 +2381,7 @@ function findShop(id){ return shopItems.find(it => it.id === id); }
 function toggleShop(id){
   const it = findShop(id); if (!it) return;
   it.done = !it.done; saveShop(); renderShop();
-  if (it.done && shopAskExp && !it.logged && itemTotal(it) > 0) logShopExpense(it);
+  if (it.done && shopAskExp && !it.logged){ if ((it.type || 'me') === 'other') { if (!it.priced) openBuy(it.id); } else logShopExpense(it); }
 }
 function delShop(id){
   const idx = shopItems.findIndex(x => x.id === id);
@@ -2306,7 +2389,7 @@ function delShop(id){
   const it = shopItems[idx];
   shopItems.splice(idx, 1);
   saveShop(); renderShop();
-  showUndo(`已刪除「${it.text}」`, () => { shopItems.splice(Math.min(idx, shopItems.length), 0, it); saveShop(); renderShop(); }, () => dropPhoto(it));
+  showUndo(`已刪除「${it.text}」`, () => { shopItems.splice(Math.min(idx, shopItems.length), 0, it); saveShop(); renderShop(); }, () => dropAllPhotos(it));
 }
 function showUndo(msg, onUndo, onExpire){
   let t = document.getElementById('undo-bar');
@@ -2327,7 +2410,7 @@ async function clearBoughtShop(){
   const done = shopItems.filter(it => it.done && (it.type || 'me') === shopTab);
   if (!done.length){ showToast('目前沒有已買的項目'); return; }
   if (!(await askConfirm(`清掉 ${done.length} 個已買項目？`))) return;
-  done.forEach(dropPhoto);
+  done.forEach(dropAllPhotos);
   shopItems = shopItems.filter(it => !done.includes(it));
   saveShop(); renderShop();
 }
@@ -2446,7 +2529,7 @@ async function copyShopText(){
 function backupShop(){
   if (!shopItems.length){ showToast('清單是空的，不需要備份'); return; }
   const data = {app:'fukuoka-shopping', version:1, exportedAt:new Date().toISOString(),
-    items: shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } return c; })};
+    items: shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } if (c.receiptId){ c.receiptData = photoCache[c.receiptId] || ''; } return c; })};
   const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
   const a = document.createElement('a');
   const d = new Date();
@@ -2464,13 +2547,15 @@ function restoreShop(inp){
       const data = JSON.parse(rd.result);
       if (!data || data.app !== 'fukuoka-shopping' || !Array.isArray(data.items)) throw new Error('bad');
       if (!(await askConfirm(`還原 ${data.items.length} 個項目？目前的購物清單會被取代。`))) { inp.value = ''; return; }
-      shopItems.forEach(dropPhoto);
+      shopItems.forEach(dropAllPhotos);
       const out = [];
       for (const raw of data.items){
         const it = Object.assign({}, raw);
         const pd = it.photoData; delete it.photoData;
         if (!it.id) it.id = newShopId();
         if (pd){ delete it.photoId; Object.assign(it, await storePhoto(pd)); }
+        const rd2 = it.receiptData; delete it.receiptData;
+        if (rd2){ delete it.receiptId; Object.assign(it, await storeReceipt(rd2)); }
         out.push(it);
       }
       shopItems = out; saveShop(); renderShop();
