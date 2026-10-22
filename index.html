@@ -2067,13 +2067,14 @@ function askAmount(msg, def){
     let o = document.getElementById('ask-amount'); if (o) o.remove();
     o = document.createElement('div'); o.id = 'ask-amount';
     o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
-    o.innerHTML = '<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:20px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);"><div id="aa-msg" style="font-size:15px;line-height:1.6;margin-bottom:12px;"></div><input id="aa-in" type="number" inputmode="numeric" placeholder="實際金額 ¥" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px;font-family:inherit;margin-bottom:14px;"><div style="display:flex;gap:10px;"><button id="aa-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">不記帳</button><button id="aa-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">記到花費</button></div></div>';
+    o.innerHTML = '<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:20px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);"><div id="aa-msg" style="font-size:15px;line-height:1.6;margin-bottom:12px;"></div><input id="aa-in" type="number" inputmode="numeric" placeholder="實際金額 ¥" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px;font-family:inherit;margin-bottom:14px;"><div style="display:flex;gap:10px;"><button id="aa-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">不記帳</button><button id="aa-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">記到花費</button></div><button id="aa-undo" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">誤按了，改回「還沒買」</button></div>';
     document.body.appendChild(o);
     o.querySelector('#aa-msg').textContent = msg;
     const inp = o.querySelector('#aa-in'); inp.value = def > 0 ? def : ''; setTimeout(() => inp.focus(), 50);
     const done = v => { o.remove(); res(v); };
     o.querySelector('#aa-yes').onclick = () => { const n = parseFloat(inp.value); done(n > 0 ? n : null); };
     o.querySelector('#aa-no').onclick = () => done(null);
+    o.querySelector('#aa-undo').onclick = () => done('undo');
     o.onclick = e => { if (e.target === o) done(null); };
   });
 }
@@ -2091,8 +2092,13 @@ function openBuy(id){
     <button id="bm-cam" style="width:100%;padding:11px;border-radius:10px;border:1px dashed var(--line);background:var(--panel);color:var(--ink);font-size:14px;font-family:inherit;margin-bottom:8px;">📷 拍收據／商品與價格</button>
     <div id="bm-prev" style="margin-bottom:10px;"></div>
     <input id="bm-file" type="file" accept="image/*" style="display:none">
-    <div style="display:flex;gap:10px;"><button id="bm-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">略過</button><button id="bm-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">儲存</button></div></div>`;
+    <div style="display:flex;gap:10px;"><button id="bm-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">略過</button><button id="bm-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">儲存</button></div>
+    <button id="bm-undo" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">誤按了，改回「還沒買」</button>
+    ${(it.priced || receiptSrc(it)) ? `<button id="bm-clear" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">清除價格與照片</button>` : ''}</div>`;
   document.body.appendChild(o);
+  o.querySelector('#bm-undo').onclick = () => { it.done = false; saveShop(); renderShop(); o.remove(); showToast('已改回還沒買'); };
+  const clr = o.querySelector('#bm-clear');
+  if (clr) clr.onclick = () => { delete it.price; delete it.priced; dropReceipt(it); saveShop(); renderShop(); o.remove(); showToast('已清除價格與照片'); };
   o.querySelector('#bm-msg').textContent = `「${it.text}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
   const amt = o.querySelector('#bm-amt'); if (cur > 0) amt.value = cur;
   const prev = o.querySelector('#bm-prev');
@@ -2147,6 +2153,7 @@ function settleHtml(){
 }
 async function logShopExpense(it){
   const amt = await askAmount(`「${it.text}」實際花了多少日圓？記到花費頁`, itemTotal(it));
+  if (amt === 'undo'){ it.done = false; saveShop(); renderShop(); showToast('已改回還沒買'); return; }
   if (!amt) return;
   expenseEntries.push({date: todayISO(), amt, note: '購物：' + it.text, category: 'shopping', paymentMethod: 'cash', currency: 'JPY'});
   saveExpenses(); if (typeof renderExpenses === 'function') renderExpenses();
