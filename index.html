@@ -805,7 +805,7 @@
   .shop-empty{color:var(--ink-soft); font-size:14px; padding:18px 4px;}
   .shop-tools{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
   .shop-tools button{flex:1 1 auto; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-size:13.5px; font-family:inherit; cursor:pointer;}
-  #shop-photo-overlay{position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; padding:16px;}
+  #shop-photo-overlay{position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; padding:16px;}
   #shop-photo-overlay.show{display:flex;}
   #shop-photo-overlay img{max-width:100%; max-height:100%; border-radius:10px;}
   #shop-edit{position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.5); display:none; align-items:flex-end; justify-content:center;}
@@ -2041,6 +2041,7 @@ function saveShop(){ try { localStorage.setItem(SHOP_KEY, JSON.stringify(shopIte
 function newShopId(){ return 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 let shopItems = loadShop();
 shopItems.forEach(it => { if (!it.id) it.id = newShopId(); });
+shopItems.forEach(it => { if (it.receiptId){ it.receipts = (it.receipts || []).concat([{id: it.receiptId}]); delete it.receiptId; } if (it.receipt){ it.receipts = (it.receipts || []).concat([{d: it.receipt}]); delete it.receipt; } });
 const SHOP_PLACES = ['藥妝店','百貨・商場','超市・便利商店','市集・商店街','機場','其他'];
 let shopTab = 'me';
 let shopFilter = '';
@@ -2078,10 +2079,10 @@ function askAmount(msg, def){
     o.onclick = e => { if (e.target === o) done(null); };
   });
 }
-let buyPhoto;   // undefined=不變, null=移除, string=新照片
+let buyList = [];   // [{src, ref}]  ref=原有 entry，null=新加
 function openBuy(id){
   const it = findShop(id); if (!it) return;
-  buyPhoto = undefined;
+  buyList = receiptList(it).map(x => ({src: x.src, ref: x.e}));
   let o = document.getElementById('buy-modal'); if (o) o.remove();
   o = document.createElement('div'); o.id = 'buy-modal';
   o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;';
@@ -2089,9 +2090,9 @@ function openBuy(id){
   o.innerHTML = `<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:18px;max-width:360px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);">
     <div id="bm-msg" style="font-size:15px;line-height:1.6;margin-bottom:10px;"></div>
     <input id="bm-amt" type="number" inputmode="numeric" placeholder="實際總價 ¥（含數量）" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px;font-family:inherit;margin-bottom:10px;">
-    <button id="bm-cam" style="width:100%;padding:11px;border-radius:10px;border:1px dashed var(--line);background:var(--panel);color:var(--ink);font-size:14px;font-family:inherit;margin-bottom:8px;">📷 拍收據／商品與價格</button>
+    <button id="bm-cam" style="width:100%;padding:11px;border-radius:10px;border:1px dashed var(--line);background:var(--panel);color:var(--ink);font-size:14px;font-family:inherit;margin-bottom:8px;">📷 拍收據／商品與價格（可多張）</button>
     <div id="bm-prev" style="margin-bottom:10px;"></div>
-    <input id="bm-file" type="file" accept="image/*" style="display:none">
+    <input id="bm-file" type="file" accept="image/*" multiple style="display:none">
     <div style="display:flex;gap:10px;"><button id="bm-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">略過</button><button id="bm-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">儲存</button></div>
     <button id="bm-undo" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">誤按了，改回「還沒買」</button>
     ${(it.priced || receiptSrc(it)) ? `<button id="bm-clear" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">清除價格與照片</button>` : ''}</div>`;
@@ -2102,17 +2103,29 @@ function openBuy(id){
   o.querySelector('#bm-msg').textContent = `「${it.text}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
   const amt = o.querySelector('#bm-amt'); if (cur > 0) amt.value = cur;
   const prev = o.querySelector('#bm-prev');
-  const showPrev = src => { prev.innerHTML = src ? `<img src="${src}" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:10px;background:#0001;"><button id="bm-rm" style="margin-top:6px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;">移除照片</button>` : ''; const rm = prev.querySelector('#bm-rm'); if (rm) rm.onclick = () => { buyPhoto = null; showPrev(''); }; };
-  showPrev(receiptSrc(it));
+  const showPrev = () => {
+    prev.innerHTML = buyList.length ? `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">${buyList.map((x,i) => `<div style="position:relative;"><img data-i="${i}" src="${x.src}" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#0001;"><button data-rm="${i}" aria-label="移除" style="position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:13px;line-height:1;">✕</button></div>`).join('')}</div>` : '';
+    prev.querySelectorAll('img').forEach(im => im.onclick = () => viewShopPhoto(null, buyList[+im.dataset.i].src));
+    prev.querySelectorAll('button[data-rm]').forEach(bt => bt.onclick = () => { buyList.splice(+bt.dataset.rm, 1); showPrev(); });
+  };
+  showPrev();
   const file = o.querySelector('#bm-file');
   o.querySelector('#bm-cam').onclick = () => file.click();
-  file.onchange = async () => { const f = file.files && file.files[0]; if (!f) return; try { buyPhoto = await readPhoto(f); showPrev(buyPhoto); } catch(e){ showToast('無法讀取這張照片'); } file.value = ''; };
+  file.onchange = async () => {
+    const fs = Array.from(file.files || []);
+    for (const f of fs){ try { buyList.push({src: await readPhoto(f), ref: null}); } catch(e){ showToast('有一張照片讀不了'); } }
+    file.value = ''; showPrev();
+  };
   o.querySelector('#bm-no').onclick = () => o.remove();
   o.onclick = e => { if (e.target === o) o.remove(); };
   o.querySelector('#bm-yes').onclick = async () => {
     const n = parseFloat(amt.value);
     if (n > 0){ it.price = Math.round(n / (Number(it.qty) || 1) * 100) / 100; it.priced = true; }
-    if (buyPhoto !== undefined){ dropReceipt(it); if (buyPhoto) Object.assign(it, await storeReceipt(buyPhoto)); }
+    const keep = buyList.filter(x => x.ref).map(x => x.ref);
+    (it.receipts || []).forEach(e => { if (!keep.includes(e)) dropEntry(e); });
+    const out = [];
+    for (const x of buyList){ out.push(x.ref ? x.ref : await storeEntry(x.src)); }
+    if (out.length) it.receipts = out; else delete it.receipts;
     saveShop(); renderShop(); o.remove(); showToast('已儲存 ✓');
   };
 }
@@ -2200,10 +2213,17 @@ function idbLoadAll(){
 }
 function photoSrc(it){ return it.photoId ? (photoCache[it.photoId] || '') : (it.photo || ''); }
 function dropPhoto(it){ if (it.photoId){ idbDel(it.photoId); delete photoCache[it.photoId]; } delete it.photoId; delete it.photo; }
-function receiptSrc(it){ return it.receiptId ? (photoCache[it.receiptId] || '') : (it.receipt || ''); }
-function dropReceipt(it){ if (it.receiptId){ idbDel(it.receiptId); delete photoCache[it.receiptId]; } delete it.receiptId; delete it.receipt; }
+function entrySrc(e){ return e.id ? (photoCache[e.id] || '') : (e.d || ''); }
+function receiptList(it){ return (it.receipts || []).map(e => ({e, src: entrySrc(e)})).filter(x => x.src); }
+function receiptSrc(it){ return receiptList(it).length ? 'y' : ''; }
+function dropEntry(e){ if (e.id){ idbDel(e.id); delete photoCache[e.id]; } }
+function dropReceipt(it){ (it.receipts || []).forEach(dropEntry); delete it.receipts; }
 function dropAllPhotos(it){ dropPhoto(it); dropReceipt(it); }
-async function storeReceipt(dataUrl){ const r = await storePhoto(dataUrl); return r.photoId ? {receiptId: r.photoId} : {receipt: r.photo}; }
+async function storeEntry(dataUrl){ const r = await storePhoto(dataUrl); return r.photoId ? {id: r.photoId} : {d: r.photo}; }
+function migrateReceipts(it){
+  if (it.receiptId){ it.receipts = (it.receipts || []).concat([{id: it.receiptId}]); delete it.receiptId; }
+  if (it.receipt){ it.receipts = (it.receipts || []).concat([{d: it.receipt}]); delete it.receipt; }
+}
 function readPhoto(file){
   return new Promise((res, rej) => {
     const img = new Image();
@@ -2536,7 +2556,7 @@ async function copyShopText(){
 function backupShop(){
   if (!shopItems.length){ showToast('清單是空的，不需要備份'); return; }
   const data = {app:'fukuoka-shopping', version:1, exportedAt:new Date().toISOString(),
-    items: shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } if (c.receiptId){ c.receiptData = photoCache[c.receiptId] || ''; } return c; })};
+    items: shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } if (c.receipts){ c.receiptsData = c.receipts.map(entrySrc).filter(Boolean); delete c.receipts; } return c; })};
   const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
   const a = document.createElement('a');
   const d = new Date();
@@ -2561,8 +2581,9 @@ function restoreShop(inp){
         const pd = it.photoData; delete it.photoData;
         if (!it.id) it.id = newShopId();
         if (pd){ delete it.photoId; Object.assign(it, await storePhoto(pd)); }
-        const rd2 = it.receiptData; delete it.receiptData;
-        if (rd2){ delete it.receiptId; Object.assign(it, await storeReceipt(rd2)); }
+        migrateReceipts(it);
+        const rd2 = it.receiptsData; delete it.receiptsData; delete it.receipts;
+        if (rd2 && rd2.length){ it.receipts = []; for (const d of rd2) it.receipts.push(await storeEntry(d)); }
         out.push(it);
       }
       shopItems = out; saveShop(); renderShop();
