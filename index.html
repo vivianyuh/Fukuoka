@@ -873,9 +873,10 @@
 .shop-settle-row button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;font-family:inherit}
 .shop-search{width:100%;box-sizing:border-box;padding:10px 12px;margin:10px 0 0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit}
 .shop-done-toggle{display:block;width:100%;text-align:left;margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;background:none;color:var(--ink-soft);font-size:14px;font-family:inherit}
-.shop-step{display:inline-flex;align-items:center;gap:8px;margin-top:6px}
-.shop-step button{width:30px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;line-height:1;font-family:inherit;padding:0}
-.shop-step span{min-width:26px;text-align:center;font-size:13px;font-weight:700;color:var(--vermilion)}
+.shop-step{display:inline-flex;align-items:center;margin-top:6px;border:1px solid var(--line);border-radius:999px;background:var(--bg);overflow:hidden}
+.shop-step button{width:30px;height:26px;border:none;background:none;color:var(--ink-soft);font-size:17px;line-height:1;font-family:inherit;padding:0;cursor:pointer}
+.shop-step button:active{background:var(--line)}
+.shop-step span{min-width:22px;text-align:center;font-size:14px;font-weight:700;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -2075,7 +2076,7 @@ shopItems.forEach(it => { if (it.who && !whoList.includes(it.who)) whoList.push(
 function rememberWho(w){ if (!w) return; whoList = [w].concat(whoList.filter(x => x !== w)); lsSet('fukuoka_shop_who_v1', whoList); }
 function pickWho(i){ const w = whoList[i]; shopDraft.who = (shopDraft.who === w) ? '' : w; renderShop(); }
 function toggleShopMore(){ shopMore = !shopMore; renderShop(); }
-function shopMoreOpen(){ const d = shopDraft; return shopMore || d.store || d.note || d.price || (d.qty && d.qty !== '1'); }
+function shopMoreOpen(){ const d = shopDraft; return shopMore || d.note || d.price || (d.qty && d.qty !== '1'); }
 function toggleAskExp(){ shopAskExp = !shopAskExp; lsSet('fukuoka_shop_askexp_v1', shopAskExp); renderShop(); }
 function setShopBudget(v){ const n = parseFloat(v); shopBudget = n > 0 ? n : 0; lsSet('fukuoka_shop_budget_v1', shopBudget); renderShop(); }
 let buyList = [];   // [{src, ref}]  ref=原有 entry，null=新加
@@ -2265,7 +2266,7 @@ function shopRow(it){
       <div class="shop-main" onclick="toggleShop('${it.id}')">
         <div class="shop-txt">${escHtml(it.text)}${it.done && q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
-        ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>×${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
+        ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
       </div>
       ${it.store ? `<a class="shop-ico" href="${shopMapUrl(storeQuery(it.store))}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
       ${it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
@@ -2318,11 +2319,11 @@ function renderShop(){
         <input id="shop-input" type="text" placeholder="${isMe?'想買的東西':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
       </div>
       ${!isMe && whoList.length ? `<div class="who-chips"><span>常用：</span>${whoList.map((w,i) => `<button class="${d.who===w?'active':''}" onclick="pickWho(${i})">${escHtml(w)}</button>`).join('')}</div>` : ''}
-      <button class="shop-more-toggle" onclick="toggleShopMore()">${shopMoreOpen() ? '收起 ▴' : '更多選項（店名、備註、價格…）▾'}</button>
-      ${shopMoreOpen() ? `
       <div class="shop-row">
         <input type="text" placeholder="店名（選填，只有特定店家才有時填）" value="${escHtml(d.store)}" oninput="shopDraft.store=this.value">
       </div>
+      <button class="shop-more-toggle" onclick="toggleShopMore()">${shopMoreOpen() ? '收起 ▴' : '更多選項（備註、價格…）▾'}</button>
+      ${shopMoreOpen() ? `
       <div class="shop-row">
         <input type="text" placeholder="備註（規格、口味、尺寸…）" value="${escHtml(d.note)}" oninput="shopDraft.note=this.value">
       </div>
@@ -2607,6 +2608,19 @@ panels.addEventListener('click', (e) => {
   block.querySelectorAll(`.plan-btn[data-pi="${pi}"]`).forEach(b => b.classList.toggle('on', b === btn));
   block.querySelectorAll(`.plan-body[data-pi="${pi}"]`).forEach(b => b.classList.toggle('on', b.dataset.oi === btn.dataset.oi));
 });
+
+// 外部連結：預覽視窗可能擋掉新分頁，擋住時改成複製連結
+document.addEventListener('click', function(ev){
+  const a = ev.target.closest && ev.target.closest('a[target="_blank"]');
+  if (!a || !/^https?:/i.test(a.href)) return;
+  ev.preventDefault();
+  let w = null;
+  try { w = window.open(a.href, '_blank'); } catch(e){}
+  if (w){ try { w.opener = null; } catch(e){} return; }
+  const done = ok => showToast(ok ? '這個預覽視窗擋住了連結，已複製網址，請貼到瀏覽器開啟' : '連結被擋住了，請用瀏覽器直接開啟這個網頁');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(a.href).then(() => done(true), () => done(false));
+  else done(false);
+}, true);
 </script>
 </body>
 </html>
