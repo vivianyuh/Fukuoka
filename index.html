@@ -780,7 +780,7 @@
   .shop-tabs button.active{background:var(--ink); color:var(--bg); border-color:var(--ink);}
   .shop-form{display:flex; flex-direction:column; gap:8px; margin-bottom:12px;}
   .shop-row{display:flex; gap:8px;}
-  .shop-form input, .shop-form select, #shop-edit input, #shop-edit select{flex:1; min-width:0; padding:10px 12px; font-size:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-family:inherit;}
+  .shop-form input, .shop-form select, #shop-edit input, #shop-edit select, #shop-add input{flex:1; min-width:0; padding:10px 12px; font-size:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--ink); font-family:inherit;}
   .shop-addbtn{flex:1; padding:10px 16px; border:none; border-radius:10px; background:var(--vermilion); color:#fff; font-size:15px; cursor:pointer; font-family:inherit;}
   .shop-cam{padding:0 !important; width:44px; height:44px; flex:none; background:var(--panel); border:1px solid var(--line); border-radius:10px; color:var(--ink); font-size:20px; overflow:hidden; cursor:pointer;}
   .shop-cam img{width:100%; height:100%; object-fit:cover; display:block;}
@@ -808,8 +808,8 @@
   #shop-photo-overlay{position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; padding:16px;}
   #shop-photo-overlay.show{display:flex;}
   #shop-photo-overlay img{max-width:100%; max-height:100%; border-radius:10px;}
-  #shop-edit{position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.5); display:none; align-items:flex-end; justify-content:center;}
-  #shop-edit.show{display:flex;}
+  #shop-edit, #shop-add{position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.5); display:none; align-items:flex-end; justify-content:center;}
+  #shop-edit.show, #shop-add.show{display:flex;}
   .se-card{width:100%; max-width:560px; max-height:92vh; overflow:auto; background:var(--bg); color:var(--ink); border-radius:16px 16px 0 0; padding:16px 16px calc(16px + env(safe-area-inset-bottom,0)); display:flex; flex-direction:column; gap:10px;}
   .se-title{font-weight:700; font-size:16px;}
   .se-photo{align-items:center;}
@@ -886,6 +886,12 @@ input[type=text],input[type=number],input[type=search]{padding-right:34px}
 input.has-val{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23000' fill-opacity='.45'/%3E%3Cpath d='M8 8l8 8M16 8l-8 8' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;background-repeat:no-repeat !important;background-position:right 9px center !important;background-size:22px 22px !important}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.shop-fab{position:fixed;right:16px;bottom:84px;z-index:60;padding:13px 20px;border:none;border-radius:999px;background:var(--vermilion);color:#fff;font-size:16px;font-weight:700;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,.28);cursor:pointer}
+.shop-tabs em{font-style:normal;opacity:.75;margin-left:2px}
+.shop-tools-toggle{display:block;width:100%;text-align:left;margin:16px 0 6px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;background:none;color:var(--ink-soft);font-size:14px;font-family:inherit}
+.shop-settle-head{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;color:var(--ink);font-size:14px;font-weight:700;font-family:inherit;padding:2px 0}
+.shop-settle-sum{font-weight:400;color:var(--ink-soft);font-size:13px}
+.shop-settle-head + .shop-settle-row{margin-top:8px}
 </style>
 </head>
 <body>
@@ -2067,6 +2073,47 @@ let shopEditId = null;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
 let shopMore = false;
+let shopToolsOpen = false;
+let shopSettleOpen = false;
+function toggleShopTools(){ shopToolsOpen = !shopToolsOpen; renderShop(); }
+function toggleShopSettle(){ shopSettleOpen = !shopSettleOpen; renderShop(); }
+function addSheetHtml(){
+  const isMe = shopTab === 'me', d = shopDraft;
+  return `<div class="se-card">
+    <div class="se-title">${isMe ? '新增想買的' : '新增代購'}</div>
+    <div class="shop-row">
+      ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
+      <input id="shop-input" type="text" placeholder="${isMe?'想買的東西（或只填下面店名）':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
+    </div>
+    ${!isMe && whoList.length ? `<div class="who-chips"><span>常用：</span>${whoList.map((w,i) => `<button class="${d.who===w?'active':''}" onclick="pickWho(${i})">${escHtml(w)}</button>`).join('')}</div>` : ''}
+    <input type="text" placeholder="店名（選填，只有特定店家才有時填）" value="${escHtml(d.store)}" oninput="shopDraft.store=this.value">
+    <button class="shop-more-toggle" onclick="toggleShopMore()">${shopMoreOpen() ? '收起 ▴' : '更多選項（備註、價格…）▾'}</button>
+    ${shopMoreOpen() ? `
+    <input type="text" placeholder="備註（規格、口味、尺寸…）" value="${escHtml(d.note)}" oninput="shopDraft.note=this.value">
+    <div class="shop-row">
+      <input type="number" inputmode="numeric" placeholder="單價 ¥" value="${escHtml(d.price)}" oninput="shopDraft.price=this.value" style="flex:1.2">
+      <input type="number" inputmode="numeric" placeholder="數量" value="${escHtml(d.qty)}" oninput="shopDraft.qty=this.value" style="flex:0.8">
+    </div>` : ''}
+    <div class="shop-row">
+      <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
+      <button class="shop-addbtn" onclick="addShop()">加入</button>
+    </div>
+    <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
+    <button class="se-cancel" onclick="closeShopAdd()">完成</button>
+  </div>`;
+}
+let shopAddOpen = false;
+function renderShopAdd(){
+  const o = document.getElementById('shop-add'); if (!o || !shopAddOpen) return;
+  o.innerHTML = addSheetHtml(); o.classList.add('show');
+}
+function openShopAdd(){
+  let o = document.getElementById('shop-add');
+  if (!o){ o = document.createElement('div'); o.id = 'shop-add'; o.onclick = e => { if (e.target === o) closeShopAdd(); }; document.body.appendChild(o); }
+  shopAddOpen = true; renderShopAdd();
+  setTimeout(() => { const i = document.getElementById('shop-input'); if (i) i.focus(); }, 80);
+}
+function closeShopAdd(){ shopAddOpen = false; const o = document.getElementById('shop-add'); if (o) o.classList.remove('show'); }
 let shopQuickOpen = false;
 function toggleShopQuick(){ shopQuickOpen = !shopQuickOpen; renderShop(); }
 let shopSearch = '';
@@ -2086,8 +2133,8 @@ let shopBudget = lsGet('fukuoka_shop_budget_v1', 0);
 let whoList = lsGet('fukuoka_shop_who_v1', []);
 shopItems.forEach(it => { if (it.who && !whoList.includes(it.who)) whoList.push(it.who); });
 function rememberWho(w){ if (!w) return; whoList = [w].concat(whoList.filter(x => x !== w)); lsSet('fukuoka_shop_who_v1', whoList); }
-function pickWho(i){ const w = whoList[i]; shopDraft.who = (shopDraft.who === w) ? '' : w; renderShop(); }
-function toggleShopMore(){ shopMore = !shopMore; renderShop(); }
+function pickWho(i){ const w = whoList[i]; shopDraft.who = (shopDraft.who === w) ? '' : w; renderShopAdd(); }
+function toggleShopMore(){ shopMore = !shopMore; renderShopAdd(); }
 function shopMoreOpen(){ const d = shopDraft; return shopMore || d.note || d.price || (d.qty && d.qty !== '1'); }
 function toggleAskExp(){ shopAskExp = !shopAskExp; lsSet('fukuoka_shop_askexp_v1', shopAskExp); renderShop(); }
 let shopBudgetEdit = false;
@@ -2167,7 +2214,11 @@ function togglePaid(i){
 function settleHtml(){
   const g = settleData(); settleNames = Object.keys(g);
   if (!settleNames.length) return '';
-  return `<div class="shop-settle"><div class="shop-settle-title">💰 代購結算（已買的）</div>` + settleNames.map((w,i) => {
+  let unpaidAll = 0;
+  settleNames.forEach(w => { unpaidAll += g[w].filter(it => !it.paid).reduce((t,it) => t + itemTotal(it), 0); });
+  const head = `<button class="shop-settle-head" onclick="toggleShopSettle()"><span>💰 代購結算</span><span class="shop-settle-sum">${unpaidAll > 0 ? '還沒收 ' + fmtYen(unpaidAll) : '✅ 都收齊了'} ${shopSettleOpen ? '▴' : '▾'}</span></button>`;
+  if (!shopSettleOpen) return `<div class="shop-settle">${head}</div>`;
+  return `<div class="shop-settle">${head}` + settleNames.map((w,i) => {
     const arr = g[w];
     const tot = arr.reduce((t,it) => t + itemTotal(it), 0);
     const unpaid = arr.filter(it => !it.paid).reduce((t,it) => t + itemTotal(it), 0);
@@ -2280,9 +2331,8 @@ function shopRow(it){
       <div class="shop-box" onclick="toggleShop('${it.id}')">${it.done?'✓':''}</div>
       ${src ? `<img class="shop-thumb" src="${src}" onclick="viewShopPhoto('${it.id}')" alt="">` : ''}
       <div class="shop-main" onclick="toggleShop('${it.id}')">
-        <div class="shop-txt">${escHtml(itemTitle(it))}${it.done && q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
+        <div class="shop-txt">${escHtml(itemTitle(it))}${q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
-        ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
       </div>
       ${it.store ? `<a class="shop-ico" href="${shopMapUrl(storeQuery(it.store))}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
       ${it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
@@ -2320,55 +2370,38 @@ function renderShop(){
     <h2 class="day-title">日本購物清單</h2>
     <span class="day-sub">${tabItems.length ? `還有 ${left} 項沒買` : '想到什麼就先記下來，逛街時邊買邊勾'}</span>
     <div class="shop-tabs">
-      <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買</button>
-      <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買</button>
-    </div>
-    <div class="shop-area">搜尋地區：<input type="text" value="${escHtml(searchArea)}" placeholder="例如 福岡、大阪、Paris" onchange="setSearchArea(this.value)"><span>店名搜尋會自動加上這個地區；換地方旅行時改這裡</span></div>
-    ${tabItems.length > 4 || shopSearch ? `<input id="shop-search" class="shop-search" type="search" placeholder="🔍 搜尋清單（品名、店名、誰…）" value="${escHtml(shopSearch)}" oninput="onShopSearch(this)">` : ''}
-    <div class="shop-quick">
-      <button class="shop-quick-title" onclick="toggleShopQuick()">📍 附近搜尋 ${shopQuickOpen ? '▴' : '▾'}</button>
-      ${shopQuickOpen ? `<div class="shop-quick-hint">用目前位置在地圖找最近的店</div><div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>` : ''}
-    </div>
-    <div class="shop-form">
-      <div class="shop-row">
-        ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
-        <input id="shop-input" type="text" placeholder="${isMe?'想買的東西（或只填下面店名）':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
-      </div>
-      ${!isMe && whoList.length ? `<div class="who-chips"><span>常用：</span>${whoList.map((w,i) => `<button class="${d.who===w?'active':''}" onclick="pickWho(${i})">${escHtml(w)}</button>`).join('')}</div>` : ''}
-      <div class="shop-row">
-        <input type="text" placeholder="店名（選填，只有特定店家才有時填）" value="${escHtml(d.store)}" oninput="shopDraft.store=this.value">
-      </div>
-      <button class="shop-more-toggle" onclick="toggleShopMore()">${shopMoreOpen() ? '收起 ▴' : '更多選項（備註、價格…）▾'}</button>
-      ${shopMoreOpen() ? `
-      <div class="shop-row">
-        <input type="text" placeholder="備註（規格、口味、尺寸…）" value="${escHtml(d.note)}" oninput="shopDraft.note=this.value">
-      </div>
-      <div class="shop-row">
-        <input type="number" inputmode="numeric" placeholder="單價 ¥" value="${escHtml(d.price)}" oninput="shopDraft.price=this.value" style="flex:1.2">
-        <input type="number" inputmode="numeric" placeholder="數量" value="${escHtml(d.qty)}" oninput="shopDraft.qty=this.value" style="flex:0.8">
-      </div>` : ''}
-      <div class="shop-row">
-        <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
-        <button class="shop-addbtn" onclick="addShop()">加入</button>
-      </div>
-      <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
+      <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買 <em>${shopItems.filter(x => (x.type || 'me') === 'me' && !x.done).length}</em></button>
+      <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買 <em>${shopItems.filter(x => x.type === 'other' && !x.done).length}</em></button>
     </div>
     ${totalAll > 0 ? `<div class="shop-sum"><div>預估總額　<b>${priceBoth(totalAll)}</b></div><div>還沒買　<b>${priceBoth(totalLeft)}</b></div></div>` : ''}
     ${isMe ? (shopBudget > 0 || shopBudgetEdit ? `<div class="shop-budget">購物預算（自己要買）NT$ <input id="shop-budget-in" type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="輸入金額" onchange="setShopBudget(this.value)" onblur="if(!this.value){shopBudgetEdit=false;renderShop();}">
       ${shopBudget > 0 ? (() => { const all = shopItems.filter(x => (x.type || 'me') === 'me').reduce((t,x)=>t+itemTotal(x),0) * exchangeRate; const diff = shopBudget - all; return `<div class="shop-budget-bar"><i style="width:${Math.min(100, Math.round(all/shopBudget*100))}%" class="${diff<0?'over':''}"></i></div><div class="shop-budget-txt${diff<0?' over':''}">自己要買預估 ≈${fmtTwd(all)}・${diff<0?'超出':'還剩'} ${fmtTwd(Math.abs(diff))}</div>`; })() : ''}
-    </div>` : `<button class="shop-budget-link" onclick="openShopBudget()">＋ 設定購物預算</button>`) : ''}    ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
+    </div>` : `<button class="shop-budget-link" onclick="openShopBudget()">＋ 設定購物預算</button>`) : ''}
+    ${tabItems.length > 4 || shopSearch ? `<input id="shop-search" class="shop-search" type="search" placeholder="🔍 搜尋清單（品名、店名、誰…）" value="${escHtml(shopSearch)}" oninput="onShopSearch(this)">` : ''}
+    ${listHtml || '<div class="shop-empty">目前還沒有項目，按右下角「＋ 新增」</div>'}
     ${!isMe ? settleHtml() : ''}
-    <div class="shop-opts">
-      <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際價格與照片</label>
-    </div>
-    <div class="shop-tools">
-      <button onclick="copyShopText()">複製清單文字</button>
-      <button onclick="clearBoughtShop()">清掉已買</button>
-      <button onclick="backupShop()">備份</button>
-      <button onclick="document.getElementById('shop-restore').click()">還原</button>
-      <input id="shop-restore" type="file" accept=".json,application/json" style="display:none" onchange="restoreShop(this)">
-    </div>
-    <div class="note-box" style="margin-top:14px">清單和照片存在這支手機的瀏覽器裡，換手機或清除瀏覽資料就會消失。出發前建議按「備份」存一份檔案。</div>`;
+    <button class="shop-tools-toggle" onclick="toggleShopTools()">⚙ 工具與設定 ${shopToolsOpen ? '▴' : '▾'}</button>
+    ${shopToolsOpen ? `
+    <div class="shop-toolbox">
+      <div class="shop-area">搜尋地區：<input type="text" value="${escHtml(searchArea)}" placeholder="例如 福岡、大阪、Paris" onchange="setSearchArea(this.value)"><span>店名搜尋會自動加上這個地區；換地方旅行時改這裡</span></div>
+      <div class="shop-quick">
+        <div class="shop-quick-title">📍 附近搜尋（用目前位置在地圖找最近的店）</div>
+        <div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>
+      </div>
+      <div class="shop-opts">
+        <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際價格與照片</label>
+      </div>
+      <div class="shop-tools">
+        <button onclick="copyShopText()">複製清單文字</button>
+        <button onclick="clearBoughtShop()">清掉已買</button>
+        <button onclick="backupShop()">備份</button>
+        <button onclick="document.getElementById('shop-restore').click()">還原</button>
+        <input id="shop-restore" type="file" accept=".json,application/json" style="display:none" onchange="restoreShop(this)">
+      </div>
+      <div class="note-box" style="margin-top:14px">清單和照片存在這支手機的瀏覽器裡，換手機或清除瀏覽資料就會消失。出發前建議按「備份」存一份檔案。</div>
+    </div>` : ''}
+    <div style="height:84px"></div>
+    <button class="shop-fab" onclick="openShopAdd()">＋ 新增</button>`;
 }
 function setShopTab(t){ shopTab = t; shopFilter = ''; renderShop(); }
 function setShopFilter(p){ shopFilter = p; renderShop(); }
@@ -2392,13 +2425,13 @@ async function addShop(){
   if (!saveShop()){ shopItems.pop(); dropPhoto(item); showToast('空間不足，存不下這筆'); return; }
   shopPendingPhoto = null;
   shopDraft.text = ''; shopDraft.store = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
-  renderShop();
+  renderShop(); renderShopAdd(); showToast('已加入 ✓');
   const inp = document.getElementById('shop-input'); if (inp) inp.focus();
 }
 async function onShopPhoto(inp){
   const f = inp.files && inp.files[0];
   if (!f) return;
-  try { shopPendingPhoto = await readPhoto(f); renderShop(); } catch(e){ showToast('無法讀取這張照片'); }
+  try { shopPendingPhoto = await readPhoto(f); renderShopAdd(); } catch(e){ showToast('無法讀取這張照片'); }
 }
 function findShop(id){ return shopItems.find(it => it.id === id); }
 function toggleShop(id){
@@ -2643,7 +2676,7 @@ document.addEventListener('click', function(ev){
 
 // 輸入框清除鈕：用輸入框自己的背景圖畫 ✕（不另外浮動元件，捲動不會跑位），點右側就清空
 (function(){
-  const okEl = el => el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who' && el.placeholder !== '數量';
+  const okEl = el => el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who' && el.placeholder !== '數量' && !el.closest('.shop-area');
   let queued = false;
   function sync(){
     queued = false;
