@@ -883,6 +883,9 @@
 input[type=text],input[type=number],input[type=search]{padding-right:34px}
 #shop-who{padding-right:10px !important}
 .shop-area input,.shop-budget input{width:130px !important}
+input.has-val{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23000' fill-opacity='.45'/%3E%3Cpath d='M8 8l8 8M16 8l-8 8' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;background-repeat:no-repeat !important;background-position:right 9px center !important;background-size:22px 22px !important}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 </style>
 </head>
 <body>
@@ -2638,43 +2641,33 @@ document.addEventListener('click', function(ev){
   else done(false);
 }, true);
 
-// 輸入框清除鈕：有內容的輸入框右側一律顯示 ✕
+// 輸入框清除鈕：用輸入框自己的背景圖畫 ✕（不另外浮動元件，捲動不會跑位），點右側就清空
 (function(){
-  const layer = document.createElement('div');
-  layer.id = 'clr-layer';
-  layer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:10050;';
-  document.body.appendChild(layer);
-  const okEl = el => el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who';
+  const okEl = el => el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who' && el.placeholder !== '數量';
   let queued = false;
-  function refresh(){
+  function sync(){
     queued = false;
-    layer.textContent = '';
     document.querySelectorAll('input').forEach(el => {
-      if (!okEl(el) || !el.value || !el.getClientRects().length) return;
-      const r = el.getBoundingClientRect();
-      if (r.width < 90 || r.bottom < 0 || r.top > innerHeight) return;
-      const hit = document.elementFromPoint(r.left + 12, r.top + r.height / 2);
-      if (hit !== el) return;
-      const b = document.createElement('button');
-      b.type = 'button'; b.textContent = '✕'; b.setAttribute('aria-label', '清除');
-      b.style.cssText = 'position:fixed;pointer-events:auto;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;font-size:13px;line-height:1;padding:0;cursor:pointer;left:' + (r.right - 32) + 'px;top:' + (r.top + r.height / 2 - 12) + 'px;';
-      b.onclick = () => {
-        el.value = '';
-        el.dispatchEvent(new Event('input', {bubbles: true}));
-        if (el.hasAttribute('onchange')) el.dispatchEvent(new Event('change', {bubbles: true}));
-        schedule();
-        if (document.body.contains(el)) el.focus();
-      };
-      layer.appendChild(b);
+      if (!okEl(el)) return;
+      el.classList.toggle('has-val', !!el.value && el.offsetWidth >= 90);
     });
   }
-  function schedule(){ if (!queued){ queued = true; requestAnimationFrame(refresh); } }
+  function schedule(){ if (!queued){ queued = true; requestAnimationFrame(sync); } }
   document.addEventListener('input', schedule, true);
   document.addEventListener('change', schedule, true);
-  document.addEventListener('focusin', schedule, true);
-  window.addEventListener('scroll', schedule, true);
-  window.addEventListener('resize', schedule);
-  new MutationObserver(ms => { if (ms.some(m => !layer.contains(m.target))) schedule(); }).observe(document.body, {childList: true, subtree: true});
+  new MutationObserver(schedule).observe(document.body, {childList: true, subtree: true});
+  document.addEventListener('pointerdown', e => {
+    const el = e.target;
+    if (!el || !el.classList || !el.classList.contains('has-val') || !el.value) return;
+    const r = el.getBoundingClientRect();
+    if (e.clientX < r.right - 38) return;
+    e.preventDefault();
+    el.value = '';
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+    if (el.hasAttribute('onchange')) el.dispatchEvent(new Event('change', {bubbles: true}));
+    if (document.body.contains(el)) el.focus();
+    schedule();
+  }, true);
   schedule();
 })();
 </script>
