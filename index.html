@@ -2111,7 +2111,7 @@ function openBuy(id){
   o.querySelector('#bm-undo').onclick = () => { it.done = false; saveShop(); renderShop(); o.remove(); showToast('已改回還沒買'); };
   const clr = o.querySelector('#bm-clear');
   if (clr) clr.onclick = () => { delete it.actualTotal; dropReceipt(it); saveShop(); renderShop(); o.remove(); showToast('已清除價格與照片'); };
-  o.querySelector('#bm-msg').textContent = `「${it.text}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
+  o.querySelector('#bm-msg').textContent = `「${itemTitle(it)}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
   const amt = o.querySelector('#bm-amt'); if (cur > 0) amt.value = cur;
   const prev = o.querySelector('#bm-prev');
   const showPrev = () => {
@@ -2148,7 +2148,7 @@ function settleData(){
 }
 function copyBill(i){
   const w = settleNames[i]; const g = settleData()[w]; if (!g) return;
-  const lines = g.map(it => `・${it.text}${(Number(it.qty)||1) > 1 ? ' ×' + it.qty : ''}　${itemTotal(it) > 0 ? fmtYen(itemTotal(it)) : '（未填價格）'}`);
+  const lines = g.map(it => `・${itemTitle(it)}${(Number(it.qty)||1) > 1 ? ' ×' + it.qty : ''}　${itemTotal(it) > 0 ? fmtYen(itemTotal(it)) : '（未填價格）'}`);
   const tot = g.reduce((t,it) => t + itemTotal(it), 0);
   const txt = `${lines.join('\n')}\n合計 ${fmtYen(tot)}（約 ${fmtTwd(tot * exchangeRate)}）`;
   const done = () => showToast('已複製，可以貼到 LINE');
@@ -2259,6 +2259,7 @@ function fmtYen(n){ return '¥' + Math.round(n).toLocaleString(); }
 function fmtTwd(n){ return 'NT$' + Math.round(n).toLocaleString(); }
 function priceBoth(jpy){ return `${fmtYen(jpy)}（≈${fmtTwd(jpy * exchangeRate)}）`; }
 function escHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function itemTitle(it){ return it.text || (it.store ? '🏬 ' + it.store : '（未命名）'); }
 function usesActual(it){ return !!it.done && Number(it.actualTotal) > 0; }
 function itemTotal(it){ if (usesActual(it)) return Number(it.actualTotal); const p = Number(it.price) || 0; const q = Number(it.qty) || 1; return p * q; }
 function sortUndoneFirst(arr){ return arr.map((x,i)=>({x,i})).sort((a,b) => (a.x.done - b.x.done) || (a.i - b.i)).map(o => o.x); }
@@ -2266,7 +2267,7 @@ function sortUndoneFirst(arr){ return arr.map((x,i)=>({x,i})).sort((a,b) => (a.x
 function shopRow(it){
   const q = Number(it.qty) || 1;
   const sub = [];
-  if (it.store) sub.push('🏬 ' + escHtml(it.store));
+  if (it.store && it.text) sub.push('🏬 ' + escHtml(it.store));
   if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 && !usesActual(it) ? `（${fmtYen(it.price)}×${q}）` : ''));
   if (it.note) sub.push(escHtml(it.note));
   if (it.paid) sub.push('💰已收款');
@@ -2276,7 +2277,7 @@ function shopRow(it){
       <div class="shop-box" onclick="toggleShop('${it.id}')">${it.done?'✓':''}</div>
       ${src ? `<img class="shop-thumb" src="${src}" onclick="viewShopPhoto('${it.id}')" alt="">` : ''}
       <div class="shop-main" onclick="toggleShop('${it.id}')">
-        <div class="shop-txt">${escHtml(it.text)}${it.done && q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
+        <div class="shop-txt">${escHtml(itemTitle(it))}${it.done && q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
         ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
       </div>
@@ -2328,7 +2329,7 @@ function renderShop(){
     <div class="shop-form">
       <div class="shop-row">
         ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
-        <input id="shop-input" type="text" placeholder="${isMe?'想買的東西':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
+        <input id="shop-input" type="text" placeholder="${isMe?'想買的東西（或只填下面店名）':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
       </div>
       ${!isMe && whoList.length ? `<div class="who-chips"><span>常用：</span>${whoList.map((w,i) => `<button class="${d.who===w?'active':''}" onclick="pickWho(${i})">${escHtml(w)}</button>`).join('')}</div>` : ''}
       <div class="shop-row">
@@ -2371,7 +2372,8 @@ function setShopFilter(p){ shopFilter = p; renderShop(); }
 
 async function addShop(){
   const text = shopDraft.text.trim();
-  if (!text) { showToast('請先輸入品項'); return; }
+  const storeOnly = !text && shopTab === 'me' && shopDraft.store.trim();
+  if (!text && !storeOnly) { showToast(shopTab === 'me' ? '請輸入想買的東西，或至少填店名' : '請先輸入品項'); return; }
   const item = {id:newShopId(), text, done:false, type:shopTab};
   if (shopTab === 'other'){
     item.who = shopDraft.who.trim();
@@ -2408,7 +2410,7 @@ function delShop(id){
   const it = shopItems[idx];
   shopItems.splice(idx, 1);
   saveShop(); renderShop();
-  showUndo(`已刪除「${it.text}」`, () => { shopItems.splice(Math.min(idx, shopItems.length), 0, it); saveShop(); renderShop(); }, () => dropAllPhotos(it));
+  showUndo(`已刪除「${itemTitle(it)}」`, () => { shopItems.splice(Math.min(idx, shopItems.length), 0, it); saveShop(); renderShop(); }, () => dropAllPhotos(it));
 }
 function showUndo(msg, onUndo, onExpire){
   let t = document.getElementById('undo-bar');
@@ -2491,7 +2493,8 @@ function removeEditPhoto(){ shopEditPhoto = null; document.getElementById('se-ph
 async function saveShopEdit(){
   const it = findShop(shopEditId); if (!it) return closeShopEdit();
   const text = document.getElementById('se-text').value.trim();
-  if (!text){ showToast('品項不能是空的'); return; }
+  const storeChk = document.getElementById('se-store').value.trim();
+  if (!text && !(storeChk && (it.type || 'me') === 'me')){ showToast('品項不能是空的'); return; }
   const whoEl = document.getElementById('se-who');
   if (whoEl){ const w = whoEl.value.trim(); if (!w){ showToast('請填「誰」'); return; } it.who = w; }
   it.text = text;
@@ -2515,7 +2518,7 @@ function shopListText(){
   const items = shopItems.filter(it => (it.type || 'me') === shopTab);
   const line = it => {
     const q = Number(it.qty) || 1;
-    let t = `${it.done ? '☑' : '☐'} ${it.text}${q > 1 ? ' ×' + q : ''}`;
+    let t = `${it.done ? '☑' : '☐'} ${itemTitle(it)}${q > 1 ? ' ×' + q : ''}`;
     const extra = [];
     if (it.store) extra.push(it.store);
     if (itemTotal(it) > 0) extra.push(fmtYen(itemTotal(it)));
@@ -2635,37 +2638,44 @@ document.addEventListener('click', function(ev){
   else done(false);
 }, true);
 
-// 輸入框清除鈕：聚焦且有內容時，右側浮出 ✕
+// 輸入框清除鈕：有內容的輸入框右側一律顯示 ✕
 (function(){
-  const btn = document.createElement('button');
-  btn.id = 'clr-btn'; btn.type = 'button'; btn.textContent = '✕'; btn.setAttribute('aria-label', '清除');
-  btn.style.cssText = 'position:fixed;display:none;z-index:10050;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.28);color:#fff;font-size:12px;line-height:1;padding:0;cursor:pointer;';
-  document.body.appendChild(btn);
-  let cur = null, pressed = false;
-  const okEl = el => el && el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who';
-  function place(){
-    if (!cur || !document.body.contains(cur) || !cur.value){ btn.style.display = 'none'; return; }
-    const r = cur.getBoundingClientRect();
-    btn.style.left = (r.right - 32) + 'px';
-    btn.style.top = (r.top + r.height / 2 - 12) + 'px';
-    btn.style.display = 'block';
+  const layer = document.createElement('div');
+  layer.id = 'clr-layer';
+  layer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:10050;';
+  document.body.appendChild(layer);
+  const okEl = el => el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who';
+  let queued = false;
+  function refresh(){
+    queued = false;
+    layer.textContent = '';
+    document.querySelectorAll('input').forEach(el => {
+      if (!okEl(el) || !el.value || !el.getClientRects().length) return;
+      const r = el.getBoundingClientRect();
+      if (r.width < 90 || r.bottom < 0 || r.top > innerHeight) return;
+      const hit = document.elementFromPoint(r.left + 12, r.top + r.height / 2);
+      if (hit !== el) return;
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = '✕'; b.setAttribute('aria-label', '清除');
+      b.style.cssText = 'position:fixed;pointer-events:auto;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;font-size:13px;line-height:1;padding:0;cursor:pointer;left:' + (r.right - 32) + 'px;top:' + (r.top + r.height / 2 - 12) + 'px;';
+      b.onclick = () => {
+        el.value = '';
+        el.dispatchEvent(new Event('input', {bubbles: true}));
+        if (el.hasAttribute('onchange')) el.dispatchEvent(new Event('change', {bubbles: true}));
+        schedule();
+        if (document.body.contains(el)) el.focus();
+      };
+      layer.appendChild(b);
+    });
   }
-  document.addEventListener('focusin', e => { if (okEl(e.target)){ cur = e.target; place(); } });
-  document.addEventListener('input', e => { if (e.target === cur) place(); });
-  document.addEventListener('focusout', e => { if (e.target !== cur) return; setTimeout(() => { if (!pressed && document.activeElement !== cur){ btn.style.display = 'none'; cur = null; } }, 250); });
-  window.addEventListener('scroll', place, true);
-  window.addEventListener('resize', place);
-  btn.addEventListener('pointerdown', () => { pressed = true; });
-  btn.addEventListener('click', () => {
-    pressed = false;
-    if (!cur) return;
-    const el = cur;
-    el.value = '';
-    el.dispatchEvent(new Event('input', {bubbles: true}));
-    if (el.hasAttribute('onchange')) el.dispatchEvent(new Event('change', {bubbles: true}));
-    btn.style.display = 'none';
-    if (document.body.contains(el)){ el.focus(); }
-  });
+  function schedule(){ if (!queued){ queued = true; requestAnimationFrame(refresh); } }
+  document.addEventListener('input', schedule, true);
+  document.addEventListener('change', schedule, true);
+  document.addEventListener('focusin', schedule, true);
+  window.addEventListener('scroll', schedule, true);
+  window.addEventListener('resize', schedule);
+  new MutationObserver(ms => { if (ms.some(m => !layer.contains(m.target))) schedule(); }).observe(document.body, {childList: true, subtree: true});
+  schedule();
 })();
 </script>
 </body>
