@@ -842,6 +842,11 @@
   .exp-more > summary::-webkit-details-marker{display:none;}
   .exp-more > summary::before{content:'＋ '; }
   .exp-more[open] > summary::before{content:'－ ';}
+  .shop-quick{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:12px;}
+  .shop-quick-title{font-size:12.5px; color:var(--ink-soft); margin-bottom:8px;}
+  .shop-quick-row{display:flex; flex-wrap:wrap; gap:6px;}
+  .shop-quick-row a{padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--bg); color:var(--ink); font-size:13px; text-decoration:none;}
+  a.shop-ico{text-decoration:none; display:inline-block;}
 </style>
 </head>
 <body>
@@ -893,6 +898,22 @@
 
 <script>
 // --- 小提示訊息 (toast) ---
+function askConfirm(msg){
+  return new Promise(res => {
+    let o = document.getElementById('ask-confirm');
+    if (o) o.remove();
+    o = document.createElement('div');
+    o.id = 'ask-confirm';
+    o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px;';
+    o.innerHTML = '<div style="background:var(--bg);color:var(--ink);border-radius:14px;padding:20px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);"><div id="ask-confirm-msg" style="font-size:15px;line-height:1.6;margin-bottom:18px;"></div><div style="display:flex;gap:10px;"><button id="ask-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">取消</button><button id="ask-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">確定</button></div></div>';
+    document.body.appendChild(o);
+    o.querySelector('#ask-confirm-msg').textContent = msg;
+    const done = v => { o.remove(); res(v); };
+    o.querySelector('#ask-yes').onclick = () => done(true);
+    o.querySelector('#ask-no').onclick = () => done(false);
+    o.onclick = e => { if (e.target === o) done(false); };
+  });
+}
 function showToast(msg){
   let toast = document.getElementById('app-toast');
   if (!toast) {
@@ -1208,8 +1229,8 @@ prepPanel.innerHTML = `
   <div class="reset-row"><button class="reset-btn" onclick="resetChecks('section-prep', '行前準備')">重設打勾</button></div>
   ${prepGroupsHtml}`;
 
-function resetChecks(sectionId, label){
-  if (!confirm(`確定要清空「${label}」所有打勾嗎？這個動作無法復原。`)) return;
+async function resetChecks(sectionId, label){
+  if (!(await askConfirm(`確定要清空「${label}」所有打勾嗎？這個動作無法復原。`))) return;
   document.querySelectorAll('#' + sectionId + ' .prep-item.checked').forEach(el => el.classList.remove('checked'));
 }
 
@@ -1709,8 +1730,8 @@ function deleteExpense(idx){
   renderExpenses();
 }
 
-function resetExpenses(){
-  if (!confirm('確定要清除所有「新增其他花費」的記錄嗎？已確定花費（機票、住宿）不會受影響。這個動作無法復原。')) return;
+async function resetExpenses(){
+  if (!(await askConfirm('確定要清除所有「新增其他花費」的記錄嗎？已確定花費（機票、住宿）不會受影響。這個動作無法復原。'))) return;
   expenseEntries = [];
   cancelEdit();
   saveExpenses();
@@ -1755,7 +1776,7 @@ function toggleImportBox(){
   box.style.display = box.style.display === 'none' ? 'block' : 'none';
 }
 
-function importExpenses(){
+async function importExpenses(){
   const text = document.getElementById('import-textarea').value.trim();
   if (!text) return;
   let parsed;
@@ -1768,7 +1789,7 @@ function importExpenses(){
   if (!Array.isArray(parsed) && parsed.budgetTwd) extras.push(`預算 NT$${parsed.budgetTwd}`);
   if (!Array.isArray(parsed) && Array.isArray(parsed.customCategories) && parsed.customCategories.length) extras.push(`${parsed.customCategories.length} 個自訂分類`);
   const extraMsg = extras.length ? `，並還原 ${extras.join('、')}` : '';
-  if (!confirm(`確定要加入 ${list.length} 筆記錄嗎${extraMsg}？`)) return;
+  if (!(await askConfirm(`確定要加入 ${list.length} 筆記錄嗎${extraMsg}？`))) return;
   expenseEntries = expenseEntries.concat(list);
   saveExpenses();
   if (!Array.isArray(parsed)) {
@@ -1999,7 +2020,7 @@ const SHOP_PLACES = ['藥妝店','百貨・商場','超市・便利商店','市�
 let shopTab = 'me';
 let shopFilter = '';
 let shopPendingPhoto = null;
-let shopDraft = {who:'', text:'', note:'', price:'', qty:'1', place:''};
+let shopDraft = {who:'', text:'', store:'', note:'', price:'', qty:'1', place:''};
 let shopEditId = null;
 let shopEditPhoto;   // undefined=不變, null=移除, string=新照片
 const photoCache = {};
@@ -2063,6 +2084,8 @@ async function storePhoto(dataUrl){
   return {photo:dataUrl};
 }
 
+function shopMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+const SHOP_QUICK = [['藥妝店','ドラッグストア'],['唐吉訶德','ドン・キホーテ'],['UNIQLO','ユニクロ'],['GU','ジーユー'],['超市','スーパーマーケット'],['便利商店','コンビニ'],['百圓商店','100円ショップ']];
 function fmtYen(n){ return '¥' + Math.round(n).toLocaleString(); }
 function fmtTwd(n){ return 'NT$' + Math.round(n).toLocaleString(); }
 function priceBoth(jpy){ return `${fmtYen(jpy)}（≈${fmtTwd(jpy * exchangeRate)}）`; }
@@ -2073,6 +2096,7 @@ function sortUndoneFirst(arr){ return arr.map((x,i)=>({x,i})).sort((a,b) => (a.x
 function shopRow(it){
   const q = Number(it.qty) || 1;
   const sub = [];
+  if (it.store) sub.push('🏬 ' + escHtml(it.store));
   if (it.place) sub.push(escHtml(it.place));
   if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 ? `（${fmtYen(it.price)}×${q}）` : ''));
   if (it.note) sub.push(escHtml(it.note));
@@ -2085,6 +2109,7 @@ function shopRow(it){
         <div class="shop-txt">${escHtml(it.text)}${q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
       </div>
+      ${it.store ? `<a class="shop-ico" href="${shopMapUrl(it.store)}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
       <button class="shop-ico" onclick="openShopEdit('${it.id}')" aria-label="編輯">✎</button>
       <button class="shop-ico" onclick="delShop('${it.id}')" aria-label="刪除">✕</button>
     </div>`;
@@ -2119,10 +2144,17 @@ function renderShop(){
       <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買</button>
       <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買</button>
     </div>
+    <div class="shop-quick">
+      <div class="shop-quick-title">📍 附近搜尋（用目前位置在地圖找最近的店）</div>
+      <div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>
+    </div>
     <div class="shop-form">
       <div class="shop-row">
         ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
         <input id="shop-input" type="text" placeholder="${isMe?'想買的東西':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
+      </div>
+      <div class="shop-row">
+        <input type="text" placeholder="店名（選填，只有特定店家才有時填）" value="${escHtml(d.store)}" oninput="shopDraft.store=this.value">
       </div>
       <div class="shop-row">
         <input type="text" placeholder="備註（規格、口味、尺寸…）" value="${escHtml(d.note)}" oninput="shopDraft.note=this.value">
@@ -2164,6 +2196,7 @@ async function addShop(){
     item.who = shopDraft.who.trim();
     if (!item.who){ showToast('請先填「誰」'); const w = document.getElementById('shop-who'); if (w) w.focus(); return; }
   }
+  if (shopDraft.store.trim()) item.store = shopDraft.store.trim();
   if (shopDraft.note.trim()) item.note = shopDraft.note.trim();
   const price = parseFloat(shopDraft.price); if (price > 0) item.price = price;
   const qty = parseInt(shopDraft.qty, 10); if (qty > 1) item.qty = qty;
@@ -2172,7 +2205,7 @@ async function addShop(){
   shopItems.push(item);
   if (!saveShop()){ shopItems.pop(); dropPhoto(item); showToast('空間不足，存不下這筆'); return; }
   shopPendingPhoto = null;
-  shopDraft.text = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
+  shopDraft.text = ''; shopDraft.store = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
   renderShop();
   const inp = document.getElementById('shop-input'); if (inp) inp.focus();
 }
@@ -2184,16 +2217,32 @@ async function onShopPhoto(inp){
 function findShop(id){ return shopItems.find(it => it.id === id); }
 function toggleShop(id){ const it = findShop(id); if (!it) return; it.done = !it.done; saveShop(); renderShop(); }
 function delShop(id){
-  const it = findShop(id); if (!it) return;
-  if (!confirm(`刪除「${it.text}」？`)) return;
-  dropPhoto(it);
-  shopItems = shopItems.filter(x => x.id !== id);
+  const idx = shopItems.findIndex(x => x.id === id);
+  if (idx < 0) return;
+  const it = shopItems[idx];
+  shopItems.splice(idx, 1);
   saveShop(); renderShop();
+  showUndo(`已刪除「${it.text}」`, () => { shopItems.splice(Math.min(idx, shopItems.length), 0, it); saveShop(); renderShop(); }, () => dropPhoto(it));
 }
-function clearBoughtShop(){
+function showUndo(msg, onUndo, onExpire){
+  let t = document.getElementById('undo-bar');
+  if (t){ clearTimeout(t._t); if (t._expire) t._expire(); t.remove(); }
+  t = document.createElement('div');
+  t.id = 'undo-bar';
+  t.style.cssText = 'position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:9990;background:var(--ink);color:var(--bg);border-radius:999px;padding:10px 14px 10px 18px;font-size:14px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:92vw;';
+  t.innerHTML = '<span></span><button style="background:none;border:none;color:var(--gold);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;padding:2px 4px;">復原</button>';
+  t.firstChild.textContent = msg;
+  let finished = false;
+  const finish = () => { if (finished) return; finished = true; t.remove(); };
+  t._expire = () => { if (!finished){ finished = true; onExpire && onExpire(); } };
+  t.querySelector('button').onclick = () => { if (finished) return; finished = true; clearTimeout(t._t); t.remove(); onUndo && onUndo(); };
+  t._t = setTimeout(() => { if (!finished){ finished = true; t.remove(); onExpire && onExpire(); } }, 6000);
+  document.body.appendChild(t);
+}
+async function clearBoughtShop(){
   const done = shopItems.filter(it => it.done && (it.type || 'me') === shopTab);
   if (!done.length){ showToast('目前沒有已買的項目'); return; }
-  if (!confirm(`清掉 ${done.length} 個已買項目？`)) return;
+  if (!(await askConfirm(`清掉 ${done.length} 個已買項目？`))) return;
   done.forEach(dropPhoto);
   shopItems = shopItems.filter(it => !done.includes(it));
   saveShop(); renderShop();
@@ -2225,6 +2274,7 @@ function openShopEdit(id){
       <div class="se-title">編輯項目</div>
       ${isOther ? `<input id="se-who" type="text" placeholder="誰" value="${escHtml(it.who || '')}">` : ''}
       <input id="se-text" type="text" placeholder="品項" value="${escHtml(it.text)}">
+      <input id="se-store" type="text" placeholder="店名（選填）" value="${escHtml(it.store || '')}">
       <input id="se-note" type="text" placeholder="備註" value="${escHtml(it.note || '')}">
       <div class="shop-row">
         <input id="se-price" type="number" inputmode="numeric" placeholder="單價 ¥" value="${it.price || ''}">
@@ -2260,6 +2310,8 @@ async function saveShopEdit(){
   const whoEl = document.getElementById('se-who');
   if (whoEl){ const w = whoEl.value.trim(); if (!w){ showToast('請填「誰」'); return; } it.who = w; }
   it.text = text;
+  const store = document.getElementById('se-store').value.trim();
+  if (store) it.store = store; else delete it.store;
   const note = document.getElementById('se-note').value.trim();
   if (note) it.note = note; else delete it.note;
   const price = parseFloat(document.getElementById('se-price').value);
@@ -2282,6 +2334,7 @@ function shopListText(){
     const q = Number(it.qty) || 1;
     let t = `${it.done ? '☑' : '☐'} ${it.text}${q > 1 ? ' ×' + q : ''}`;
     const extra = [];
+    if (it.store) extra.push(it.store);
     if (it.place) extra.push(it.place);
     if (itemTotal(it) > 0) extra.push(fmtYen(itemTotal(it)));
     if (it.note) extra.push(it.note);
@@ -2326,7 +2379,7 @@ function restoreShop(inp){
     try {
       const data = JSON.parse(rd.result);
       if (!data || data.app !== 'fukuoka-shopping' || !Array.isArray(data.items)) throw new Error('bad');
-      if (!confirm(`還原 ${data.items.length} 個項目？目前的購物清單會被取代。`)) { inp.value = ''; return; }
+      if (!(await askConfirm(`還原 ${data.items.length} 個項目？目前的購物清單會被取代。`))) { inp.value = ''; return; }
       shopItems.forEach(dropPhoto);
       const out = [];
       for (const raw of data.items){
