@@ -843,7 +843,7 @@
   .exp-more > summary::before{content:'＋ '; }
   .exp-more[open] > summary::before{content:'－ ';}
   .shop-quick{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:12px;}
-  .shop-quick-title{font-size:12.5px; color:var(--ink-soft); margin-bottom:8px;}
+  .shop-quick-title{font-size:13px; color:var(--ink-soft); margin:0; padding:0;}
   .shop-quick-row{display:flex; flex-wrap:wrap; gap:6px;}
   .shop-quick-row a{padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--bg); color:var(--ink); font-size:13px; text-decoration:none;}
   a.shop-ico{text-decoration:none; display:inline-block;}
@@ -877,6 +877,12 @@
 .shop-step button{width:30px;height:26px;border:none;background:none;color:var(--ink-soft);font-size:17px;line-height:1;font-family:inherit;padding:0;cursor:pointer}
 .shop-step button:active{background:var(--line)}
 .shop-step span{min-width:22px;text-align:center;font-size:14px;font-weight:700;color:var(--ink)}
+.shop-quick-title{display:block;width:100%;text-align:left;background:none;border:none;font-family:inherit;color:var(--ink-soft);cursor:pointer;padding:2px 0}
+.shop-quick-hint{font-size:12px;opacity:.7;margin:4px 0 8px}
+.shop-budget-link{background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;padding:8px 2px;margin:4px 0;cursor:pointer;text-decoration:underline}
+input[type=text],input[type=number],input[type=search]{padding-right:34px}
+#shop-who{padding-right:10px !important}
+.shop-area input,.shop-budget input{width:130px !important}
 </style>
 </head>
 <body>
@@ -1511,7 +1517,7 @@ function fmtConverted(amt, fromCur){
 function onRateChange(){
   const input = document.getElementById('exchange-rate-input');
   const v = parseFloat(input.value);
-  if (!isNaN(v) && v > 0) { exchangeRate = v; saveRate(); renderExpenses(); }
+  if (!isNaN(v) && v > 0) { exchangeRate = v; saveRate(); renderExpenses(); if (typeof renderShop === 'function') renderShop(); }
 }
 
 // 統一以台幣為主要顯示，日幣括號在下面
@@ -2047,6 +2053,7 @@ function saveShop(){ try { localStorage.setItem(SHOP_KEY, JSON.stringify(shopIte
 function newShopId(){ return 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 let shopItems = loadShop();
 shopItems.forEach(it => { if (!it.id) it.id = newShopId(); });
+shopItems.forEach(it => { if (it.priced){ it.actualTotal = (Number(it.price) || 0) * (Number(it.qty) || 1); delete it.price; delete it.priced; if (!(it.actualTotal > 0)) delete it.actualTotal; } });
 shopItems.forEach(it => { if (it.receiptId){ it.receipts = (it.receipts || []).concat([{id: it.receiptId}]); delete it.receiptId; } if (it.receipt){ it.receipts = (it.receipts || []).concat([{d: it.receipt}]); delete it.receipt; } });
 const SHOP_PLACES = ['藥妝店','百貨・商場','超市・便利商店','市集・商店街','機場','其他'];
 let shopTab = 'me';
@@ -2057,6 +2064,8 @@ let shopEditId = null;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
 let shopMore = false;
+let shopQuickOpen = false;
+function toggleShopQuick(){ shopQuickOpen = !shopQuickOpen; renderShop(); }
 let shopSearch = '';
 let shopDoneOpen = false;
 function onShopSearch(el){
@@ -2078,7 +2087,9 @@ function pickWho(i){ const w = whoList[i]; shopDraft.who = (shopDraft.who === w)
 function toggleShopMore(){ shopMore = !shopMore; renderShop(); }
 function shopMoreOpen(){ const d = shopDraft; return shopMore || d.note || d.price || (d.qty && d.qty !== '1'); }
 function toggleAskExp(){ shopAskExp = !shopAskExp; lsSet('fukuoka_shop_askexp_v1', shopAskExp); renderShop(); }
-function setShopBudget(v){ const n = parseFloat(v); shopBudget = n > 0 ? n : 0; lsSet('fukuoka_shop_budget_v1', shopBudget); renderShop(); }
+let shopBudgetEdit = false;
+function openShopBudget(){ shopBudgetEdit = true; renderShop(); const n = document.getElementById('shop-budget-in'); if (n) n.focus(); }
+function setShopBudget(v){ shopBudgetEdit = false; const n = parseFloat(v); shopBudget = n > 0 ? n : 0; lsSet('fukuoka_shop_budget_v1', shopBudget); renderShop(); }
 let buyList = [];   // [{src, ref}]  ref=原有 entry，null=新加
 function openBuy(id){
   const it = findShop(id); if (!it) return;
@@ -2095,11 +2106,11 @@ function openBuy(id){
     <input id="bm-file" type="file" accept="image/*" multiple style="display:none">
     <div style="display:flex;gap:10px;"><button id="bm-no" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit;">略過</button><button id="bm-yes" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--vermilion);color:#fff;font-size:15px;font-family:inherit;">儲存</button></div>
     <button id="bm-undo" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">誤按了，改回「還沒買」</button>
-    ${(it.priced || receiptSrc(it)) ? `<button id="bm-clear" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">清除價格與照片</button>` : ''}</div>`;
+    ${(Number(it.actualTotal) > 0 || receiptSrc(it)) ? `<button id="bm-clear" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-decoration:underline;padding:6px;">清除價格與照片</button>` : ''}</div>`;
   document.body.appendChild(o);
   o.querySelector('#bm-undo').onclick = () => { it.done = false; saveShop(); renderShop(); o.remove(); showToast('已改回還沒買'); };
   const clr = o.querySelector('#bm-clear');
-  if (clr) clr.onclick = () => { delete it.price; delete it.priced; dropReceipt(it); saveShop(); renderShop(); o.remove(); showToast('已清除價格與照片'); };
+  if (clr) clr.onclick = () => { delete it.actualTotal; dropReceipt(it); saveShop(); renderShop(); o.remove(); showToast('已清除價格與照片'); };
   o.querySelector('#bm-msg').textContent = `「${it.text}」${it.who ? '（' + it.who + '）' : ''}實際買了多少？`;
   const amt = o.querySelector('#bm-amt'); if (cur > 0) amt.value = cur;
   const prev = o.querySelector('#bm-prev');
@@ -2120,7 +2131,7 @@ function openBuy(id){
   o.onclick = e => { if (e.target === o) o.remove(); };
   o.querySelector('#bm-yes').onclick = async () => {
     const n = parseFloat(amt.value);
-    if (n > 0){ it.price = Math.round(n / (Number(it.qty) || 1) * 100) / 100; it.priced = true; }
+    if (n > 0) it.actualTotal = n; else delete it.actualTotal;
     const keep = buyList.filter(x => x.ref).map(x => x.ref);
     (it.receipts || []).forEach(e => { if (!keep.includes(e)) dropEntry(e); });
     const out = [];
@@ -2139,7 +2150,7 @@ function copyBill(i){
   const w = settleNames[i]; const g = settleData()[w]; if (!g) return;
   const lines = g.map(it => `・${it.text}${(Number(it.qty)||1) > 1 ? ' ×' + it.qty : ''}　${itemTotal(it) > 0 ? fmtYen(itemTotal(it)) : '（未填價格）'}`);
   const tot = g.reduce((t,it) => t + itemTotal(it), 0);
-  const txt = `${w} 代購明細\n${lines.join('\n')}\n合計 ${fmtYen(tot)}（約 ${fmtTwd(tot * exchangeRate)}，匯率 ${exchangeRate}）`;
+  const txt = `${lines.join('\n')}\n合計 ${fmtYen(tot)}（約 ${fmtTwd(tot * exchangeRate)}）`;
   const done = () => showToast('已複製，可以貼到 LINE');
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => showToast('複製失敗'));
   else showToast('複製失敗');
@@ -2248,14 +2259,15 @@ function fmtYen(n){ return '¥' + Math.round(n).toLocaleString(); }
 function fmtTwd(n){ return 'NT$' + Math.round(n).toLocaleString(); }
 function priceBoth(jpy){ return `${fmtYen(jpy)}（≈${fmtTwd(jpy * exchangeRate)}）`; }
 function escHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function itemTotal(it){ const p = Number(it.price) || 0; const q = Number(it.qty) || 1; return p * q; }
+function usesActual(it){ return !!it.done && Number(it.actualTotal) > 0; }
+function itemTotal(it){ if (usesActual(it)) return Number(it.actualTotal); const p = Number(it.price) || 0; const q = Number(it.qty) || 1; return p * q; }
 function sortUndoneFirst(arr){ return arr.map((x,i)=>({x,i})).sort((a,b) => (a.x.done - b.x.done) || (a.i - b.i)).map(o => o.x); }
 
 function shopRow(it){
   const q = Number(it.qty) || 1;
   const sub = [];
   if (it.store) sub.push('🏬 ' + escHtml(it.store));
-  if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 ? `（${fmtYen(it.price)}×${q}）` : ''));
+  if (itemTotal(it) > 0) sub.push(fmtYen(itemTotal(it)) + (q > 1 && !usesActual(it) ? `（${fmtYen(it.price)}×${q}）` : ''));
   if (it.note) sub.push(escHtml(it.note));
   if (it.paid) sub.push('💰已收款');
   const src = photoSrc(it);
@@ -2310,8 +2322,8 @@ function renderShop(){
     <div class="shop-area">搜尋地區：<input type="text" value="${escHtml(searchArea)}" placeholder="例如 福岡、大阪、Paris" onchange="setSearchArea(this.value)"><span>店名搜尋會自動加上這個地區；換地方旅行時改這裡</span></div>
     ${tabItems.length > 4 || shopSearch ? `<input id="shop-search" class="shop-search" type="search" placeholder="🔍 搜尋清單（品名、店名、誰…）" value="${escHtml(shopSearch)}" oninput="onShopSearch(this)">` : ''}
     <div class="shop-quick">
-      <div class="shop-quick-title">📍 附近搜尋（用目前位置在地圖找最近的店）</div>
-      <div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>
+      <button class="shop-quick-title" onclick="toggleShopQuick()">📍 附近搜尋 ${shopQuickOpen ? '▴' : '▾'}</button>
+      ${shopQuickOpen ? `<div class="shop-quick-hint">用目前位置在地圖找最近的店</div><div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>` : ''}
     </div>
     <div class="shop-form">
       <div class="shop-row">
@@ -2338,9 +2350,9 @@ function renderShop(){
       <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
     </div>
     ${totalAll > 0 ? `<div class="shop-sum"><div>預估總額　<b>${priceBoth(totalAll)}</b></div><div>還沒買　<b>${priceBoth(totalLeft)}</b></div></div>` : ''}
-    <div class="shop-budget">購物預算（自己要買）NT$ <input type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="選填" onchange="setShopBudget(this.value)">
+    ${isMe ? (shopBudget > 0 || shopBudgetEdit ? `<div class="shop-budget">購物預算（自己要買）NT$ <input id="shop-budget-in" type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="輸入金額" onchange="setShopBudget(this.value)" onblur="if(!this.value){shopBudgetEdit=false;renderShop();}">
       ${shopBudget > 0 ? (() => { const all = shopItems.filter(x => (x.type || 'me') === 'me').reduce((t,x)=>t+itemTotal(x),0) * exchangeRate; const diff = shopBudget - all; return `<div class="shop-budget-bar"><i style="width:${Math.min(100, Math.round(all/shopBudget*100))}%" class="${diff<0?'over':''}"></i></div><div class="shop-budget-txt${diff<0?' over':''}">自己要買預估 ≈${fmtTwd(all)}・${diff<0?'超出':'還剩'} ${fmtTwd(Math.abs(diff))}</div>`; })() : ''}
-    </div>    ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
+    </div>` : `<button class="shop-budget-link" onclick="openShopBudget()">＋ 設定購物預算</button>`) : ''}    ${listHtml || '<div class="shop-empty">目前還沒有項目</div>'}
     ${!isMe ? settleHtml() : ''}
     <div class="shop-opts">
       <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際價格與照片</label>
@@ -2558,6 +2570,7 @@ function restoreShop(inp){
         if (!it.id) it.id = newShopId();
         if (pd){ delete it.photoId; Object.assign(it, await storePhoto(pd)); }
         migrateReceipts(it);
+        if (it.priced){ it.actualTotal = (Number(it.price) || 0) * (Number(it.qty) || 1); delete it.price; delete it.priced; }
         const rd2 = it.receiptsData; delete it.receiptsData; delete it.receipts;
         if (rd2 && rd2.length){ it.receipts = []; for (const d of rd2) it.receipts.push(await storeEntry(d)); }
         out.push(it);
@@ -2621,6 +2634,39 @@ document.addEventListener('click', function(ev){
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(a.href).then(() => done(true), () => done(false));
   else done(false);
 }, true);
+
+// 輸入框清除鈕：聚焦且有內容時，右側浮出 ✕
+(function(){
+  const btn = document.createElement('button');
+  btn.id = 'clr-btn'; btn.type = 'button'; btn.textContent = '✕'; btn.setAttribute('aria-label', '清除');
+  btn.style.cssText = 'position:fixed;display:none;z-index:10050;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.28);color:#fff;font-size:12px;line-height:1;padding:0;cursor:pointer;';
+  document.body.appendChild(btn);
+  let cur = null, pressed = false;
+  const okEl = el => el && el.tagName === 'INPUT' && ['text','number','search'].includes(el.type) && !el.readOnly && !el.disabled && el.id !== 'shop-who';
+  function place(){
+    if (!cur || !document.body.contains(cur) || !cur.value){ btn.style.display = 'none'; return; }
+    const r = cur.getBoundingClientRect();
+    btn.style.left = (r.right - 32) + 'px';
+    btn.style.top = (r.top + r.height / 2 - 12) + 'px';
+    btn.style.display = 'block';
+  }
+  document.addEventListener('focusin', e => { if (okEl(e.target)){ cur = e.target; place(); } });
+  document.addEventListener('input', e => { if (e.target === cur) place(); });
+  document.addEventListener('focusout', e => { if (e.target !== cur) return; setTimeout(() => { if (!pressed && document.activeElement !== cur){ btn.style.display = 'none'; cur = null; } }, 250); });
+  window.addEventListener('scroll', place, true);
+  window.addEventListener('resize', place);
+  btn.addEventListener('pointerdown', () => { pressed = true; });
+  btn.addEventListener('click', () => {
+    pressed = false;
+    if (!cur) return;
+    const el = cur;
+    el.value = '';
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+    if (el.hasAttribute('onchange')) el.dispatchEvent(new Event('change', {bubbles: true}));
+    btn.style.display = 'none';
+    if (document.body.contains(el)){ el.focus(); }
+  });
+})();
 </script>
 </body>
 </html>
