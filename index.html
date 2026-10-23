@@ -799,7 +799,7 @@
   .shop-item.done .shop-txt{text-decoration:line-through; color:var(--ink-soft);}
   .shop-item.done{opacity:.7;}
   .shop-ico{background:none; border:none; color:var(--ink-soft); font-size:17px; padding:6px; cursor:pointer;}
-  .shop-thumb{width:44px; height:44px; flex:none; object-fit:cover; border-radius:8px; cursor:zoom-in;}
+  .shop-thumb{width:64px; height:64px; flex:none; object-fit:cover; border-radius:8px; cursor:zoom-in;}
   .shop-who{font-weight:700; font-size:14px; margin:14px 2px 6px; color:var(--ink); display:flex; justify-content:space-between;}
   .shop-who-sum{font-weight:400; color:var(--ink-soft); font-size:12.5px;}
   .shop-empty{color:var(--ink-soft); font-size:14px; padding:18px 4px;}
@@ -871,7 +871,7 @@
 .shop-settle-main{flex:1 1 100%}
 .shop-settle-sub{font-size:12.5px;opacity:.75;margin-top:2px}
 .shop-settle-row button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;font-family:inherit}
-.shop-search{width:100%;box-sizing:border-box;padding:10px 12px;margin:10px 0 0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit}
+.shop-search{width:100%;box-sizing:border-box;padding:10px 12px;margin:8px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:15px;font-family:inherit}
 .shop-done-toggle{display:block;width:100%;text-align:left;margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;background:none;color:var(--ink-soft);font-size:14px;font-family:inherit}
 .shop-step{display:inline-flex;align-items:center;margin-top:6px;border:1px solid var(--line);border-radius:999px;background:var(--bg);overflow:hidden}
 .shop-step button{width:30px;height:26px;border:none;background:none;color:var(--ink-soft);font-size:17px;line-height:1;font-family:inherit;padding:0;cursor:pointer}
@@ -892,6 +892,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .shop-settle-head{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;color:var(--ink);font-size:14px;font-weight:700;font-family:inherit;padding:2px 0}
 .shop-settle-sum{font-weight:400;color:var(--ink-soft);font-size:13px}
 .shop-settle-head + .shop-settle-row{margin-top:8px}
+body.compact .hotel-card, body.compact .flight-badge, body.compact .eyebrow{display:none}
+body.compact header{margin-bottom:12px;padding-bottom:10px}
+.stop-now{background:rgba(196,60,10,.08);border-radius:10px;box-shadow:-4px 0 0 var(--accent)}
+.stop-now::after{content:'現在';position:absolute;top:0;right:0;background:var(--accent);color:#fff;font-size:11px;padding:2px 9px;border-radius:999px;font-weight:700}
+.se-del{background:none;border:none;color:#b00020;font-size:14px;font-family:inherit;padding:8px;cursor:pointer}
+.shop-sum1{display:flex;align-items:center;gap:8px;margin:2px 0 12px;font-size:13px;color:var(--ink-soft)}
+.shop-sum1-txt{flex:1;min-width:0}
+.shop-mini{flex:none;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);font-size:13px;font-family:inherit;cursor:pointer}
 </style>
 </head>
 <body>
@@ -2117,6 +2125,8 @@ function closeShopAdd(){ shopAddOpen = false; const o = document.getElementById(
 let shopQuickOpen = false;
 function toggleShopQuick(){ shopQuickOpen = !shopQuickOpen; renderShop(); }
 let shopSearch = '';
+let shopSearchOpen = false;
+function toggleShopSearch(){ shopSearchOpen = !shopSearchOpen; if (!shopSearchOpen) shopSearch = ''; renderShop(); if (shopSearchOpen){ const n = document.getElementById('shop-search'); if (n) n.focus(); } }
 let shopDoneOpen = false;
 function onShopSearch(el){
   shopSearch = el.value; renderShop();
@@ -2331,13 +2341,13 @@ function shopRow(it){
       <div class="shop-box" onclick="toggleShop('${it.id}')">${it.done?'✓':''}</div>
       ${src ? `<img class="shop-thumb" src="${src}" onclick="viewShopPhoto('${it.id}')" alt="">` : ''}
       <div class="shop-main" onclick="toggleShop('${it.id}')">
-        <div class="shop-txt">${escHtml(itemTitle(it))}${q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
+        <div class="shop-txt">${escHtml(itemTitle(it))}${it.done && q > 1 ? ` <span class="shop-qty">×${q}</span>` : ''}</div>
         ${sub.length ? `<div class="shop-sub">${sub.join('・')}</div>` : ''}
+        ${it.done ? '' : `<div class="shop-step" onclick="event.stopPropagation()"><button onclick="stepQty('${it.id}',-1)" aria-label="減少">−</button><span>${q}</span><button onclick="stepQty('${it.id}',1)" aria-label="增加">＋</button></div>`}
       </div>
       ${it.store ? `<a class="shop-ico" href="${shopMapUrl(storeQuery(it.store))}" target="_blank" rel="noopener" aria-label="在地圖開啟" onclick="event.stopPropagation()">📍</a>` : ''}
       ${it.done ? `<button class="shop-ico" onclick="openBuy('${it.id}')" aria-label="價格與收據" style="${receiptSrc(it) ? '' : 'opacity:.45'}">🧾</button>` : ''}
       <button class="shop-ico" onclick="openShopEdit('${it.id}')" aria-label="編輯">✎</button>
-      <button class="shop-ico" onclick="delShop('${it.id}')" aria-label="刪除">✕</button>
     </div>`;
 }
 function renderShop(){
@@ -2373,11 +2383,11 @@ function renderShop(){
       <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買 <em>${shopItems.filter(x => (x.type || 'me') === 'me' && !x.done).length}</em></button>
       <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買 <em>${shopItems.filter(x => x.type === 'other' && !x.done).length}</em></button>
     </div>
-    ${totalAll > 0 ? `<div class="shop-sum"><div>預估總額　<b>${priceBoth(totalAll)}</b></div><div>還沒買　<b>${priceBoth(totalLeft)}</b></div></div>` : ''}
-    ${isMe ? (shopBudget > 0 || shopBudgetEdit ? `<div class="shop-budget">購物預算（自己要買）NT$ <input id="shop-budget-in" type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="輸入金額" onchange="setShopBudget(this.value)" onblur="if(!this.value){shopBudgetEdit=false;renderShop();}">
+    ${(totalAll > 0 || tabItems.length > 4 || shopSearch || (isMe && !(shopBudget > 0 || shopBudgetEdit))) ? `<div class="shop-sum1"><span class="shop-sum1-txt">${totalAll > 0 ? `預估 ${priceBoth(totalAll)}・還沒買 ${fmtYen(totalLeft)}` : ''}</span>${tabItems.length > 4 || shopSearch ? `<button class="shop-mini" onclick="toggleShopSearch()" aria-label="搜尋">🔍</button>` : ''}${isMe && !(shopBudget > 0 || shopBudgetEdit) ? `<button class="shop-mini" onclick="openShopBudget()">＋預算</button>` : ''}</div>` : ''}
+    ${isMe && (shopBudget > 0 || shopBudgetEdit) ? `<div class="shop-budget">購物預算（自己要買）NT$ <input id="shop-budget-in" type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="輸入金額" onchange="setShopBudget(this.value)" onblur="if(!this.value){shopBudgetEdit=false;renderShop();}">
       ${shopBudget > 0 ? (() => { const all = shopItems.filter(x => (x.type || 'me') === 'me').reduce((t,x)=>t+itemTotal(x),0) * exchangeRate; const diff = shopBudget - all; return `<div class="shop-budget-bar"><i style="width:${Math.min(100, Math.round(all/shopBudget*100))}%" class="${diff<0?'over':''}"></i></div><div class="shop-budget-txt${diff<0?' over':''}">自己要買預估 ≈${fmtTwd(all)}・${diff<0?'超出':'還剩'} ${fmtTwd(Math.abs(diff))}</div>`; })() : ''}
-    </div>` : `<button class="shop-budget-link" onclick="openShopBudget()">＋ 設定購物預算</button>`) : ''}
-    ${tabItems.length > 4 || shopSearch ? `<input id="shop-search" class="shop-search" type="search" placeholder="🔍 搜尋清單（品名、店名、誰…）" value="${escHtml(shopSearch)}" oninput="onShopSearch(this)">` : ''}
+    </div>` : ''}
+    ${(shopSearchOpen || shopSearch) && (tabItems.length > 4 || shopSearch) ? `<input id="shop-search" class="shop-search" type="search" placeholder="🔍 搜尋清單（品名、店名、誰…）" value="${escHtml(shopSearch)}" oninput="onShopSearch(this)">` : ''}
     ${listHtml || '<div class="shop-empty">目前還沒有項目，按右下角「＋ 新增」</div>'}
     ${!isMe ? settleHtml() : ''}
     <button class="shop-tools-toggle" onclick="toggleShopTools()">⚙ 工具與設定 ${shopToolsOpen ? '▴' : '▾'}</button>
@@ -2514,9 +2524,11 @@ function openShopEdit(id){
         <button class="se-cancel" onclick="closeShopEdit()">取消</button>
         <button class="se-save" onclick="saveShopEdit()">儲存</button>
       </div>
+      <button class="se-del" onclick="deleteFromEdit()">刪除這個項目</button>
     </div>`;
   o.classList.add('show');
 }
+function deleteFromEdit(){ const id = shopEditId; closeShopEdit(); if (id) delShop(id); }
 function closeShopEdit(){ const o = document.getElementById('shop-edit'); if (o) o.classList.remove('show'); shopEditId = null; }
 async function onEditPhoto(inp){
   const f = inp.files && inp.files[0]; if (!f) return;
@@ -2625,10 +2637,40 @@ renderShop();
 openPhotoDB().then(idbLoadAll).then(renderShop);
 
 function selectSection(sec){
+  document.body.classList.toggle('compact', sec !== 'itinerary');
+  window.scrollTo(0, 0);
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'section-' + sec));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sec));
 }
 selectSection('itinerary');
+
+// 旅行期間：自動跳到今天，標出目前最接近的一站
+function highlightToday(scroll){
+  const now = new Date();
+  const key = (now.getMonth() + 1) + '/' + now.getDate();
+  const idx = days.findIndex(d => d.date === key);
+  if (idx < 0) return;
+  if (String(idx) !== currentDayKey) selectPanel(String(idx));
+  const panel = document.querySelector('.panel[data-key="' + idx + '"]');
+  if (!panel) return;
+  document.querySelectorAll('.stop-now').forEach(e => e.classList.remove('stop-now'));
+  const mins = now.getHours() * 60 + now.getMinutes();
+  let pick = null, first = null;
+  panel.querySelectorAll('.stop').forEach(st => {
+    const t = st.querySelector('.stop-time');
+    const m = t && t.textContent.match(/(\d{1,2}):(\d{2})/);
+    if (!m) return;
+    if (!first) first = st;
+    if (+m[1] * 60 + +m[2] <= mins) pick = st;
+  });
+  pick = pick || first;
+  if (pick){
+    pick.classList.add('stop-now');
+    if (scroll) setTimeout(() => pick.scrollIntoView({behavior:'smooth', block:'center'}), 400);
+  }
+}
+highlightToday(true);
+setInterval(() => highlightToday(false), 5 * 60 * 1000);
 
 // 左右滑動切換 DAY
 (function enableSwipe(){
