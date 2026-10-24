@@ -1,9 +1,9 @@
 // 福岡行程 離線快取：網路優先，沒網路時用上次存的版本
-const CACHE = 'fukuoka-trip-v1';
-const CORE = ['./', 'og-image.png'];
+const CACHE = 'fukuoka-trip-v2';
+const CORE = ['./', 'og-image.png', 'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE).catch(() => {})).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(
