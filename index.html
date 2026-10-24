@@ -922,6 +922,13 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
 #exp-currency-groups .e-chev{grid-column:2;grid-row:1;width:auto;text-align:right}
 #exp-currency-groups .expense-sub{padding-right:0}
 #exp-currency-groups .expense-sub .e-payer{text-align:right}
+/* 行李清單：手機上也排成兩欄，長項目橫跨兩欄 */
+@media (max-width:520px){
+  #section-packing .prep-group-body{grid-template-columns:1fr 1fr !important;column-gap:14px;grid-auto-flow:dense}
+  #section-packing .prep-item{padding:11px 4px;border-bottom:1px solid var(--line) !important}
+  #section-packing .prep-item.wide{grid-column:1 / -1}
+  #section-packing .prep-group-body .prep-item:last-child{border-bottom:none !important}
+}
 </style>
 </head>
 <body>
@@ -1316,12 +1323,17 @@ document.addEventListener('click', (e) => {
 
 // --- 行李清單 tab ---
 const packPanel = document.getElementById('section-packing');
+function packWide(txt, must){
+  let w = 0;
+  for (const ch of String(txt)) w += /[\x00-\x7F]/.test(ch) ? 0.55 : 1;
+  return w + (must ? 2 : 0) > 9.0;
+}
 const packGroupsHtml = packing.map(g => `
   <div class="prep-group" style="--accent:${g.accent}">
     <div class="prep-group-title"><span class="dot"></span>${g.title}</div>
     <div class="prep-group-body${g.cols===3 ? ' cols-3' : ''}">
     ${g.items.map(txt => `
-      <div class="prep-item" style="--accent:${g.accent}">
+      <div class="prep-item${packWide(txt, g.mustHave && g.mustHave.includes(txt)) ? ' wide' : ''}" style="--accent:${g.accent}">
         <div class="prep-check"></div>
         <div class="prep-text">
           <div class="prep-main">${txt}${(g.mustHave && g.mustHave.includes(txt)) ? `<span class="prep-priority">必備</span>` : ''}</div>
