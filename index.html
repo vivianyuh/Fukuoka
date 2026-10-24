@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>福岡・北九州 六天五夜</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="theme-color" content="#1E2A3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="福岡行程">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:title" content="福岡・北九州 六天五夜">
 <meta property="og:description" content="11/6–11/11 交通、住宿、餐廳、行前準備、行李清單與行前費用，一個網頁全部搞定">
@@ -929,6 +937,13 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
   #section-packing .prep-item.wide{grid-column:1 / -1}
   #section-packing .prep-group-body .prep-item:last-child{border-bottom:none !important}
 }
+.backup-nudge{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px}
+.backup-nudge button,.backup-btns button{padding:9px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:14px;font-family:inherit;cursor:pointer}
+.backup-nudge button{background:var(--vermilion);color:#fff;border-color:var(--vermilion)}
+.backup-card{margin:26px 0 8px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.backup-title{font-weight:700;margin-bottom:4px}
+.backup-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px}
+.backup-btns{display:flex;gap:8px}
 </style>
 </head>
 <body>
@@ -1040,6 +1055,14 @@ hotelCard.innerHTML = `
 `;
 
 const prep = [
+  {
+    title:"📌 還沒確認的事", accent:"var(--vermilion)",
+    items:[
+      {text:"查 11/8 實際班次（小倉→門司港、小倉→八幡、黑崎→博多 Sonic）", detail:"行程裡標「約」的時間都是估的，請用行程頁的查詢連結確認，再回頭更新時間。", priority:"必辦"},
+      {text:"確認 DAY1 皮皮會合／取車地點", detail:"目前還沒定，要跟皮皮確認落地後在哪裡上車。", priority:"必辦"},
+      {text:"出發前按一次「備份全部」", detail:"準備頁最下面。購物清單、花費、打勾都會一起存成一個檔案，傳到 LINE 或雲端。", priority:""}
+    ]
+  },
   {
     title:"交通預訂", accent:"var(--steel)",
     items:[
@@ -1308,17 +1331,26 @@ const prepGroupsHtml = prep.map(g => `
 prepPanel.innerHTML = `
   <h2 class="day-title">行前準備須知</h2>
   <span class="day-sub">出發前可以勾選確認・點項目即可打勾</span>
+  <div id="backup-nudge"></div>
   <div class="reset-row"><button class="reset-btn" onclick="resetChecks('section-prep', '行前準備')">重設打勾</button></div>
-  ${prepGroupsHtml}`;
+  ${prepGroupsHtml}
+  <div id="backup-card"></div>`;
 
+const CHECK_KEY = 'fukuoka_checks_v1';
+let checkedSet = new Set(); try { checkedSet = new Set(JSON.parse(localStorage.getItem(CHECK_KEY)) || []); } catch(e){}
+function saveChecks(){ try { localStorage.setItem(CHECK_KEY, JSON.stringify([...checkedSet])); } catch(e){} }
+function checkKeyOf(el){ const sec = el.closest('.section'); const g = el.closest('.prep-group'); const gt = g && g.querySelector('.prep-group-title'); const m = el.querySelector('.prep-main'); return (sec ? sec.id : '') + '|' + (gt ? gt.textContent.trim() : '') + '|' + (m ? m.textContent.trim() : ''); }
+function applyChecks(){ document.querySelectorAll('.prep-item').forEach(el => el.classList.toggle('checked', checkedSet.has(checkKeyOf(el)))); }
 async function resetChecks(sectionId, label){
   if (!(await askConfirm(`確定要清空「${label}」所有打勾嗎？這個動作無法復原。`))) return;
   document.querySelectorAll('#' + sectionId + ' .prep-item.checked').forEach(el => el.classList.remove('checked'));
+  checkedSet.forEach(k => { if (k.startsWith(sectionId + '|')) checkedSet.delete(k); });
+  saveChecks();
 }
 
 document.addEventListener('click', (e) => {
   const item = e.target.closest('.prep-item');
-  if (item) { item.classList.toggle('checked'); return; }
+  if (item) { item.classList.toggle('checked'); const k = checkKeyOf(item); if (item.classList.contains('checked')) checkedSet.add(k); else checkedSet.delete(k); saveChecks(); return; }
 });
 
 // --- 行李清單 tab ---
@@ -1346,6 +1378,7 @@ packPanel.innerHTML = `
   <span class="day-sub">打包時可逐項點選打勾</span>
   <div class="reset-row"><button class="reset-btn" onclick="resetChecks('section-packing', '行李清單')">重設打勾</button></div>
   ${packGroupsHtml}`;
+applyChecks();
 
 function dateStrToISO(dateStr){
   const [m, d] = dateStr.split('/');
@@ -2172,7 +2205,7 @@ function addSheetHtml(){
     <div class="se-title">${isMe ? '新增想買的' : '新增代購'}</div>
     <div class="shop-row">
       ${isMe ? '' : `<input id="shop-who" type="text" placeholder="誰" value="${escHtml(d.who)}" oninput="shopDraft.who=this.value" style="flex:0 0 72px">`}
-      <input id="shop-input" type="text" placeholder="${isMe?'想買的東西（或只填下面店名）':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop()">
+      <input id="shop-input" type="text" placeholder="${isMe?'想買的東西（或只填下面店名）':'要買什麼'}" value="${escHtml(d.text)}" oninput="shopDraft.text=this.value" onkeydown="if(event.key==='Enter')addShop(false)">
     </div>
     ${!isMe && whoList.length ? `<div class="who-chips"><span>常用：</span>${whoList.map((w,i) => `<button class="${d.who===w?'active':''}" onclick="pickWho(${i})">${escHtml(w)}</button>`).join('')}</div>` : ''}
     <input type="text" placeholder="店名（選填，只有特定店家才有時填）" value="${escHtml(d.store)}" oninput="shopDraft.store=this.value">
@@ -2185,10 +2218,13 @@ function addSheetHtml(){
     </div>` : ''}
     <div class="shop-row">
       <button class="shop-cam" onclick="document.getElementById('shop-file').click()" aria-label="加照片">${shopPendingPhoto ? `<img src="${shopPendingPhoto}" alt="">` : '📷'}</button>
-      <button class="shop-addbtn" onclick="addShop()">加入</button>
+      <button class="shop-addbtn" onclick="addShop(false)">加入</button>
     </div>
     <input id="shop-file" type="file" accept="image/*" style="display:none" onchange="onShopPhoto(this)">
-    <button class="se-cancel" onclick="closeShopAdd()">完成</button>
+    <div class="shop-row">
+      <button class="se-cancel" onclick="addShop(true)">加入並繼續新增</button>
+      <button class="se-cancel" onclick="closeShopAdd()">取消</button>
+    </div>
   </div>`;
 }
 let shopAddOpen = false;
@@ -2485,9 +2521,9 @@ function renderShop(){
       <div class="shop-tools">
         <button onclick="copyShopText()">複製清單文字</button>
         <button onclick="clearBoughtShop()">清掉已買</button>
-        <button onclick="backupShop()">備份</button>
+        <button onclick="backupAll()">備份全部</button>
         <button onclick="document.getElementById('shop-restore').click()">還原</button>
-        <input id="shop-restore" type="file" accept=".json,application/json" style="display:none" onchange="restoreShop(this)">
+        <input id="shop-restore" type="file" accept=".json,application/json" style="display:none" onchange="restoreAll(this)">
       </div>
       <div class="note-box" style="margin-top:14px">清單和照片存在這支手機的瀏覽器裡，換手機或清除瀏覽資料就會消失。出發前建議按「備份」存一份檔案。</div>
     </div>` : ''}
@@ -2497,7 +2533,7 @@ function renderShop(){
 function setShopTab(t){ shopTab = t; shopFilter = ''; renderShop(); }
 function setShopFilter(p){ shopFilter = p; renderShop(); }
 
-async function addShop(){
+async function addShop(keepOpen){
   const text = shopDraft.text.trim();
   const storeOnly = !text && shopTab === 'me' && shopDraft.store.trim();
   if (!text && !storeOnly) { showToast(shopTab === 'me' ? '請輸入想買的東西，或至少填店名' : '請先輸入品項'); return; }
@@ -2516,8 +2552,9 @@ async function addShop(){
   if (!saveShop()){ shopItems.pop(); dropPhoto(item); showToast('空間不足，存不下這筆'); return; }
   shopPendingPhoto = null;
   shopDraft.text = ''; shopDraft.store = ''; shopDraft.note = ''; shopDraft.price = ''; shopDraft.qty = '1';
-  renderShop(); renderShopAdd(); showToast('已加入 ✓');
-  const inp = document.getElementById('shop-input'); if (inp) inp.focus();
+  renderShop(); showToast('已加入 ✓');
+  if (keepOpen === true){ renderShopAdd(); const inp = document.getElementById('shop-input'); if (inp) inp.focus(); }
+  else closeShopAdd();
 }
 async function onShopPhoto(inp){
   const f = inp.files && inp.files[0];
@@ -2673,6 +2710,91 @@ async function copyShopText(){
 }
 
 // 備份／還原（含照片）
+const BACKUP_KEY = 'fukuoka_last_backup_v1';
+function lastBackupTs(){ try { return parseInt(localStorage.getItem(BACKUP_KEY), 10) || 0; } catch(e){ return 0; } }
+function backupAgeText(){
+  const t = lastBackupTs(); if (!t) return '還沒備份過';
+  const d = Math.floor((Date.now() - t) / 86400000);
+  return d <= 0 ? '今天已備份' : `上次備份：${d} 天前`;
+}
+function backupDue(){
+  const hasData = shopItems.length || expenseEntries.length || checkedSet.size;
+  if (!hasData) return false;
+  const t = lastBackupTs();
+  return !t || (Date.now() - t) > 3 * 86400000;
+}
+function renderBackupCard(){
+  const nudge = document.getElementById('backup-nudge');
+  if (nudge) nudge.innerHTML = backupDue() ? `<div class="note-box backup-nudge">💾 ${backupAgeText()}，建議備份一次，換手機或清掉瀏覽資料才不會全部消失。<button onclick="backupAll()">立即備份</button></div>` : '';
+  const card = document.getElementById('backup-card');
+  if (card) card.innerHTML = `<div class="backup-card"><div class="backup-title">💾 備份與還原</div><div class="backup-sub">${backupAgeText()}　（含購物清單與照片、花費、打勾進度）</div><div class="backup-btns"><button onclick="backupAll()">備份全部</button><button onclick="document.getElementById('restore-all').click()">還原</button><input id="restore-all" type="file" accept=".json,application/json" style="display:none" onchange="restoreAll(this)"></div></div>`;
+}
+function backupAll(){
+  const items = shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } if (c.receipts){ c.receiptsData = c.receipts.map(entrySrc).filter(Boolean); delete c.receipts; } return c; });
+  const data = {app:'fukuoka-all', version:2, exportedAt:new Date().toISOString(),
+    shopping:{items, whoList, budget: shopBudget},
+    expenses:{entries: expenseEntries, exchangeRate, budgetTwd, customCategories},
+    checks:[...checkedSet], searchArea};
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a'); const d = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = `福岡行程備份_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  try { localStorage.setItem(BACKUP_KEY, String(Date.now())); } catch(e){}
+  renderBackupCard();
+  showToast('已產生備份檔，請存到「檔案」或傳到 LINE／雲端');
+}
+async function applyShopData(items){
+  shopItems.forEach(dropAllPhotos);
+  const out = [];
+  for (const raw of items){
+    const it = Object.assign({}, raw);
+    const pd = it.photoData; delete it.photoData;
+    if (!it.id) it.id = newShopId();
+    if (pd){ delete it.photoId; Object.assign(it, await storePhoto(pd)); }
+    migrateReceipts(it);
+    if (it.priced){ it.actualTotal = (Number(it.price) || 0) * (Number(it.qty) || 1); delete it.price; delete it.priced; }
+    const rd2 = it.receiptsData; delete it.receiptsData; delete it.receipts;
+    if (rd2 && rd2.length){ it.receipts = []; for (const d of rd2) it.receipts.push(await storeEntry(d)); }
+    out.push(it);
+  }
+  shopItems = out; saveShop();
+  shopItems.forEach(it => { if (it.who) rememberWho(it.who); });
+}
+function restoreAll(inp){
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = async () => {
+    try {
+      const data = JSON.parse(rd.result);
+      if (data && data.app === 'fukuoka-shopping' && Array.isArray(data.items)){
+        if (!(await askConfirm(`還原 ${data.items.length} 個購物項目？目前的購物清單會被取代。`))) { inp.value = ''; return; }
+        await applyShopData(data.items); renderShop(); renderBackupCard(); showToast('已還原購物清單'); inp.value = ''; return;
+      }
+      if (!data || data.app !== 'fukuoka-all') throw new Error('bad');
+      const n = (data.shopping && data.shopping.items || []).length, m = (data.expenses && data.expenses.entries || []).length;
+      if (!(await askConfirm(`還原備份？購物 ${n} 項、花費 ${m} 筆。目前這支手機的資料會被取代。`))) { inp.value = ''; return; }
+      if (data.shopping){
+        await applyShopData(data.shopping.items || []);
+        if (Array.isArray(data.shopping.whoList)){ whoList = data.shopping.whoList; lsSet('fukuoka_shop_who_v1', whoList); }
+        shopBudget = Number(data.shopping.budget) || 0; lsSet('fukuoka_shop_budget_v1', shopBudget);
+      }
+      if (data.expenses){
+        expenseEntries = Array.isArray(data.expenses.entries) ? data.expenses.entries : []; saveExpenses();
+        if (data.expenses.exchangeRate > 0){ exchangeRate = data.expenses.exchangeRate; saveRate(); }
+        budgetTwd = Number(data.expenses.budgetTwd) || 0; saveBudget();
+        if (Array.isArray(data.expenses.customCategories)){ customCategories = data.expenses.customCategories; saveCustomCategories(); }
+      }
+      if (Array.isArray(data.checks)){ checkedSet = new Set(data.checks); saveChecks(); applyChecks(); }
+      if (typeof data.searchArea === 'string'){ searchArea = data.searchArea; try { localStorage.setItem(AREA_KEY, searchArea); } catch(e){} }
+      renderShop(); renderExpenses(); renderBackupCard();
+      showToast('已還原全部資料 ✓');
+    } catch(e){ showToast('這不是有效的備份檔'); }
+    inp.value = '';
+  };
+  rd.readAsText(f);
+}
 function backupShop(){
   if (!shopItems.length){ showToast('清單是空的，不需要備份'); return; }
   const data = {app:'fukuoka-shopping', version:1, exportedAt:new Date().toISOString(),
@@ -2796,6 +2918,8 @@ document.addEventListener('click', function(ev){
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(a.href).then(() => done(true), () => done(false));
   else done(false);
 }, true);
+
+renderBackupCard();
 
 // 輸入框清除鈕：用輸入框自己的背景圖畫 ✕（不另外浮動元件，捲動不會跑位），點右側就清空
 (function(){
