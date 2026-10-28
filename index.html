@@ -480,6 +480,11 @@
   }
   .hotel-right b{color:var(--ink);}
 
+  /* JMA */
+  .jma{margin:14px 0 -6px;padding:8px 12px;border:1px solid var(--line,#e5dccb);border-radius:6px;font-size:12.5px;color:var(--ink);background:rgba(62,98,133,0.04)}
+  .jma-line{line-height:1.6}
+  .jma-up{display:block;font-size:11px;color:var(--ink-soft)}
+  .jma-link{display:inline-block;margin-top:4px;font-size:11.5px;color:var(--steel)}
   /* weather tip */
   .weather-tip{
     display:flex; align-items:flex-start; gap:8px;
@@ -998,6 +1003,71 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
 </nav>
 
 <script>
+/* JMA-START 氣象廳預報（要移除時：刪掉這段 script、CSS 的 .jma 區塊、以及 jmaBlock / jmaUpdate 兩個呼叫） */
+var JMA_F={pref:'400000',area:'400010',pt:'82182',link:'400010',name:'福岡'};
+var JMA_K={pref:'400000',area:'400020',pt:'82136',link:'400020',name:'北九州'};
+var JMA_O={pref:'440000',area:'440010',pt:'',link:'440010',name:'大分（由布院）'};
+var JMA_REGION={'11/6':JMA_F,'11/7':JMA_F,'11/8':JMA_K,'11/9':JMA_O,'11/10':JMA_F,'11/11':JMA_F};
+var JMA_YEAR=2026, JMA_CACHE='fukuoka_jma_v1';
+var JMA_TXT={100:'晴',101:'晴時多雲',102:'晴有短暫雨',103:'晴有時雨',110:'晴後多雲',111:'晴後多雲',112:'晴後有雨',113:'晴後有雨',114:'晴後雨',200:'多雲',201:'多雲時晴',202:'多雲有短暫雨',203:'多雲有時雨',210:'多雲後晴',211:'多雲後晴',212:'多雲後有雨',213:'多雲後有雨',214:'多雲後雨',300:'雨',301:'雨時晴',302:'雨時停',311:'雨後晴',313:'雨後多雲'};
+function jmaWx(c){c=String(c||'');var d=c.charAt(0);var ic={'1':'☀️','2':'☁️','3':'🌧️','4':'🌨️'}[d]||'🌤️';var t=JMA_TXT[+c]||({'1':'晴','2':'多雲','3':'雨','4':'雪'}[d]||'');return {ic:ic,t:t};}
+function jmaDateKey(md){var p=md.split('/');return JMA_YEAR+'-'+('0'+p[0]).slice(-2)+'-'+('0'+p[1]).slice(-2);}
+function jmaLink(r){return 'https://data.jma.go.jp/multi/yoho/yoho_detail.html?code='+r.link+'&lang=cn_zt';}
+function jmaParse(data,r){
+  var out={};function row(k){return out[k]||(out[k]={});}
+  try{
+    var sh=data[0].timeSeries, wk=data[1]&&data[1].timeSeries;
+    var a0=sh[0].areas.filter(function(a){return a.area.code===r.area;})[0]||sh[0].areas[0];
+    sh[0].timeDefines.forEach(function(t,i){row(t.slice(0,10)).code=a0.weatherCodes[i];});
+    if(sh[1]){var a1=sh[1].areas.filter(function(a){return a.area.code===r.area;})[0]||sh[1].areas[0];
+      sh[1].timeDefines.forEach(function(t,i){var v=parseInt(a1.pops[i],10);if(isNaN(v))return;var o=row(t.slice(0,10));o.pop=Math.max(o.pop==null?-1:o.pop,v);});}
+    if(sh[2]){var a2=sh[2].areas.filter(function(a){return a.area.code===r.pt;})[0]||sh[2].areas[0];
+      var tmp={};sh[2].timeDefines.forEach(function(t,i){var v=parseFloat(a2.temps[i]);if(isNaN(v))return;(tmp[t.slice(0,10)]=tmp[t.slice(0,10)]||[]).push(v);});
+      Object.keys(tmp).forEach(function(k){var o=row(k);o.smax=Math.max.apply(null,tmp[k]);o.smin=Math.min.apply(null,tmp[k]);});}
+    if(wk){
+      var w0=wk[0].areas.filter(function(a){return a.area.code===r.pref;})[0]||wk[0].areas[0];
+      wk[0].timeDefines.forEach(function(t,i){var o=row(t.slice(0,10));if(!o.code&&w0.weatherCodes[i])o.code=w0.weatherCodes[i];
+        var v=parseInt(w0.pops[i],10);if(o.pop==null&&!isNaN(v))o.pop=v;});
+      if(wk[1]){var w1=wk[1].areas.filter(function(a){return a.area.code===r.pt;})[0]||wk[1].areas[0];
+        wk[1].timeDefines.forEach(function(t,i){var o=row(t.slice(0,10));var mx=parseFloat(w1.tempsMax[i]),mn=parseFloat(w1.tempsMin[i]);
+          if(!isNaN(mx))o.tmax=mx;if(!isNaN(mn))o.tmin=mn;});}
+    }
+    Object.keys(out).forEach(function(k){var o=out[k];if(o.tmax==null&&o.smax!=null)o.tmax=o.smax;if(o.tmin==null&&o.smin!=null)o.tmin=o.smin;});
+  }catch(e){return {};}
+  return out;
+}
+function jmaBlock(md){var r=JMA_REGION[md];if(!r)return '';
+  return '<div class="jma" data-md="'+md+'"><div class="jma-line">氣象廳預報載入中…</div><a class="jma-link" href="'+jmaLink(r)+'" target="_blank" rel="noopener">氣象廳預報（繁中）</a></div>';}
+function jmaFill(store){
+  document.querySelectorAll('.jma[data-md]').forEach(function(el){
+    var md=el.getAttribute('data-md'),r=JMA_REGION[md];if(!r)return;
+    var rec=store&&store[r.pref]&&store[r.pref].data?jmaParse(store[r.pref].data,r)[jmaDateKey(md)]:null;
+    var line=el.querySelector('.jma-line');
+    if(rec&&rec.code){var w=jmaWx(rec.code);var bits=[w.ic+' '+w.t];
+      if(rec.tmax!=null||rec.tmin!=null)bits.push((rec.tmax!=null?'最高 '+rec.tmax+'°':'')+(rec.tmin!=null?(rec.tmax!=null?'　':'')+'最低 '+rec.tmin+'°':''));
+      if(rec.pop!=null)bits.push('降雨 '+rec.pop+'%');
+      var ts=store[r.pref].t,d=new Date(ts);
+      line.innerHTML=r.name+'・'+bits.join('　')+'<span class="jma-up">更新於 '+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</span>';
+    }else if(store&&store[r.pref]&&store[r.pref].data){line.innerHTML=r.name+'・這天還不在預報範圍內（氣象廳約提供 7 天內預報），之後會自動出現';}
+    else line.textContent='目前抓不到氣象廳預報，請點下面的連結查看';
+  });
+}
+function jmaUpdate(){
+  var store={};try{store=JSON.parse(localStorage.getItem(JMA_CACHE)||'{}');}catch(e){}
+  jmaFill(store);
+  if(!window.fetch)return;
+  var prefs={};Object.keys(JMA_REGION).forEach(function(k){prefs[JMA_REGION[k].pref]=1;});
+  Object.keys(prefs).forEach(function(p){
+    var ctl=window.AbortController?new AbortController():null;var tm=setTimeout(function(){if(ctl)ctl.abort();},10000);
+    fetch('https://www.jma.go.jp/bosai/forecast/data/forecast/'+p+'.json',ctl?{signal:ctl.signal,cache:'no-store'}:{cache:'no-store'})
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(j){clearTimeout(tm);store[p]={t:Date.now(),data:j};try{localStorage.setItem(JMA_CACHE,JSON.stringify(store));}catch(e){}jmaFill(store);})
+      .catch(function(){clearTimeout(tm);});
+  });
+}
+/* JMA-END */
+</script>
+<script>
 // --- 小提示訊息 (toast) ---
 function askConfirm(msg){
   return new Promise(res => {
@@ -1418,7 +1488,7 @@ days.forEach((d, i) => {
       </div>`).join('');
     return `<div class="meal-section"><div class="meal-heading">餐廳建議・待確認</div>${cards}</div>`;
   }
-  const weatherHtml = d.weather ? `<div class="weather-tip"><span class="w-icon">天氣</span><div>${d.weather}</div></div>` : '';
+  const weatherHtml = jmaBlock(d.date) + (d.weather ? `<div class="weather-tip"><span class="w-icon">天氣</span><div>${d.weather}</div></div>` : '');
 
   if (d.empty) {
     let stopsHtml = '';
@@ -1483,6 +1553,7 @@ days.forEach((d, i) => {
 });
 
 selectPanel(String(todayDayIndex !== -1 ? todayDayIndex : 0));
+jmaUpdate();
 
 // --- 行前費用記錄 tab (persisted via localStorage) ---
 const EXPENSE_KEY = 'fukuoka_pretrip_expenses_v1';
@@ -1566,6 +1637,20 @@ const CURRENCIES = [
 function currencySign(key){ return (CURRENCIES.find(c => c.key === key) || CURRENCIES[0]).sign; }
 function fmtAmt(amt, currency){ return currencySign(currency) + Math.round(amt).toLocaleString(); }
 function shareAmt(e){ return e.splitCount && e.splitCount > 1 ? e.amt / e.splitCount : e.amt; }
+const FIXED_TWD_KEY = 'fukuoka_fixed_twd_v1';
+let fixedTwd = (function(){ try { return JSON.parse(localStorage.getItem(FIXED_TWD_KEY) || '{}') || {}; } catch(e){ return {}; } })();
+function saveFixedTwd(){ try { localStorage.setItem(FIXED_TWD_KEY, JSON.stringify(fixedTwd)); } catch(e){} }
+function fixedKey(e){ return (e.date || '') + '|' + (e.note || ''); }
+function twdActualOf(e){
+  const raw = fixedExpenses.indexOf(e) >= 0 ? fixedTwd[fixedKey(e)] : e.twdActual;
+  const v = parseFloat(raw); return (e.currency === 'JPY' && v > 0) ? v : 0;
+}
+function twdAdj(list){
+  let adj = 0;
+  list.forEach(e => { const v = twdActualOf(e); if (v) adj += (e.splitCount && e.splitCount > 1 ? v / e.splitCount : v) - convertAmt(shareAmt(e), 'JPY'); });
+  return adj;
+}
+function twdActualTag(e){ const v = twdActualOf(e); return v ? `・實刷 NT$${Math.round(v).toLocaleString()}` : ''; }
 function sumByCurrency(list){
   const totals = {};
   list.forEach(e => { const cur = e.currency || 'JPY'; totals[cur] = (totals[cur] || 0) + shareAmt(e); });
@@ -1580,8 +1665,8 @@ const RATE_KEY = 'fukuoka_exchange_rate_v1';
 function loadRate(){
   try {
     const raw = localStorage.getItem(RATE_KEY);
-    return raw ? parseFloat(raw) : 0.198;
-  } catch(e){ return 0.198; }
+    return raw ? parseFloat(raw) : 0.21;
+  } catch(e){ return 0.21; }
 }
 function saveRate(){
   try { localStorage.setItem(RATE_KEY, String(exchangeRate)); } catch(e){}
@@ -1638,8 +1723,7 @@ function fmtTwdOneLine(totals){
 const fixedExpenses = [
   {date:'2026-03-18', category:'flight', note:'機票', amt:13657, currency:'TWD', paymentMethod:'card', noConvert:true},
   {date:'2026-11-06', category:'stay', note:'THE BASICS FUKUOKA・六天五夜', amt:167057, currency:'JPY', paymentMethod:'card', splitCount:2},
-  {date:'2026-10-09', category:'transport', note:'由布院之森', amt:11200, currency:'JPY', paymentMethod:'card'},
-  {date:'2026-10-09', category:'ticket', note:'COMICO ART MUSEUM YUFUIN 門票', amt:1700, currency:'JPY', paymentMethod:'card'}
+  {date:'2026-10-09', category:'transport', note:'由布院之森', amt:11200, currency:'JPY', paymentMethod:'card'}
 ];
 
 let expenseEntries = loadExpenses(); // [{date, amt, category, note, paymentMethod, currency}]
@@ -1800,6 +1884,8 @@ function submitExpense(){
     currency: lastCurrency
   };
   if (editingIndex !== null) {
+    const old = expenseEntries[editingIndex];
+    if (old && old.twdActual && entry.currency === 'JPY') entry.twdActual = old.twdActual;
     expenseEntries[editingIndex] = entry;
     editingIndex = null;
     document.getElementById('add-expense-btn').textContent = '加入';
@@ -1837,6 +1923,7 @@ function renderExpEdit(){
     </div>
     <div class="field-label">幣別</div>
     <div class="exp-chiprow">${CURRENCIES.map(c => `<button class="pick-chip${d.currency===c.key?' on':''}" onclick="expDraft.currency='${c.key}';renderExpEdit()">${c.sign} ${c.key==='JPY'?'日幣':'台幣'}</button>`).join('')}</div>
+    ${d.currency==='JPY' ? `<div class="field-label">實刷台幣（選填，信用卡帳單的金額）</div><input type="number" inputmode="decimal" placeholder="例如 708，不填就用匯率換算" value="${d.twdActual || ''}" oninput="expDraft.twdActual=this.value">` : ''}
     <div class="field-label">付款方式</div>
     <div class="exp-chiprow">${PAYMENT_METHODS.map(m => `<button class="pick-chip${d.paymentMethod===m.key?' on':''}" onclick="expDraft.paymentMethod='${m.key}';renderExpEdit()">${m.emoji} ${m.label}</button>`).join('')}</div>
     <div class="field-label">分類</div>
@@ -1848,12 +1935,42 @@ function renderExpEdit(){
     <button class="se-del" onclick="deleteFromExpEdit()">刪除這一筆</button>
   </div>`;
 }
+let fixTwdIdx = null;
+function openFixedTwd(i){
+  const e = fixedExpenses[i]; if (!e) return;
+  fixTwdIdx = i;
+  let o = document.getElementById('exp-edit');
+  if (!o){ o = document.createElement('div'); o.id = 'exp-edit'; o.onclick = ev => { if (ev.target === o) closeExpEdit(); }; document.body.appendChild(o); }
+  const cur = fixedTwd[fixedKey(e)] || '';
+  const split = e.splitCount && e.splitCount > 1;
+  o.innerHTML = `<div class="se-card">
+    <div class="se-title">${e.note}</div>
+    <div class="field-label">日幣金額</div>
+    <div style="font-size:15px;margin-bottom:8px;">¥${Math.round(e.amt).toLocaleString()}${split ? `（兩人分攤，你的份 ¥${Math.round(e.amt / e.splitCount).toLocaleString()}）` : ''}</div>
+    <div class="field-label">實刷台幣（選填，只存在這支手機）</div>
+    <input id="fix-twd" type="number" inputmode="decimal" placeholder="${split ? '填信用卡實際刷的全額，會自動除以 ' + e.splitCount : '信用卡帳單的金額，不填就用匯率換算'}" value="${cur}">
+    <div class="shop-row">
+      <button class="se-cancel" onclick="closeExpEdit()">取消</button>
+      <button class="se-save" onclick="saveFixedTwdEdit()">儲存</button>
+    </div>
+  </div>`;
+  o.classList.add('show');
+}
+function saveFixedTwdEdit(){
+  const e = fixedExpenses[fixTwdIdx]; if (!e) return;
+  const v = parseFloat(document.getElementById('fix-twd').value);
+  if (v > 0) fixedTwd[fixedKey(e)] = v; else delete fixedTwd[fixedKey(e)];
+  saveFixedTwd(); renderExpenses(); closeExpEdit(); showToast('已更新 ✓');
+}
 function closeExpEdit(){ const o = document.getElementById('exp-edit'); if (o) o.classList.remove('show'); expDraft = null; expEditIdx = null; }
 function saveExpEdit(){
   const idx = expEditIdx, d = expDraft; if (idx === null || !d) return;
   const amt = parseFloat(d.amt);
   if (!(amt > 0)){ showToast('請輸入金額'); return; }
-  expenseEntries[idx] = Object.assign({}, d, {amt});
+  const ne = Object.assign({}, d, {amt});
+  const ta = parseFloat(ne.twdActual);
+  if (ne.currency === 'JPY' && ta > 0) ne.twdActual = ta; else delete ne.twdActual;
+  expenseEntries[idx] = ne;
   saveExpenses(); renderExpenses(); closeExpEdit(); showToast('已更新 ✓');
 }
 async function deleteFromExpEdit(){
@@ -1999,7 +2116,7 @@ function renderFixedExpenses(){
     const displayAmt = hasSplit ? e.amt / e.splitCount : e.amt;
     return `
       <div class="expense-row">
-        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.note}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span>${totalNote}</span>
+        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${e.note}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}${twdActualTag(e)}</span>${totalNote}</span>
         <span class="e-amt">${fmtRowAmt(displayAmt, e.currency)}</span>
       </div>`;
   }).join('');
@@ -2022,11 +2139,11 @@ function expRowHtml(e, fixedItem, idx){
   const title = fixedItem ? e.note : (e.note ? e.note : c.label);
   const amt = shareAmt(e);
   return `
-    <div class="expense-row${fixedItem ? '' : ' tap'}"${fixedItem ? '' : ` onclick="openExpEdit(${idx})"`}>
+    <div class="expense-row${(fixedItem && e.currency !== 'JPY') ? '' : ' tap'}"${fixedItem ? (e.currency === 'JPY' ? ` onclick="openFixedTwd(${fixedExpenses.indexOf(e)})"` : '') : ` onclick="openExpEdit(${idx})"`}>
       <div class="e-title"><span class="e-cat">${c.emoji}</span>${title}</div>
-      <div class="e-meta">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</div>
+      <div class="e-meta">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}${twdActualTag(e)}</div>
       <div class="e-amt">${fmtRowAmt(amt, e.currency)}</div>
-      <span class="e-chev">${fixedItem ? '' : '›'}</span>
+      <span class="e-chev">${(fixedItem && e.currency !== 'JPY') ? '' : '›'}</span>
     </div>`;
 }
 function renderCurrencyGroups(){
@@ -2040,7 +2157,7 @@ function renderCurrencyGroups(){
       .sort((a,b) => (a.e.date || '9999').localeCompare(b.e.date || '9999'));
     if (!items.length) return '';
     const total = items.reduce((sum,o) => sum + shareAmt(o.e), 0);
-    const approx = d.cur === 'JPY' ? `<span class="e-payer" style="display:block;text-align:right;">≈ NT$${Math.round(total * exchangeRate).toLocaleString()}</span>` : '';
+    const approx = d.cur === 'JPY' ? `<span class="e-payer" style="display:block;text-align:right;">≈ NT$${Math.round(total * exchangeRate + twdAdj(items.map(o => o.e))).toLocaleString()}</span>` : '';
     return `
       <div class="exp-group-title">${d.title}</div>
       ${items.map(o => expRowHtml(o.e, o.fixed, o.idx)).join('')}
@@ -2065,7 +2182,7 @@ function renderExpenses(){
     const dateLabel = e.date ? e.date.slice(5).replace('-', '/') : '無日期';
     return `
       <div class="expense-row">
-        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}</span></span>
+        <span class="e-desc"><span class="e-cat">${c.emoji}</span>${title}<span class="e-payer">${dateLabel}・${pm.emoji} ${pm.label}・${c.label}${twdActualTag(e)}</span></span>
         <span class="e-amt">${fmtRowAmt(e.amt, e.currency)}</span>
         <span class="e-del" style="background:var(--white);color:var(--steel);border:1px solid var(--line);margin-right:4px;" onclick="editExpense(${e.idx})">✎</span>
         <span class="e-del" onclick="deleteExpense(${e.idx})">×</span>
@@ -2076,19 +2193,20 @@ function renderExpenses(){
   const grandTotals = {};
   Object.keys(fixedTotals).forEach(cur => { grandTotals[cur] = (grandTotals[cur] || 0) + fixedTotals[cur]; });
   Object.keys(dynamicTotals).forEach(cur => { grandTotals[cur] = (grandTotals[cur] || 0) + dynamicTotals[cur]; });
-  const totalInTwd = (grandTotals.JPY ? convertAmt(grandTotals.JPY, 'JPY') : 0) + (grandTotals.TWD || 0);
+  const grandAdj = twdAdj(fixedExpenses) + twdAdj(expenseEntries);
+  const totalInTwd = (grandTotals.JPY ? convertAmt(grandTotals.JPY, 'JPY') : 0) + (grandTotals.TWD || 0) + grandAdj;
 
   grandEl.innerHTML = '';
   const convertedGrandEl = document.getElementById('expense-grand-converted');
   if (convertedGrandEl) convertedGrandEl.textContent = '';
   const headerTotal = document.getElementById('trip-total-amt');
-  if (headerTotal) headerTotal.textContent = fmtTwdOneLine(grandTotals);
+  if (headerTotal) headerTotal.textContent = `約 NT$${Math.round(totalInTwd).toLocaleString()}`;
 
   // 摘要卡片
   const summaryTotalsEl = document.getElementById('summary-totals');
   const summaryConvertedEl = document.getElementById('summary-converted');
   if (summaryTotalsEl) summaryTotalsEl.textContent = `約 NT$${Math.round(totalInTwd).toLocaleString()}`;
-  if (summaryConvertedEl) summaryConvertedEl.innerHTML = grandTotals.JPY ? `日幣依 ¥1 = NT$${exchangeRate} 換算　<span style="text-decoration:underline;cursor:pointer;color:var(--steel);" onclick="openRateFold()">修改匯率</span>` : '';
+  if (summaryConvertedEl) summaryConvertedEl.innerHTML = grandTotals.JPY ? `日幣依 ¥1 = NT$${exchangeRate} 換算${grandAdj ? '（有填實刷台幣的項目用實刷金額）' : ''}　<span style="text-decoration:underline;cursor:pointer;color:var(--steel);" onclick="openRateFold()">修改匯率</span>` : '';
   const subEl2 = document.getElementById('exp-subtotals');
   if (subEl2){
     const rows = [];
@@ -2732,7 +2850,7 @@ function backupAll(){
   const items = shopItems.map(it => { const c = Object.assign({}, it); if (c.photoId){ c.photoData = photoCache[c.photoId] || ''; } if (c.receipts){ c.receiptsData = c.receipts.map(entrySrc).filter(Boolean); delete c.receipts; } return c; });
   const data = {app:'fukuoka-all', version:2, exportedAt:new Date().toISOString(),
     shopping:{items, whoList, budget: shopBudget},
-    expenses:{entries: expenseEntries, exchangeRate, budgetTwd, customCategories},
+    expenses:{entries: expenseEntries, exchangeRate, budgetTwd, customCategories, fixedTwd},
     checks:[...checkedSet], searchArea};
   const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
   const a = document.createElement('a'); const d = new Date();
@@ -2780,6 +2898,7 @@ function restoreAll(inp){
         shopBudget = Number(data.shopping.budget) || 0; lsSet('fukuoka_shop_budget_v1', shopBudget);
       }
       if (data.expenses){
+        if (data.expenses.fixedTwd && typeof data.expenses.fixedTwd === 'object'){ fixedTwd = data.expenses.fixedTwd; saveFixedTwd(); }
         expenseEntries = Array.isArray(data.expenses.entries) ? data.expenses.entries : []; saveExpenses();
         if (data.expenses.exchangeRate > 0){ exchangeRate = data.expenses.exchangeRate; saveRate(); }
         budgetTwd = Number(data.expenses.budgetTwd) || 0; saveBudget();
