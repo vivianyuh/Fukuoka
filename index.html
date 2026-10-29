@@ -485,6 +485,7 @@
   .jma-line{line-height:1.6}
   .jma-up{display:block;font-size:11px;color:var(--ink-soft)}
   .jma-link{display:inline-block;margin-top:4px;font-size:11.5px;color:var(--steel)}
+  html{touch-action:manipulation}
   /* 優惠券 */
   .cp-group{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;margin:22px 0 8px;color:var(--ink)}
   .cp-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 12px}
@@ -492,8 +493,8 @@
   .cp-card.used .cp-name{text-decoration:line-through}
   .cp-top{display:flex;align-items:center;gap:12px}
   .cp-logo{width:112px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex:none}
-  .cp-name{flex:1;font-weight:700;font-size:15.5px;line-height:1.35}
-  .cp-off{font-size:15px;font-weight:700;color:var(--vermilion);line-height:1.45;margin:10px 0 2px}
+  .cp-name{flex:1;font-weight:700;font-size:15px;line-height:1.35;min-width:0}
+  .cp-off{font-size:14px;font-weight:700;color:var(--vermilion);line-height:1.5;margin:8px 0 2px}
   .cp-exp{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);margin-top:6px}
   .cp-exp.soon{color:#b4541a;border-color:#b4541a}
   .cp-exp.gone{color:#fff;background:var(--vermilion);border-color:var(--vermilion)}
@@ -507,7 +508,7 @@
   .cp-more[open] summary::before{content:'▾ '}
   .cp-tip{font-size:12.5px;color:var(--ink-soft);line-height:1.6;padding:2px 0 4px}
   .cp-bottom{display:flex;align-items:center;gap:10px;margin-top:10px}
-  .cp-open{flex:1;text-align:center;background:var(--steel);color:#fff !important;font-weight:700;font-size:14.5px;padding:11px 12px;border-radius:10px;text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .cp-open{flex:1;text-align:center;background:var(--steel);color:#fff !important;font-weight:700;font-size:14px;padding:10px 12px;border-radius:10px;text-decoration:none;-webkit-tap-highlight-color:transparent}
   .cp-open.none{background:var(--line);color:var(--ink-soft) !important}
   .cp-used{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-soft);white-space:nowrap;cursor:pointer;padding:6px 2px}
   .cp-used input{width:20px;height:20px}
