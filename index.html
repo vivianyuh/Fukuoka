@@ -2551,6 +2551,11 @@ let searchArea = '福岡';
 try { const a = localStorage.getItem(AREA_KEY); if (a !== null) searchArea = a; } catch(e){}
 function setSearchArea(v){ searchArea = v.trim(); try { localStorage.setItem(AREA_KEY, searchArea); } catch(e){} renderShop(); }
 function storeQuery(name){ const n = name.trim(); return (searchArea && !n.includes(searchArea)) ? n + ' ' + searchArea : n; }
+const NEAR_KEY = 'fukuoka_near_mode_v1';
+let nearMode = 'area';
+try { const m = localStorage.getItem(NEAR_KEY); if (m === 'here' || m === 'area') nearMode = m; } catch(e){}
+function setNearMode(m){ nearMode = m; try { localStorage.setItem(NEAR_KEY, m); } catch(e){} renderShop(); }
+function nearUrl(term){ return shopMapUrl((nearMode === 'area' && searchArea) ? term + ' ' + searchArea : term); }
 function shopMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
 const SHOP_QUICK = [['藥妝店','ドラッグストア'],['唐吉訶德','ドン・キホーテ'],['UNIQLO','ユニクロ'],['GU','ジーユー'],['超市','スーパーマーケット'],['便利商店','コンビニ'],['百圓商店','100円ショップ']];
 function fmtYen(n){ return '¥' + Math.round(n).toLocaleString(); }
@@ -2629,8 +2634,13 @@ function renderShop(){
     <div class="shop-toolbox">
       <div class="shop-area">搜尋地區：<input type="text" value="${escHtml(searchArea)}" placeholder="例如 福岡、大阪、Paris" onchange="setSearchArea(this.value)"><span>店名搜尋會自動加上這個地區；換地方旅行時改這裡</span></div>
       <div class="shop-quick">
-        <div class="shop-quick-title">📍 附近搜尋（用目前位置在地圖找最近的店）</div>
-        <div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${shopMapUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>
+        <div class="shop-quick-title">📍 找店</div>
+        <div class="shop-quick-row" style="margin-bottom:8px">
+          <button class="pick-chip${(nearMode==='area' && searchArea)?' on':''}" onclick="setNearMode('area')">🗺️ 在「${escHtml(searchArea || '搜尋地區')}」找</button>
+          <button class="pick-chip${(nearMode==='here' || !searchArea)?' on':''}" onclick="setNearMode('here')">📍 用目前位置找</button>
+        </div>
+        <div class="shop-quick-row">${SHOP_QUICK.map(q => `<a href="${nearUrl(q[1])}" target="_blank" rel="noopener">${q[0]}</a>`).join('')}</div>
+        <div style="font-size:11.5px;color:var(--ink-soft);margin-top:6px">${(nearMode==='area' && searchArea) ? '還沒到日本時用這個，會直接搜尋'+escHtml(searchArea)+'的店。' : '到了日本再用這個，會找離你現在位置最近的店。'}</div>
       </div>
       <div class="shop-opts">
         <label><input type="checkbox" ${shopAskExp?'checked':''} onchange="toggleAskExp()"> 勾選已買時詢問實際價格與照片</label>
