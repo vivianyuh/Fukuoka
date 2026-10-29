@@ -497,7 +497,9 @@
   .cp-common ul{margin:8px 0 2px;padding-left:18px;color:var(--ink-soft);line-height:1.65}
   .cp-star{border:none;background:none;font-size:24px;line-height:1;padding:4px 2px;color:var(--ink-soft);cursor:pointer;flex:none}
   .cp-star.on{color:#d49a1a}
-  .cp-badge{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:#b4541a;border:1px solid #b4541a;border-radius:999px;padding:1px 7px;vertical-align:middle}
+  .cp-main{font-weight:700;font-size:15px;line-height:1.35}
+  .cp-sub{font-size:12px;font-weight:400;color:var(--ink-soft);line-height:1.4;margin-top:1px}
+  .cp-badge{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:#b4541a;border:1px solid #b4541a;border-radius:999px;padding:1px 7px;vertical-align:middle}
   .cp-empty{padding:26px 0;text-align:center;color:var(--ink-soft);font-size:13px}
   .cp-group{scroll-margin-top:10px}
 
@@ -650,7 +652,9 @@
     padding:10px 0 8px;
     background:none; border:none;
     font-family:'Zen Kaku Gothic New', sans-serif;
-    font-size:10.5px;
+    font-size:10px;
+    white-space:nowrap;
+    min-width:0;
     color:var(--ink-soft);
     cursor:pointer;
     touch-action:manipulation;
@@ -1042,7 +1046,7 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
   <button class="nav-btn" data-section="itinerary" onclick="selectSection('itinerary')"><span class="nav-icon">🗓️</span><span>行程</span></button>
   <button class="nav-btn" data-section="shopping" onclick="selectSection('shopping')"><span class="nav-icon">🛍️</span><span>購物</span></button>
   <button class="nav-btn" data-section="coupons" onclick="selectSection('coupons')"><span class="nav-icon">🎫</span><span>優惠券</span></button>
-  <button class="nav-btn" data-section="expense" onclick="selectSection('expense')"><span class="nav-icon">💰</span><span>行前費用</span></button>
+  <button class="nav-btn" data-section="expense" onclick="selectSection('expense')"><span class="nav-icon">💰</span><span>費用</span></button>
 </nav>
 
 <script>
@@ -3158,6 +3162,10 @@ function cpExp(exp){
   if(days<=30)return '<span class="cp-exp soon">'+lab+'（剩 '+days+' 天）</span>';
   return '<span class="cp-exp">'+lab+'</span>';
 }
+function cpNameHtml(c){
+  var m=c.name.match(/^(.*?)（(.*)）$/),main=m?m[1]:c.name,sub=m?m[2]:'';
+  return '<div class="cp-main">'+main+'</div>'+(sub?'<div class="cp-sub">'+sub+'</div>':'')+(c.badge?'<div><span class="cp-badge">⚠️ '+c.badge+'</span></div>':'');
+}
 function cpGroups(){var groups=[];COUPONS.forEach(function(c,i){var g=groups.filter(function(x){return x.name===c.g;})[0];if(!g){g={name:c.g,items:[]};groups.push(g);}g.items.push(i);});return groups;}
 function cpRenderList(){
   var box=document.getElementById('cp-list');if(!box)return;
@@ -3171,7 +3179,7 @@ function cpRenderList(){
     html+='<div class="cp-group" id="cp-g-'+gi+'">'+g.name+'</div>';
     items.forEach(function(i){shown++;var c=COUPONS[i],u=!!cpUsed[c.name],st=!!cpStar[c.name];
       var detail=(c.off?'<b>折扣明細</b>：'+c.off+(c.tip?'<br><br>':''):'')+(c.tip||'');
-      html+='<div class="cp-card'+(u?' used':'')+'"><div class="cp-top">'+(CP_LOGO[c.name]?'<img class="cp-logo" src="'+CP_LOGO[c.name]+'" alt="">':'')+'<div class="cp-name">'+c.name+(c.badge?'<span class="cp-badge">⚠️ '+c.badge+'</span>':'')+'</div>'
+      html+='<div class="cp-card'+(u?' used':'')+'"><div class="cp-top">'+(CP_LOGO[c.name]?'<img class="cp-logo" src="'+CP_LOGO[c.name]+'" alt="">':'')+'<div class="cp-name">'+cpNameHtml(c)+'</div>'
         +'<button class="cp-star'+(st?' on':'')+'" onclick="cpStarToggle('+i+')" aria-label="標星">'+(st?'★':'☆')+'</button></div>'
         +(c.short?'<div class="cp-off">'+c.short+'</div>':(c.off?'<div class="cp-off">'+c.off+'</div>':''))
         +(c.warn?'<div class="cp-warn">'+c.warn+'</div>':'')
