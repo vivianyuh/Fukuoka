@@ -486,7 +486,22 @@
   .jma-up{display:block;font-size:11px;color:var(--ink-soft)}
   .jma-link{display:inline-block;margin-top:4px;font-size:11.5px;color:var(--steel)}
   html{touch-action:manipulation}
-  /* 優惠券 */
+  
+/* 版面整理 */
+body.compact #glance{display:none}
+.glance{margin:10px 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.glance .g-main{font-size:16px;font-weight:700;line-height:1.4}
+.glance .g-main b{color:var(--vermilion)}
+.glance .g-sub{margin-top:4px;font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.glance .g-next{display:block;width:100%;text-align:left;border:0;background:transparent;padding:0;color:inherit;font:inherit;cursor:pointer}
+.glance .g-flights{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);line-height:1.7;font-family:'JetBrains Mono',monospace}
+.stop-past{opacity:.5}
+.stop-note.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.stop-more{display:inline-block;margin-top:4px;border:0;background:transparent;color:var(--steel);font-size:12px;padding:2px 0;cursor:pointer;font-family:inherit}
+.prep-donebar{margin:2px 0 6px;padding:8px 10px;border-radius:8px;background:rgba(62,98,133,.07);color:var(--ink-soft);font-size:12.5px;cursor:pointer}
+.prep-count{margin-left:8px;font-size:12px;font-weight:400;color:var(--ink-soft);font-family:'JetBrains Mono',monospace}
+#section-prep.hide-done .prep-group:not(.show-done) .prep-item.checked:not(.just){display:none}
+/* 優惠券 */
   .cp-tools{margin:12px 0 4px}
   .cp-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
   .cp-chip{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:13px;font-family:inherit;cursor:pointer}
@@ -1009,6 +1024,21 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
 #tt-view{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:none;overflow:auto;-webkit-overflow-scrolling:touch}
 #tt-view img{width:220%;max-width:none;margin:56px 0 24px}
 #tt-view .x{position:fixed;top:12px;right:14px;color:#fff;font-size:30px;line-height:1;padding:6px 12px;background:rgba(255,255,255,.18);border-radius:20px}
+
+/* 版面精簡 */
+header{padding-bottom:12px;margin-bottom:14px}
+.trip-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);letter-spacing:.02em}
+.hotel-card{padding:10px 14px;margin-bottom:12px;gap:8px}
+.hotel-left{gap:8px}
+.hotel-right{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap}
+.hotel-card .driver-btn{margin:0}
+.glance{margin:0 0 12px;padding:10px 14px}
+.glance .g-flights{margin-top:6px;padding-top:6px;font-size:12px;line-height:1.6}
+.reset-row{gap:8px;flex-wrap:wrap}
+body.compact h1{font-size:24px}
+body.compact header{padding-bottom:8px;margin-bottom:10px}
+body.compact footer{display:none}
+body.compact .trip-sub{display:none}
 </style>
 </head>
 <body>
@@ -1019,15 +1049,11 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
       <div class="eyebrow">KYUSHU · FUKUOKA ITINERARY</div>
       <h1>福岡・北九州</h1>
     </div>
-    <div style="display:flex; align-items:flex-end; gap:10px;">
-      <div class="flight-badge">
-        BR106&nbsp; TPE 08:00 → FUK 11:15<br>
-        <b>11/6 (五) — 11/11 (三)</b> · 六天五夜
-      </div>
-    </div>
+    <div class="trip-sub">11/6（五）– 11/11（三）・六天五夜</div>
   </header>
 
   <div class="hotel-card" id="hotel-card"></div>
+  <div class="glance" id="glance"></div>
   <div id="driver-overlay" onclick="this.classList.remove('show')">
     <div class="d-lead">この住所までお願いします。</div>
     <div class="d-name">ザ・ベーシックス福岡</div>
@@ -1189,20 +1215,19 @@ hotelCard.innerHTML = `
     <div>
       <div class="hotel-name">THE BASICS FUKUOKA${mapA('THE BASICS FUKUOKA')}</div>
       <div class="hotel-address">福岡県福岡市博多区博多駅東2-14-1（博多站步行約7分鐘）</div>
-      <button class="driver-btn" onclick="document.getElementById('driver-overlay').classList.add('show')">🚕 給司機看</button>
     </div>
   </div>
-  <div class="hotel-right">Check-in <b>15:00</b>　Check-out <b>11:00</b></div>
+  <div class="hotel-right"><button class="driver-btn" onclick="document.getElementById('driver-overlay').classList.add('show')">🚕 給司機看</button><span>入住 <b>15:00</b>　退房 <b>11:00</b></span></div>
 `;
 
 const prep = [
   {
     title:"交通預訂", accent:"var(--steel)",
     items:[
-      {text:"✅ 由布院之森 來回票已訂好（11/9）", detail:"10/9 已完成訂票。當天記得手機截圖保存 QR Code / 預約確認信，進站前確認發車月台。", priority:""},
-      {text:"✅ COMICO ART MUSEUM 已預約（11/9 12:20）", detail:"記得截圖預約確認，提早幾分鐘到場報到。", priority:""},
-      {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"訂位完成，當天記得準時抵達。", priority:""},
-      {text:"✅ 炉端ノいとおかし 已訂位（11/10 09:00 早餐）", detail:"訂位完成，完全預約制，當天記得準時抵達。", priority:""},
+      {text:"✅ 由布院之森 來回票已訂好（11/9）", detail:"", priority:""},
+      {text:"✅ COMICO ART MUSEUM 已預約（11/9 12:20）", detail:"", priority:""},
+      {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"", priority:""},
+      {text:"✅ 炉端ノいとおかし 已訂位（11/10 09:00 早餐）", detail:"", priority:""},
       {text:"購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 使用）", detail:`已決定購買，預計 <b>11/5 先買好</b>。¥3,500／連續 2 天，只能搭自由席，11/8 當天啟用（購買後 1 個月內啟用皆可）。注意：①需護照（短期滯在章）②要走有人閘門出示手機畫面，截圖不算、需要有網路 ③由布院之森不適用，11/9 用不到。可在 JR 九州官網、KKday、Klook 購買。${linkA('JR 九州官網 Mobile Pass', 'https://www.jrkyushu.co.jp/chinese/railpass/mobilepass.html')}`, priority:"必辦"},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
@@ -1391,13 +1416,13 @@ const days = [
     date:"11/9", wd:"一", theme:"由布院", accent:"var(--gold)",
     weather:"山區日夜溫差大，早晚明顯轉冷，建議洋蔥式穿法，晚間搭車回程可多帶件外套。",
     stops:[
-      {time:"09:17", place:"🚆 博多站發車（由布院之森1號）", note:"✅ 已訂位。飯店走到博多站約7分鐘，建議 08:50 前到站，先確認月台並準備好 QR Code（出發前先截圖存相簿）。", tag:"JR", map:"博多駅"},
+      {time:"09:17", place:"🚆 博多站發車（由布院之森1號）", note:"✅ 已訂位。飯店走到博多站約7分鐘，建議 08:50 前到站，先確認月台並準備好 QR Code。", tag:"JR", map:"博多駅"},
       {time:"11:31", place:"抵達由布院站", note:"沿湯之坪街道往金鱗湖方向走去美術館", tag:"JR", map:"由布院駅"},
       {time:"12:20", place:"🎨 COMICO ART MUSEUM YUFUIN", note:`✅ 預約時段 12:20。隈研吾設計，展出村上隆／杉本博司作品，參觀抓1-1.5小時。時段每20分鐘一班（11:00/11:20/11:40/12:00/12:20...）。${linkA('線上預約', 'https://reserva.be/comicoartmuseumyufuin')}`, tag:"MUSEUM", map:"COMICO ART MUSEUM YUFUIN"},
       {time:"接著", place:"🍽️ 午餐・由布まぶし心（金鱗湖店）", note:"繼續往金鱗湖方向走，順路吃午餐", tag:"LUNCH", map:"由布まぶし心 金鱗湖"},
       {time:"吃完後", place:"金鱗湖散步", note:"湯之坪街道的盡頭，繞湖走走約15-20分鐘", tag:"WALK", map:"金鱗湖"},
       {time:"再之後", place:"往回走逛湯之坪街道", note:"原路往回走，慢慢逛剛剛沒逛到的店、買伴手禮、吃小吃，直到回車站", tag:"WALK", map:"湯の坪街道"},
-      {time:"17:17", place:"🚆 由布院之森6號 回博多", note:"✅ 已訂位。提早 10～15 分鐘到由布院站，並準備好 QR Code（出發前先截圖存相簿）。", tag:"JR", map:"由布院駅"},
+      {time:"17:17", place:"🚆 由布院之森6號 回博多", note:"✅ 已訂位。提早 10～15 分鐘到由布院站，並準備好 QR Code。", tag:"JR", map:"由布院駅"},
       {time:"19:27", place:"抵達博多站", note:"", tag:"JR", map:"博多駅"},
       {time:"19:45", place:"🎄 博多站前廣場 聖誕市集", note:`今年 11/7（六）～12/25（五）舉辦，平日 16:00～23:00（L.O. 22:45），11/9 週一有開。可直接在市集邊逛邊吃當晚餐，逛完走回飯店（博多站步行約7分鐘）。${linkA('官方資訊', 'https://christmas-advent.jp/fukuoka-hakata/')}`, tag:"EVENT", map:"博多駅前広場 クリスマスマーケット"}
     ],
@@ -1414,7 +1439,7 @@ const days = [
       }
     ],
     fare:"",
-    note:"✅ 來回特急指定席已訂好，記得保存 QR Code / 確認信。",
+    note:"✅ 來回特急指定席已訂好。",
     meals:[
       {type:"午餐・已確定（金鱗湖店）", name:"由布まぶし心", note:"金鱗湖附近超人氣排隊名店，豐後牛／鰻魚／地雞三種釜飯任選，一次吃到由布院招牌食材。選金鱗湖店，從美術館過去順路不用走回頭路。", map:"由布まぶし心 金鱗湖"},
       {type:"湯之坪街道小吃", name:"金賞可樂餅／Milch 起司蛋糕／B-speak 蛋糕卷", note:"車站到金鱗湖沿路的湯之坪街道，邊走邊吃的定番點心。", map:"湯の坪街道"}
@@ -1426,7 +1451,7 @@ const days = [
     stops:[
       {time:"09:00", place:"🍳 早餐・炉端ノいとおかし", note:"✅ 已訂位 09:00。六本松人氣排隊早餐，完全預約制（現場排隊恕不接待），招牌銀鮭定食。", tag:"BREAKFAST", map:"炉端ノいとおかし"}
     ], plans:[], fare:"", note:"", empty:true,
-    placeholderText:"早餐後的購物路線還沒排 — 需要我幫忙安排博多／天神一帶的購物路線嗎？",
+    placeholderText:"早餐後自由逛街，走到哪逛到哪",
     meals:[
       {type:"早餐・已確定訂位 09:00", name:"炉端ノいとおかし", note:"福岡市中央區六本松，超人氣排隊早餐名店，招牌是炭燒銀鮭定食、土鍋炊飯，完全預約制，現場恕不接待候位。訂位已完成（09:00），當天準時抵達即可。", map:"炉端ノいとおかし"},
       {type:"晚餐建議", name:"大山牛腸鍋（天神 ONE BLDG. 店／KITTE博多店）", note:"博多招牌牛腸鍋名店，交通方便，逛街後順路。", map:"博多もつ鍋 おおやま 天神"},
@@ -1467,7 +1492,7 @@ prepPanel.innerHTML = `
   <h2 class="day-title">行前準備須知</h2>
   <span class="day-sub">出發前可以勾選確認・點項目即可打勾</span>
   <div id="backup-nudge"></div>
-  <div class="reset-row"><button class="reset-btn" onclick="resetChecks('section-prep', '行前準備')">重設打勾</button></div>
+  <div class="reset-row"><button class="reset-btn" id="hidedone-btn" onclick="toggleHideDone()"></button><button class="reset-btn" onclick="resetChecks('section-prep', '行前準備')">重設打勾</button></div>
   ${prepGroupsHtml}
   <div id="backup-card"></div>`;
 
@@ -1483,10 +1508,33 @@ async function resetChecks(sectionId, label){
   saveChecks();
 }
 
+
+const HIDEDONE_KEY = 'fukuoka_hidedone_v1';
+let hideDone = true; try { hideDone = localStorage.getItem(HIDEDONE_KEY) !== '0'; } catch(e){}
+function updatePrepDone(){
+  prepPanel.classList.toggle('hide-done', hideDone);
+  const btn = document.getElementById('hidedone-btn'); if (btn) btn.textContent = hideDone ? '顯示已完成' : '收合已完成';
+  prepPanel.querySelectorAll('.prep-group').forEach(g => {
+    const items = g.querySelectorAll('.prep-item'), done = g.querySelectorAll('.prep-item.checked').length;
+    const title = g.querySelector('.prep-group-title');
+    let c = title.querySelector('.prep-count'); if (!c){ c = document.createElement('span'); c.className = 'prep-count'; title.appendChild(c); }
+    c.textContent = done + '/' + items.length;
+    let bar = g.querySelector('.prep-donebar');
+    const hidden = hideDone && done > 0 && !g.classList.contains('show-done') ? done : 0;
+    if ((hideDone && done > 0) && !bar){ bar = document.createElement('div'); bar.className = 'prep-donebar'; bar.onclick = () => { g.classList.toggle('show-done'); updatePrepDone(); }; title.after(bar); }
+    if (bar){
+      if (!(hideDone && done > 0)) bar.remove();
+      else bar.textContent = g.classList.contains('show-done') ? '▾ 收合已完成的 ' + done + ' 項' : '✓ 已完成 ' + done + ' 項（點此展開）' + (done === items.length ? '・全部完成 🎉' : '');
+    }
+  });
+}
+function toggleHideDone(){ hideDone = !hideDone; try { localStorage.setItem(HIDEDONE_KEY, hideDone ? '1' : '0'); } catch(e){} prepPanel.querySelectorAll('.just').forEach(e => e.classList.remove('just')); updatePrepDone(); }
+function prepEnter(){ prepPanel.querySelectorAll('.just').forEach(e => e.classList.remove('just')); updatePrepDone(); }
+
 document.addEventListener('click', (e) => {
   const item = e.target.closest('.prep-item');
   if (item && item.closest('.pack-editing')) return;
-  if (item) { item.classList.toggle('checked'); const k = checkKeyOf(item); if (item.classList.contains('checked')) checkedSet.add(k); else checkedSet.delete(k); saveChecks(); return; }
+  if (item) { item.classList.toggle('checked'); if (item.closest('#section-prep')) item.classList.add('just'); const k = checkKeyOf(item); if (item.classList.contains('checked')) checkedSet.add(k); else checkedSet.delete(k); saveChecks(); if (item.closest('#section-prep')) updatePrepDone(); return; }
 });
 
 // --- 行李清單 tab ---
@@ -1535,6 +1583,7 @@ function renderPacking(){
     ${groups}`;
   packPanel.classList.toggle('pack-editing', packEditing);
   applyChecks();
+  if (typeof updatePrepDone === 'function') updatePrepDone();
 }
 function togglePackEdit(){ packEditing = !packEditing; renderPacking(); }
 function packAdd(gi, inp){
@@ -2416,6 +2465,7 @@ function selectPanel(key){
   currentDayKey = key;
   const activeTab = document.querySelector('.tab[data-key="' + key + '"]');
   if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  if (typeof setupClamp === 'function') setTimeout(setupClamp, 50);
 }
 
 // --- 離線快取（需要同資料夾有 sw.js；沒有也不影響使用）---
@@ -2981,7 +3031,7 @@ function backupDue(){
 }
 function renderBackupCard(){
   const nudge = document.getElementById('backup-nudge');
-  if (nudge) nudge.innerHTML = backupDue() ? `<div class="note-box backup-nudge">💾 ${backupAgeText()}，建議備份一次，換手機或清掉瀏覽資料才不會全部消失。<button onclick="backupAll()">立即備份</button></div>` : '';
+  if (nudge) nudge.innerHTML = backupDue() ? `<div class="note-box backup-nudge">💾 ${backupAgeText()}，建議備份一次，換手機或清掉瀏覽資料才不會全部消失。<button onclick="document.getElementById('backup-card').scrollIntoView({behavior:'smooth',block:'center'})">前往備份 ↓</button></div>` : '';
   const card = document.getElementById('backup-card');
   if (card) card.innerHTML = `<div class="backup-card"><div class="backup-title">💾 備份與還原</div><div class="backup-sub">${backupAgeText()}　（含購物清單與照片、花費、打勾進度）</div><div class="backup-btns"><button onclick="backupAll()">備份全部</button><button onclick="document.getElementById('restore-all').click()">還原</button><input id="restore-all" type="file" accept=".json,application/json" style="display:none" onchange="restoreAll(this)"></div></div>`;
 }
@@ -3099,6 +3149,7 @@ renderShop();
 openPhotoDB().then(idbLoadAll).then(renderShop);
 
 function selectSection(sec){
+  if (sec === 'prep' && typeof prepEnter === 'function') prepEnter();
   document.body.classList.toggle('compact', sec !== 'itinerary');
   window.scrollTo(0, 0);
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'section-' + sec));
@@ -3116,6 +3167,7 @@ function highlightToday(scroll){
   const panel = document.querySelector('.panel[data-key="' + idx + '"]');
   if (!panel) return;
   document.querySelectorAll('.stop-now').forEach(e => e.classList.remove('stop-now'));
+  document.querySelectorAll('.stop-past').forEach(e => e.classList.remove('stop-past'));
   const mins = now.getHours() * 60 + now.getMinutes();
   let pick = null, first = null;
   panel.querySelectorAll('.stop').forEach(st => {
@@ -3127,12 +3179,61 @@ function highlightToday(scroll){
   });
   pick = pick || first;
   if (pick){
+    const all = [...panel.querySelectorAll('.stop')]; const pi = all.indexOf(pick); all.forEach((e, k) => { if (k < pi) e.classList.add('stop-past'); });
     pick.classList.add('stop-now');
     if (scroll) setTimeout(() => pick.scrollIntoView({behavior:'smooth', block:'center'}), 400);
   }
 }
 highlightToday(true);
 setInterval(() => highlightToday(false), 5 * 60 * 1000);
+
+
+// --- 頂部資訊卡：倒數／下一站／航班 ---
+function jstNow(){ const f = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Tokyo', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false}); const o = {}; f.formatToParts(new Date()).forEach(p => o[p.type] = p.value); return {y:+o.year, m:+o.month, d:+o.day, mins:(+o.hour % 24) * 60 + +o.minute}; }
+function glanceJump(di, si){
+  selectSection('itinerary'); selectPanel(String(di));
+  setTimeout(() => { const st = document.querySelectorAll('.panel[data-key="' + di + '"] .stop')[si]; if (st) st.scrollIntoView({behavior:'smooth', block:'center'}); }, 150);
+}
+function renderGlance(){
+  const el = document.getElementById('glance'); if (!el) return;
+  const n = jstNow(), todayUTC = Date.UTC(n.y, n.m - 1, n.d), startUTC = Date.UTC(2026, 10, 6), endUTC = Date.UTC(2026, 10, 11);
+  const flights = '<div class="g-flights">去 11/6　BR106　TPE 08:00 → FUK 11:15<br>回 11/11　BR105　FUK 12:15 → TPE 13:50</div>';
+  let main = '', sub = '';
+  if (todayUTC < startUTC){
+    const left = Math.round((startUTC - todayUTC) / 86400000);
+    main = '🛫 距離出發還有 <b>' + left + '</b> 天';
+  } else if (todayUTC > endUTC){
+    main = '🏠 旅程結束，歡迎回家'; sub = '購物與費用分頁可以繼續整理';
+  } else {
+    const di = days.findIndex(d => d.date === (n.m + '/' + n.d));
+    if (di < 0){ main = '旅程進行中'; }
+    else {
+      const d = days[di]; let si = -1;
+      let last = -1; d.stops.forEach((st, k) => { const m = String(st.time).match(/(\d{1,2}):(\d{2})/); if (m && +m[1] * 60 + +m[2] <= n.mins) last = k; }); si = last + 1 < d.stops.length ? last + 1 : -1;
+      main = 'DAY ' + (di + 1) + '・' + d.theme;
+      if (si >= 0){ const st = d.stops[si]; sub = '<button class="g-next" onclick="glanceJump(' + di + ',' + si + ')">' + (/\d{1,2}:\d{2}/.test(String(st.time)) ? '下一站 <b>' + String(st.time).replace(/^約/, '') + '</b>' : '接下來（沒有固定時間）') + '　' + st.place.replace(/<[^>]*>/g, '') + '　›</button>'; }
+      else sub = '今天的行程都完成了，好好休息 😴';
+    }
+  }
+  el.innerHTML = '<div class="g-main">' + main + '</div>' + (sub ? '<div class="g-sub">' + sub + '</div>' : '') + flights;
+}
+renderGlance(); setInterval(renderGlance, 60000);
+
+// --- 長說明收合（超過 4 行才出現「展開」） ---
+function setupClamp(){
+  const panel = document.querySelector('.panel.active'); if (!panel) return;
+  panel.querySelectorAll('.stop-note').forEach(note => {
+    if (note.dataset.cl) return;
+    if (note.querySelector('img, button, details, table')) { note.dataset.cl = 'x'; return; }
+    note.classList.add('clamp');
+    if (note.scrollHeight > note.clientHeight + 2){
+      note.dataset.cl = '1';
+      const b = document.createElement('button'); b.className = 'stop-more'; b.textContent = '展開 ▾';
+      b.onclick = (e) => { e.stopPropagation(); const open = note.classList.toggle('clamp'); b.textContent = open ? '展開 ▾' : '收合 ▴'; };
+      note.after(b);
+    } else { note.classList.remove('clamp'); note.dataset.cl = '0'; }
+  });
+}
 
 // 左右滑動切換 DAY
 (function enableSwipe(){
