@@ -982,11 +982,20 @@ body.compact header{margin-bottom:12px;padding-bottom:10px}
 #exp-currency-groups .e-chev{grid-column:2;grid-row:1;width:auto;text-align:right}
 #exp-currency-groups .expense-sub{padding-right:0}
 #exp-currency-groups .expense-sub .e-payer{text-align:right}
+#section-packing .prep-item{position:relative}
+#section-packing .pack-del{margin-left:auto;flex:none;width:28px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:rgba(193,62,28,.08);color:var(--vermilion);font-size:13px;line-height:1;cursor:pointer;-webkit-appearance:none;appearance:none}
+#section-packing .pack-del:hover{background:rgba(193,62,28,.18)}
+.pack-editing .prep-item{cursor:default}
+#section-packing .pack-add{display:flex;gap:8px;margin-top:10px;margin-bottom:6px}
+#section-packing .pack-add-input{flex:1;min-width:0;height:40px;box-sizing:border-box;border:1px solid var(--line);border-radius:6px;padding:0 12px;background:var(--white);color:var(--ink);font-family:inherit;-webkit-appearance:none;appearance:none}
+#section-packing .pack-add-btn{flex:none;width:44px;height:40px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:var(--bg);font-size:20px;line-height:1;cursor:pointer;-webkit-appearance:none;appearance:none}
+#section-packing .reset-row{display:flex;gap:8px;flex-wrap:wrap}
 /* 行李清單：手機上也排成兩欄，長項目橫跨兩欄 */
 @media (max-width:520px){
   #section-packing .prep-group-body{grid-template-columns:1fr 1fr !important;column-gap:14px;grid-auto-flow:dense}
   #section-packing .prep-item{padding:11px 4px;border-bottom:1px solid var(--line) !important}
   #section-packing .prep-item.wide{grid-column:1 / -1}
+
   #section-packing .prep-group-body .prep-item:last-child{border-bottom:none !important}
 }
 .backup-nudge{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px}
@@ -1476,6 +1485,7 @@ async function resetChecks(sectionId, label){
 
 document.addEventListener('click', (e) => {
   const item = e.target.closest('.prep-item');
+  if (item && item.closest('.pack-editing')) return;
   if (item) { item.classList.toggle('checked'); const k = checkKeyOf(item); if (item.classList.contains('checked')) checkedSet.add(k); else checkedSet.delete(k); saveChecks(); return; }
 });
 
@@ -1486,25 +1496,75 @@ function packWide(txt, must){
   for (const ch of String(txt)) w += /[\x00-\x7F]/.test(ch) ? 0.55 : 1;
   return w + (must ? 2 : 0) > 9.0;
 }
-const packGroupsHtml = packing.map(g => `
-  <div class="prep-group" style="--accent:${g.accent}">
-    <div class="prep-group-title"><span class="dot"></span>${g.title}</div>
-    <div class="prep-group-body${g.cols===3 ? ' cols-3' : ''}">
-    ${g.items.map(txt => `
-      <div class="prep-item${packWide(txt, g.mustHave && g.mustHave.includes(txt)) ? ' wide' : ''}" style="--accent:${g.accent}">
-        <div class="prep-check"></div>
-        <div class="prep-text">
-          <div class="prep-main">${txt}${(g.mustHave && g.mustHave.includes(txt)) ? `<span class="prep-priority">必備</span>` : ''}</div>
-        </div>
-      </div>`).join('')}
+const PACK_KEY = 'fukuoka_pack_edit_v1';
+let packEdit = (function(){ try { const o = JSON.parse(localStorage.getItem(PACK_KEY) || '{}') || {}; return {hide: Array.isArray(o.hide) ? o.hide : [], add: (o.add && typeof o.add === 'object') ? o.add : {}}; } catch(e){ return {hide:[], add:{}}; } })();
+let packEditing = false;
+function savePackEdit(){ try { localStorage.setItem(PACK_KEY, JSON.stringify(packEdit)); } catch(e){} }
+function escH(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function packItemHtml(g, gi, txt, isAdded){
+  const must = !isAdded && g.mustHave && g.mustHave.includes(txt);
+  const wide = packWide(txt, must) ? ' wide' : '';
+  const del = packEditing ? `<button class="pack-del pack-edit-ui" data-gi="${gi}" data-txt="${escH(txt)}" data-added="${isAdded ? 1 : 0}" aria-label="刪除">✕</button>` : '';
+  return `<div class="prep-item${wide}" style="--accent:${g.accent}">
+    <div class="prep-check"></div>
+    <div class="prep-text"><div class="prep-main">${isAdded ? escH(txt) : txt}${must ? `<span class="prep-priority">必備</span>` : ''}</div></div>${del}
+  </div>`;
+}
+function renderPacking(){
+  const groups = packing.map((g, gi) => {
+    const base = g.items.filter(t => !packEdit.hide.includes(g.title + '|' + t));
+    const added = (packEdit.add[g.title] || []);
+    const addUi = packEditing ? `<div class="pack-add pack-edit-ui"><input type="text" class="pack-add-input" data-gi="${gi}" placeholder="新增項目…" maxlength="30"><button class="pack-add-btn" data-gi="${gi}">＋</button></div>` : '';
+    return `<div class="prep-group" style="--accent:${g.accent}">
+      <div class="prep-group-title"><span class="dot"></span>${g.title}</div>
+      <div class="prep-group-body${g.cols===3 ? ' cols-3' : ''}">
+        ${base.map(t => packItemHtml(g, gi, t, false)).join('')}${added.map(t => packItemHtml(g, gi, t, true)).join('')}
+      </div>${addUi}
+    </div>`;
+  }).join('');
+  const hiddenN = packEdit.hide.length, addedN = Object.values(packEdit.add).reduce((n, a) => n + a.length, 0);
+  const restore = packEditing && (hiddenN || addedN) ? `<div class="reset-row"><button class="reset-btn" onclick="packRestoreDefault()">還原成預設清單</button></div>` : '';
+  packPanel.innerHTML = `
+    <h2 class="day-title">出國行李清單</h2>
+    <span class="day-sub">${packEditing ? '編輯中：點 ✕ 刪除項目，或在分類下方新增。這只會改你這支手機的清單' : '打包時可逐項點選打勾'}</span>
+    <div class="reset-row">
+      <button class="reset-btn" onclick="togglePackEdit()">${packEditing ? '✓ 完成編輯' : '✏️ 編輯清單'}</button>
+      ${packEditing ? '' : `<button class="reset-btn" onclick="resetChecks('section-packing', '行李清單')">重設打勾</button>`}
     </div>
-  </div>`).join('');
-packPanel.innerHTML = `
-  <h2 class="day-title">出國行李清單</h2>
-  <span class="day-sub">打包時可逐項點選打勾</span>
-  <div class="reset-row"><button class="reset-btn" onclick="resetChecks('section-packing', '行李清單')">重設打勾</button></div>
-  ${packGroupsHtml}`;
-applyChecks();
+    ${restore}
+    ${groups}`;
+  packPanel.classList.toggle('pack-editing', packEditing);
+  applyChecks();
+}
+function togglePackEdit(){ packEditing = !packEditing; renderPacking(); }
+function packAdd(gi, inp){
+  const g = packing[gi]; const v = (inp.value || '').trim(); if (!v) return;
+  const all = g.items.filter(t => !packEdit.hide.includes(g.title + '|' + t)).concat(packEdit.add[g.title] || []);
+  if (all.includes(v)){ showToast('這個分類已經有「' + v + '」了'); return; }
+  const hidIdx = packEdit.hide.indexOf(g.title + '|' + v);
+  if (hidIdx >= 0) packEdit.hide.splice(hidIdx, 1); else (packEdit.add[g.title] = packEdit.add[g.title] || []).push(v);
+  savePackEdit(); renderPacking();
+  const next = packPanel.querySelector('.pack-add-input[data-gi="' + gi + '"]'); if (next) next.focus();
+}
+function packDel(gi, txt, isAdded){
+  const g = packing[gi];
+  if (isAdded){ packEdit.add[g.title] = (packEdit.add[g.title] || []).filter(t => t !== txt); if (!packEdit.add[g.title].length) delete packEdit.add[g.title]; }
+  else { packEdit.hide.push(g.title + '|' + txt); }
+  checkedSet.delete('section-packing|' + g.title + '|' + txt);
+  savePackEdit(); saveChecks(); renderPacking();
+}
+async function packRestoreDefault(){
+  if (!(await askConfirm('確定要還原成預設的行李清單嗎？你刪除與新增的項目都會被清掉。'))) return;
+  packEdit = {hide:[], add:{}}; savePackEdit(); renderPacking(); showToast('已還原預設清單');
+}
+document.addEventListener('click', (e) => {
+  const d = e.target.closest('.pack-del'); if (d){ e.stopPropagation(); packDel(+d.dataset.gi, d.dataset.txt, d.dataset.added === '1'); return; }
+  const ab = e.target.closest('.pack-add-btn'); if (ab){ e.stopPropagation(); packAdd(+ab.dataset.gi, ab.parentNode.querySelector('input')); return; }
+}, true);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('pack-add-input')){ e.preventDefault(); packAdd(+e.target.dataset.gi, e.target); }
+});
+renderPacking();
 
 function dateStrToISO(dateStr){
   const [m, d] = dateStr.split('/');
@@ -2930,7 +2990,7 @@ function backupAll(){
   const data = {app:'fukuoka-all', version:2, exportedAt:new Date().toISOString(),
     shopping:{items, whoList, budget: shopBudget},
     expenses:{entries: expenseEntries, exchangeRate, budgetTwd, customCategories, fixedTwd},
-    checks:[...checkedSet], searchArea};
+    checks:[...checkedSet], searchArea, packEdit};
   const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
   const a = document.createElement('a'); const d = new Date();
   a.href = URL.createObjectURL(blob);
@@ -2983,7 +3043,9 @@ function restoreAll(inp){
         budgetTwd = Number(data.expenses.budgetTwd) || 0; saveBudget();
         if (Array.isArray(data.expenses.customCategories)){ customCategories = data.expenses.customCategories; saveCustomCategories(); }
       }
-      if (Array.isArray(data.checks)){ checkedSet = new Set(data.checks); saveChecks(); applyChecks(); }
+      if (data.packEdit && typeof data.packEdit === 'object'){ packEdit = {hide: Array.isArray(data.packEdit.hide) ? data.packEdit.hide : [], add: data.packEdit.add || {}}; savePackEdit(); }
+      if (Array.isArray(data.checks)){ checkedSet = new Set(data.checks); saveChecks(); }
+      renderPacking();
       if (typeof data.searchArea === 'string'){ searchArea = data.searchArea; try { localStorage.setItem(AREA_KEY, searchArea); } catch(e){} }
       renderShop(); renderExpenses(); renderBackupCard();
       showToast('已還原全部資料 ✓');
