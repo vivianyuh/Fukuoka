@@ -1087,7 +1087,7 @@ function jmaParse(data,r){
   return out;
 }
 function jmaBlock(md){var r=JMA_REGION[md];if(!r)return '';
-  return '<div class="jma" data-md="'+md+'"><div class="jma-line">氣象廳預報載入中…</div><a class="jma-link" href="'+jmaMain(r)+'" target="_blank" rel="noopener">氣象廳預報（官方・日文）</a>　<a class="jma-link" href="'+jmaLink(r)+'" target="_blank" rel="noopener">繁中版</a></div>';}
+  return '<div class="jma" data-md="'+md+'"><div class="jma-line">氣象廳預報載入中…</div><a class="jma-link" href="'+jmaMain(r)+'" target="_blank" rel="noopener">氣象廳預報（官方頁面・日文）</a></div>';}
 function jmaFill(store){
   document.querySelectorAll('.jma[data-md]').forEach(function(el){
     var md=el.getAttribute('data-md'),r=JMA_REGION[md];if(!r)return;
