@@ -1034,6 +1034,7 @@ header{padding-bottom:12px;margin-bottom:14px}
 .hotel-card .driver-btn{margin:0}
 .glance{margin:0 0 12px;padding:10px 14px}
 .glance .g-flights{margin-top:6px;padding-top:6px;font-size:12px;line-height:1.6}
+.glance .g-flights{display:grid;grid-template-columns:auto auto auto 1fr;column-gap:12px;row-gap:2px}
 .reset-row{gap:8px;flex-wrap:wrap}
 body.compact h1{font-size:24px}
 body.compact header{padding-bottom:8px;margin-bottom:10px}
@@ -3197,7 +3198,7 @@ function glanceJump(di, si){
 function renderGlance(){
   const el = document.getElementById('glance'); if (!el) return;
   const n = jstNow(), todayUTC = Date.UTC(n.y, n.m - 1, n.d), startUTC = Date.UTC(2026, 10, 6), endUTC = Date.UTC(2026, 10, 11);
-  const flights = '<div class="g-flights">去 11/6　BR106　TPE 08:00 → FUK 11:15<br>回 11/11　BR105　FUK 12:15 → TPE 13:50</div>';
+  const flights = '<div class="g-flights"><span>去</span><span>11/6</span><span>BR106</span><span>TPE 08:00 → FUK 11:15</span><span>回</span><span>11/11</span><span>BR105</span><span>FUK 12:15 → TPE 13:50</span></div>';
   let main = '', sub = '';
   if (todayUTC < startUTC){
     const left = Math.round((startUTC - todayUTC) / 86400000);
