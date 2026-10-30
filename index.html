@@ -601,6 +601,8 @@
     background:var(--white);
     color:var(--ink);
   }
+  .date-pick{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:40px;border:1px solid var(--line);border-radius:4px;background:var(--white);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:14px;padding:8px 10px;cursor:pointer}
+  .expense-add .date-pick input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;border:0;padding:0;background:transparent}
   .expense-add .e-desc-input{flex:1; min-width:0;}
   .expense-add .e-amt-input{width:90px; font-family:'JetBrains Mono', monospace;}
   .expense-add button{
@@ -1059,6 +1061,7 @@ var JMA_YEAR=2026, JMA_CACHE='fukuoka_jma_v1';
 var JMA_TXT={100:'晴',101:'晴時多雲',102:'晴有短暫雨',103:'晴有時雨',110:'晴後多雲',111:'晴後多雲',112:'晴後有雨',113:'晴後有雨',114:'晴後雨',200:'多雲',201:'多雲時晴',202:'多雲有短暫雨',203:'多雲有時雨',210:'多雲後晴',211:'多雲後晴',212:'多雲後有雨',213:'多雲後有雨',214:'多雲後雨',300:'雨',301:'雨時晴',302:'雨時停',311:'雨後晴',313:'雨後多雲'};
 function jmaWx(c){c=String(c||'');var d=c.charAt(0);var ic={'1':'☀️','2':'☁️','3':'🌧️','4':'🌨️'}[d]||'🌤️';var t=JMA_TXT[+c]||({'1':'晴','2':'多雲','3':'雨','4':'雪'}[d]||'');return {ic:ic,t:t};}
 function jmaDateKey(md){var p=md.split('/');return JMA_YEAR+'-'+('0'+p[0]).slice(-2)+'-'+('0'+p[1]).slice(-2);}
+function jmaMain(r){return 'https://www.jma.go.jp/bosai/forecast/#area_type=offices&area_code='+r.pref;}
 function jmaLink(r){return 'https://data.jma.go.jp/multi/yoho/yoho_detail.html?code='+r.link+'&lang=cn_zt';}
 function jmaParse(data,r){
   var out={};function row(k){return out[k]||(out[k]={});}
@@ -1084,7 +1087,7 @@ function jmaParse(data,r){
   return out;
 }
 function jmaBlock(md){var r=JMA_REGION[md];if(!r)return '';
-  return '<div class="jma" data-md="'+md+'"><div class="jma-line">氣象廳預報載入中…</div><a class="jma-link" href="'+jmaLink(r)+'" target="_blank" rel="noopener">氣象廳預報（繁中）</a></div>';}
+  return '<div class="jma" data-md="'+md+'"><div class="jma-line">氣象廳預報載入中…</div><a class="jma-link" href="'+jmaMain(r)+'" target="_blank" rel="noopener">氣象廳預報（官方・日文）</a>　<a class="jma-link" href="'+jmaLink(r)+'" target="_blank" rel="noopener">繁中版</a></div>';}
 function jmaFill(store){
   document.querySelectorAll('.jma[data-md]').forEach(function(el){
     var md=el.getAttribute('data-md'),r=JMA_REGION[md];if(!r)return;
@@ -1096,20 +1099,28 @@ function jmaFill(store){
       var ts=store[r.pref].t,d=new Date(ts);
       line.innerHTML=r.name+'・'+bits.join('　')+'<span class="jma-up">更新於 '+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</span>';
     }else if(store&&store[r.pref]&&store[r.pref].data){line.innerHTML=r.name+'・這天還不在預報範圍內（氣象廳約提供 7 天內預報），之後會自動出現';}
-    else line.textContent='目前抓不到氣象廳預報，請點下面的連結查看';
+    else line.innerHTML='目前抓不到氣象廳預報（可能是網路或氣象廳暫時無法連線），請點下面的連結查看'+(JMA_ERR?'<span class="jma-up">錯誤：'+JMA_ERR+'</span>':'');
   });
 }
+var JMA_ERR='';
+function jmaGet(url,tmo){return new Promise(function(res,rej){
+  var done=false,tm=setTimeout(function(){if(!done){done=true;rej(new Error('逾時'));}},tmo);
+  fetch(url,{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(j){if(done)return;done=true;clearTimeout(tm);res(j);},function(e){if(done)return;done=true;clearTimeout(tm);rej(e);});});}
+function jmaFetch(p){
+  var u='https://www.jma.go.jp/bosai/forecast/data/forecast/'+p+'.json';
+  var tries=[u,'https://corsproxy.io/?'+encodeURIComponent(u),'https://api.allorigins.win/raw?url='+encodeURIComponent(u)];
+  var i=0;function next(){return jmaGet(tries[i],10000).catch(function(e){JMA_ERR=(e&&e.message)||'連線失敗';i++;if(i<tries.length)return next();throw e;});}
+  return next();}
 function jmaUpdate(){
   var store={};try{store=JSON.parse(localStorage.getItem(JMA_CACHE)||'{}');}catch(e){}
   jmaFill(store);
   if(!window.fetch)return;
   var prefs={};Object.keys(JMA_REGION).forEach(function(k){prefs[JMA_REGION[k].pref]=1;});
   Object.keys(prefs).forEach(function(p){
-    var ctl=window.AbortController?new AbortController():null;var tm=setTimeout(function(){if(ctl)ctl.abort();},10000);
-    fetch('https://www.jma.go.jp/bosai/forecast/data/forecast/'+p+'.json',ctl?{signal:ctl.signal,cache:'no-store'}:{cache:'no-store'})
-      .then(function(r){if(!r.ok)throw 0;return r.json();})
-      .then(function(j){clearTimeout(tm);store[p]={t:Date.now(),data:j};try{localStorage.setItem(JMA_CACHE,JSON.stringify(store));}catch(e){}jmaFill(store);})
-      .catch(function(){clearTimeout(tm);});
+    jmaFetch(p).then(function(j){JMA_ERR='';store[p]={t:Date.now(),data:j};try{localStorage.setItem(JMA_CACHE,JSON.stringify(store));}catch(e){}jmaFill(store);})
+      .catch(function(){jmaFill(store);});
   });
 }
 /* JMA-END */
@@ -1805,8 +1816,7 @@ expensePanel.innerHTML = `
 
       <div class="expense-add">
         <input type="number" class="e-amt-input" id="e-amt" placeholder="金額" style="flex:1;">
-        <input type="date" id="e-date"
-          style="font-family:'JetBrains Mono',monospace;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);">
+        <label class="date-pick"><span id="e-date-txt">📅 選日期</span><input type="date" id="e-date"></label>
       </div>
 
       <details class="exp-more">
@@ -2030,7 +2040,7 @@ function editExpense(idx){
   const e = expenseEntries[idx];
   if (!e) return;
   editingIndex = idx;
-  document.getElementById('e-date').value = e.date;
+  document.getElementById('e-date').value = e.date; syncExpDateTxt();
   document.getElementById('e-amt').value = e.amt;
   document.getElementById('e-note').value = e.note || '';
   lastCategory = e.category;
@@ -2049,6 +2059,7 @@ function cancelEdit(){
   document.getElementById('e-note').value = '';
   document.getElementById('add-expense-btn').textContent = '加入';
   document.getElementById('cancel-edit-row').style.display = 'none';
+  setExpDateDefault();
 }
 
 function deleteExpense(idx){
@@ -2325,6 +2336,18 @@ function renderExpenses(){
 }
 
 renderPickerRows();
+function setExpDateDefault(){
+  const el = document.getElementById('e-date'); if (!el || el.value) return;
+  const n = new Date(), p = v => String(v).padStart(2, '0');
+  el.value = n.getFullYear() + '-' + p(n.getMonth() + 1) + '-' + p(n.getDate());
+  syncExpDateTxt();
+}
+function syncExpDateTxt(){
+  const el = document.getElementById('e-date'), t = document.getElementById('e-date-txt'); if (!el || !t) return;
+  t.textContent = el.value ? '📅 ' + el.value.replace(/-/g, '/') : '📅 選日期';
+}
+(function(){ const el = document.getElementById('e-date'); if (el){ el.addEventListener('change', syncExpDateTxt); el.addEventListener('input', syncExpDateTxt); } })();
+setExpDateDefault();
 renderExpenses();
 
 function selectPanel(key){
