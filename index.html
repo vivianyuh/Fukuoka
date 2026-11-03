@@ -1057,6 +1057,16 @@ body.compact .trip-sub{display:none}
 #shop-photo-overlay .sp-n{position:absolute;left:0;right:0;bottom:18px;text-align:center;color:#fff;font-size:13px;opacity:.85;pointer-events:none}
 /* 輸入文字不要被清除鈕壓住 */
 input.has-val{padding-right:40px !important}
+
+.taxfree{margin:10px 0 4px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.taxfree summary{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;list-style:none;font-weight:700;font-size:14.5px}
+.taxfree summary::-webkit-details-marker{display:none}
+.taxfree summary::after{content:'▾';margin-left:auto;color:var(--ink-soft)}
+.taxfree[open] summary::after{content:'▴'}
+.taxfree .tf-body{padding:0 14px 12px}
+.taxfree .tf-row{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:8px 0;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.6}
+.taxfree .tf-row b{color:var(--steel)}
+.taxfree .tf-note{margin-top:6px;font-size:12px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -2504,6 +2514,7 @@ const SHOP_PLACES = ['藥妝店','百貨・商場','超市・便利商店','市�
 let shopTab = 'me';
 let shopFilter = '';
 let shopPendingPhotos = [];
+let taxfreeOpen = false;
 let shopDraft = {who:'', text:'', store:'', note:'', price:'', qty:'1', place:''};
 let shopEditId = null;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
@@ -2821,6 +2832,15 @@ function renderShop(){
   shopPanel.innerHTML = `
     <h2 class="day-title">日本購物清單</h2>
     <span class="day-sub">${tabItems.length ? `還有 ${left} 項沒買` : '想到什麼就先記下來，逛街時邊買邊勾'}</span>
+    <details class="taxfree" ${taxfreeOpen ? 'open' : ''} ontoggle="taxfreeOpen=this.open">
+      <summary><span class="tf-ic">🛃</span><span class="tf-t">免稅購物怎麼退（2026/11 新制）</span></summary>
+      <div class="tf-body">
+        <div class="tf-row"><b>門檻</b><span>同一天、同一間店，未稅合計滿 ¥5,000。不同種類可合併。結帳先付含稅價，出示護照。</span></div>
+        <div class="tf-row"><b>退款</b><span>出境前、購買日起 90 天內，到機場出發大廳的免稅自助機掃護照，綠燈完成，紅燈帶商品去海關櫃台。退回你登記的信用卡。11/11 建議約 10:15 前到機場，先辦再託運。</span></div>
+        <div class="tf-row"><b>注意</b><span>藥妝、保養品、食品出境前不能拆封。免稅品要本人隨身帶出境，同一張收據少一件，整張都可能不能退。</span></div>
+        <div class="tf-note">依 2026/11 新制整理，實際以店家與機場公告為準。</div>
+      </div>
+    </details>
     <div class="shop-tabs">
       <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買 <em>${shopItems.filter(x => (x.type || 'me') === 'me' && !x.done).length}</em></button>
       <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買 <em>${shopItems.filter(x => x.type === 'other' && !x.done).length}</em></button>
