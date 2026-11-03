@@ -1166,7 +1166,7 @@ function jmaFill(store){
       var ts=store[r.pref].t,d=new Date(ts);
       line.innerHTML=r.name+'・'+bits.join('　')+'<span class="jma-up">更新於 '+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</span>';
     }else if(store&&store[r.pref]&&store[r.pref].data){line.innerHTML=r.name+'・這天還不在預報範圍內（氣象廳約提供 7 天內預報），之後會自動出現';}
-    else line.innerHTML='目前抓不到氣象廳預報（可能是網路或氣象廳暫時無法連線），請點下面的連結查看'+(JMA_ERR?'<span class="jma-up">錯誤：'+JMA_ERR+'</span>':'');
+    else line.innerHTML='預報暫時載入不了，請點下方連結'+(JMA_ERR?'<span class="jma-up">錯誤：'+JMA_ERR+'</span>':'');
   });
 }
 var JMA_ERR='';
