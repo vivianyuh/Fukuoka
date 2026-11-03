@@ -1067,6 +1067,10 @@ input.has-val{padding-right:40px !important}
 .taxfree .tf-row{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:8px 0;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.6}
 .taxfree .tf-row b{color:var(--steel)}
 .taxfree .tf-note{margin-top:6px;font-size:12px;color:var(--ink-soft)}
+
+.shop-sort{display:flex;align-items:center;gap:6px;margin:2px 0 8px;font-size:12.5px;color:var(--ink-soft)}
+.shop-sort button{padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink-soft);font-size:12.5px;font-family:inherit;cursor:pointer}
+.shop-sort button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -2515,6 +2519,9 @@ let shopTab = 'me';
 let shopFilter = '';
 let shopPendingPhotos = [];
 let taxfreeOpen = false;
+let shopSort = lsGet('fukuoka_shop_sort_v1', 'added');
+if (!['added','store'].includes(shopSort)) shopSort = 'added';
+function setShopSort(m){ shopSort = m; lsSet('fukuoka_shop_sort_v1', m); renderShop(); }
 let shopDraft = {who:'', text:'', store:'', note:'', price:'', qty:'1', place:''};
 let shopEditId = null;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
@@ -2812,6 +2819,13 @@ function renderShop(){
   const totalLeft = tabItems.filter(it => !it.done).reduce((s,it) => s + itemTotal(it), 0);
 
   const renderGroups = items => {
+    if (shopSort === 'store'){
+      const sg = {};
+      items.forEach(it => { const k = (it.store || '').trim() || '未指定店家'; (sg[k] = sg[k] || []).push(it); });
+      const keys = Object.keys(sg).sort((a, b) => (a === '未指定店家') - (b === '未指定店家') || a.localeCompare(b, 'zh-Hant'));
+      return keys.map(k => { const g = sg[k]; const sum = g.reduce((t, it) => t + itemTotal(it), 0);
+        return `<div class="shop-who">${escHtml(k)}（${g.length}）${sum > 0 ? `<span class="shop-who-sum">${fmtYen(sum)}</span>` : ''}</div>${g.map(shopRow).join('')}`; }).join('');
+    }
     if (isMe) return items.map(shopRow).join('');
     const groups = {};
     items.forEach(it => { const w = it.who || '未指定'; (groups[w] = groups[w] || []).push(it); });
@@ -2845,6 +2859,7 @@ function renderShop(){
       <button class="${isMe?'active':''}" onclick="setShopTab('me')">自己要買 <em>${shopItems.filter(x => (x.type || 'me') === 'me' && !x.done).length}</em></button>
       <button class="${!isMe?'active':''}" onclick="setShopTab('other')">幫別人買 <em>${shopItems.filter(x => x.type === 'other' && !x.done).length}</em></button>
     </div>
+    ${tabItems.length > 1 ? `<div class="shop-sort"><span>排列</span>${[['added', isMe ? '加入順序' : '依人分組'], ['store', '依店家']].map(m => `<button class="${shopSort === m[0] ? 'on' : ''}" onclick="setShopSort('${m[0]}')">${m[1]}</button>`).join('')}</div>` : ''}
     ${(totalAll > 0 || tabItems.length > 4 || shopSearch || (isMe && !(shopBudget > 0 || shopBudgetEdit))) ? `<div class="shop-sum1"><span class="shop-sum1-txt">${totalAll > 0 ? `預估 ${priceBoth(totalAll)}・還沒買 ${fmtYen(totalLeft)}` : ''}</span>${tabItems.length > 4 || shopSearch ? `<button class="shop-mini" onclick="toggleShopSearch()" aria-label="搜尋">🔍</button>` : ''}${isMe && !(shopBudget > 0 || shopBudgetEdit) ? `<button class="shop-mini" onclick="openShopBudget()">＋預算</button>` : ''}</div>` : ''}
     ${isMe && (shopBudget > 0 || shopBudgetEdit) ? `<div class="shop-budget">購物預算（自己要買）NT$ <input id="shop-budget-in" type="number" inputmode="numeric" value="${shopBudget || ''}" placeholder="輸入金額" onchange="setShopBudget(this.value)" onblur="if(!this.value){shopBudgetEdit=false;renderShop();}">
       ${shopBudget > 0 ? (() => { const all = shopItems.filter(x => (x.type || 'me') === 'me').reduce((t,x)=>t+itemTotal(x),0) * exchangeRate; const diff = shopBudget - all; return `<div class="shop-budget-bar"><i style="width:${Math.min(100, Math.round(all/shopBudget*100))}%" class="${diff<0?'over':''}"></i></div><div class="shop-budget-txt${diff<0?' over':''}">自己要買預估 ≈${fmtTwd(all)}・${diff<0?'超出':'還剩'} ${fmtTwd(Math.abs(diff))}</div>`; })() : ''}
