@@ -1260,7 +1260,7 @@ const prep = [
       {text:"✅ COMICO ART MUSEUM 已預約（11/9 12:20）", detail:"", priority:""},
       {text:"✅ 肉屋 肉一 Nikuichi 薬院燒肉 已訂位（11/6 19:30 晚餐）", detail:"", priority:""},
       {text:"✅ 炉端ノいとおかし 已訂位（11/10 09:00 早餐）", detail:"", priority:""},
-      {text:"購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 使用）", detail:`已決定購買，預計 <b>11/5 先買好</b>。¥3,500／連續 2 天，只能搭自由席，11/8 當天啟用（購買後 1 個月內啟用皆可）。注意：①需護照（短期滯在章）②要走有人閘門出示手機畫面，截圖不算、需要有網路 ③由布院之森不適用，11/9 用不到。可在 JR 九州官網、KKday、Klook 購買。${linkA('JR 九州官網 Mobile Pass', 'https://www.jrkyushu.co.jp/chinese/railpass/mobilepass.html')}`, priority:"必辦"},
+      {text:"✅ 已購買 JR Kyushu Mobile Pass 福岡廣域版（11/8 使用）", detail:`已買好。<b>11/8 當天才啟用</b>，不要提早啟用。¥3,500／連續 2 天，只能搭自由席，11/8 當天啟用（購買後 1 個月內啟用皆可）。注意：①需護照（短期滯在章）②要走有人閘門出示手機畫面，截圖不算、需要有網路 ③由布院之森不適用，11/9 用不到。可在 JR 九州官網、KKday、Klook 購買。${linkA('JR 九州官網 Mobile Pass', 'https://www.jrkyushu.co.jp/chinese/railpass/mobilepass.html')}`, priority:"必辦"},
       {text:"IC 卡（Suica/ICOCA 等）儲值或準備手機 Mobile IC", detail:"巴士、地鐵、部分店家皆可使用，建議多留一些餘額備用。", priority:""}
     ]
   },
@@ -1278,7 +1278,7 @@ const prep = [
   {
     title:"通訊與App", accent:"var(--gold)",
     items:[
-      {text:"買 eSIM", detail:"", priority:"必辦"}
+      {text:"✅ 已購買 eSIM", detail:"", priority:"必辦"}
     ]
   },
   {
@@ -1376,7 +1376,9 @@ const days = [
       {time:"抵達後", place:"表參道散策", note:"梅枝餅、午餐、伴手禮、拍照，抓 30-40 分鐘（順路可吃午餐）", tag:"WALK", map:"太宰府表参道"},
       {time:"接著", place:"太宰府天滿宮參拜", note:"心字池、樓門、本殿、摸御神牛祈福，抓 45-60 分鐘", tag:"WALK", map:"太宰府天満宮"},
       {time:"下午", place:"搭車返回市區", note:"太宰府站→西鐵太宰府線→（二日市轉車）→西鐵天神站。最後逛的是太宰府，直接在太宰府站搭車回去，不用再折返", tag:"TRAIN", map:"太宰府駅"},
-      {time:"下午稍晚～晚上", place:"🛍️ 天神／博多逛街", note:"因為加了竈門神社，逛街時間會稍微晚一點開始，路線還沒排，之後可以再排", tag:"SHOP", map:"天神"}
+      {time:"下午稍晚～晚上", place:"🛍️ 天神／博多逛街", note:"因為加了竈門神社，逛街時間會稍微晚一點開始，路線還沒排，之後可以再排", tag:"SHOP", map:"天神"},
+      {time:"晚上", place:"🎄 博多站前廣場 聖誕市集", note:"逛聖誕市集。", tag:"EVENT", map:"博多駅前広場 クリスマスマーケット"},
+      {time:"市集逛完後", place:"🍕 400℃ PIZZA Piu Hakata", note:"逛完市集去吃披薩（博多站附近）。", tag:"DINNER", map:"400℃ PIZZA Piu Hakata"}
     ],
     plans:[
       {
@@ -1411,7 +1413,7 @@ const days = [
       {time:"約10:30", place:"🚢 搭関門連絡船前往唐戸市場（下関）", note:"門司港棧橋搭渡輪過海峽，約5分鐘航程即可抵達對岸山口縣下関。渡輪班次平常約每20分鐘一班，請以現場時刻表為準。", tag:"FERRY", map:"唐戸市場"},
       {time:"約10:45", place:"🐡 唐戸市場・活きいき馬関街", note:"週日限定屋台活動！8:00-15:00，握壽司、海鮮丼、河豚料理應有盡有，很適合當午餐，記得挑週日才有這個熱鬧場面", tag:"MARKET", map:"唐戸市場"},
       {time:"12:30", place:"搭渡輪返回門司港", note:"", tag:"FERRY", map:"門司港駅"},
-      {time:"12:45", place:"🍛 午餐・燒咖哩", note:"咖哩本舖 or プリンセスピピ，門司港代表美食，起司焗烤咖哩飯", tag:"LUNCH", map:"門司港 燒咖哩 咖哩本舖"},
+      {time:"12:45", place:"🍛 午餐・王様のたまご", note:"門司港的焗烤咖哩名店，回到門司港後吃的午餐。", tag:"LUNCH", map:"王様のたまご 門司港"},
       {time:"13:45起", place:"門司港懷舊區散步", note:"舊門司稅關、藍翼門司橋、國際友好紀念圖書館等，約逛 1 小時多", tag:"WALK", map:"門司港レトロ"},
       {time:"14:50", place:"門司港 → 小倉", note:"JR約13分鐘，在小倉下車逛逛（若買一張直達八幡的車票，中途不能出站，建議分兩段買票或用 IC 卡）", tag:"JR", map:"門司港駅"},
       {time:"15:05", place:"🏯 小倉散步", note:"小倉城、旦過市場、車站周邊逛街，約 1.5 小時。各景點營業與最後入場時間請出發前再確認，旦過市場下午有些店會提早收。", tag:"WALK", map:"小倉城"},
@@ -1419,7 +1421,8 @@ const days = [
       {time:"17:05", place:"八幡站 → 皿倉山纜車山麓站", note:`✅ 搭 17:05 免費接駁巴士，約10分鐘車程。纜車山麓駅發車約每20分鐘一班，11-3月營運到20:00（上行末班19:20）。${linkA('接駁巴士時刻表', 'https://www.sarakurayama-cablecar.co.jp/shuttlebus/')}　${linkA('纜車時刻表', 'https://www.sarakurayama-cablecar.co.jp/timetable/')}`, tag:"BUS", map:"皿倉山ケーブルカー山麓駅"},
       {time:"17:30", place:"🌆 皿倉山山頂・日落到夜景", note:"11/8 日落約 17:10 前後，山頂欣賞天色變化到夜景亮起，約 1.5 小時。山頂風大，記得帶保暖外套。", tag:"VIEW", map:"皿倉山 山頂展望台"},
       {time:"19:00", place:"搭纜車下山", note:"週日傍晚可能排隊，建議提早幾分鐘到纜車站。山麓駅約 19:15 抵達。", tag:"CABLE", map:"皿倉山ケーブルカー山麓駅"},
-      {time:"19:15", place:"接駁巴士回八幡 → 黑崎 → 搭 Sonic 回博多", note:`接駁巴士約 19:30 回八幡站，往黑崎換搭特急 Sonic 回博多（黑崎是 Sonic 固定停靠站）。⚠️ 末班車時刻我沒查到，出發前請查黑崎出發的班次，並確認 Sonic 是否在你搭得到的時間內。${linkA('Google 地圖查班次', 'https://www.google.com/maps/dir/?api=1&origin=%E9%BB%92%E5%B4%8E%E9%A7%85&destination=%E5%8D%9A%E5%A4%9A%E9%A7%85&travelmode=transit')}`, tag:"JR", map:"黒崎駅"}
+      {time:"19:15", place:"接駁巴士回八幡 → 搭鹿兒島本線回博多", note:"實際沒有搭 Sonic，改搭 JR 鹿兒島本線回博多，比預期晚了大約 1 小時才到博多。", tag:"JR", map:"黒崎駅"},
+      {time:"回到博多後", place:"🍢 串燒 ただし", note:`回博多後的晚餐，吃串燒。${linkA('店家地圖', 'https://maps.app.goo.gl/zmKVmcqFz4Ac78it6')}`, tag:"DINNER"}
     ],
     plans:[],
     fare:"",
@@ -1441,7 +1444,7 @@ const days = [
 <br>唐戸市場的「活きいき馬関街」屋台活動只有五六日／國定假日才有，特地把這天排在週日就是為了配合。`,
     meals:[
       {type:"市場體驗・現吃海鮮", name:"唐戸市場 活きいき馬関街", note:"週日限定的海鮮屋台祭典，現握壽司、海鮮丼、河豚料理，邊走邊吃當小點心體驗，很熱鬧。", map:"唐戸市場"},
-      {type:"午餐・已確定", name:"燒咖哩（咖哩本舖 or プリンセスピピ）", note:"門司港代表美食，起司焗烤咖哩飯，回到門司港後當午餐吃。「咖哩本舖」評價最穩、「プリンセスピピ」需現場登記排隊，兩間都在車站附近。", map:"門司港 燒咖哩 咖哩本舖"}
+      {type:"午餐", name:"王様のたまご", note:"門司港的焗烤咖哩名店，實際去吃的午餐。", map:"王様のたまご 門司港"}
     ]
   },
   {
@@ -1456,7 +1459,8 @@ const days = [
       {time:"再之後", place:"往回走逛湯之坪街道", note:"原路往回走，慢慢逛剛剛沒逛到的店、買伴手禮、吃小吃，直到回車站", tag:"WALK", map:"湯の坪街道"},
       {time:"17:17", place:"🚆 由布院之森6號 回博多", note:"✅ 已訂位。提早 10～15 分鐘到由布院站，並準備好 QR Code。", tag:"JR", map:"由布院駅"},
       {time:"19:27", place:"抵達博多站", note:"", tag:"JR", map:"博多駅"},
-      {time:"19:45", place:"🎄 博多站前廣場 聖誕市集", note:`今年 11/7（六）～12/25（五）舉辦，平日 16:00～23:00（L.O. 22:45），11/9 週一有開。可直接在市集邊逛邊吃當晚餐，逛完走回飯店（博多站步行約7分鐘）。${linkA('官方資訊', 'https://christmas-advent.jp/fukuoka-hakata/')}`, tag:"EVENT", map:"博多駅前広場 クリスマスマーケット"}
+      {time:"抵達博多站後", place:"🎮 Nintendo FUKUOKA（任天堂）", note:"回到博多後先去逛任天堂直營店。", tag:"SHOP", map:"Nintendo FUKUOKA"},
+      {time:"之後", place:"🍜 一蘭（中洲）", note:"晚餐在中洲吃一蘭拉麵。", tag:"DINNER", map:"一蘭 中洲"}
     ],
     plans:[
       {
@@ -1481,9 +1485,16 @@ const days = [
     date:"11/10", wd:"二", theme:"購物", accent:"var(--steel)",
     weather:"多以室內商場移動為主，但店與店之間移動仍會吹到風，建議帶件方便穿脫的外套。",
     stops:[
-      {time:"09:00", place:"🍳 早餐・炉端ノいとおかし", note:"✅ 已訂位 09:00。六本松人氣排隊早餐，完全預約制（現場排隊恕不接待），招牌銀鮭定食。", tag:"BREAKFAST", map:"炉端ノいとおかし"}
-    ], plans:[], fare:"", note:"", empty:true,
-    placeholderText:"早餐後自由逛街，走到哪逛到哪",
+      {time:"09:00", place:"🍳 早餐・炉端ノいとおかし", note:"✅ 已訂位 09:00。六本松人氣排隊早餐，完全預約制（現場排隊恕不接待），招牌銀鮭定食。", tag:"BREAKFAST", map:"炉端ノいとおかし"},
+      {time:"早餐後", place:"🌳 大濠公園", note:"早餐後先到大濠公園散步。", tag:"VIEW", map:"大濠公園"},
+      {time:"上午～下午", place:"🛍 天神藥妝・逛街", note:"逛天神一帶的藥妝店與商場，一路逛到約下午兩點。", tag:"SHOP", map:"天神 ドラッグストア"},
+      {time:"約14:00", place:"🍖 敘々苑（天神）午餐", note:"逛到兩點左右在天神吃燒肉。", tag:"LUNCH", map:"叙々苑 天神"},
+      {time:"午餐後", place:"⛩ 警固神社", note:"天神市區內的神社，順路參拜。", tag:"VIEW", map:"警固神社"},
+      {time:"之後", place:"⛩ 櫛田神社", note:"博多的代表神社，參拜完繼續逛街。", tag:"VIEW", map:"櫛田神社"},
+      {time:"下午～傍晚", place:"🛍 逛街", note:"參拜完再次逛街，一路逛到傍晚。", tag:"SHOP", map:"天神"},
+      {time:"約19:30", place:"🎆 teamLab（舞鶴公園）", note:"晚上到舞鶴公園看 teamLab。", tag:"EVENT", map:"舞鶴公園 teamLab"},
+      {time:"teamLab 結束後", place:"🍢 清と鶴松", note:"晚餐／宵夜，居酒屋，關東煮。", tag:"DINNER", map:"清と鶴松"}
+    ], plans:[], fare:"", note:"",
     meals:[
       {type:"早餐・已確定訂位 09:00", name:"炉端ノいとおかし", note:"福岡市中央區六本松，超人氣排隊早餐名店，招牌是炭燒銀鮭定食、土鍋炊飯，完全預約制，現場恕不接待候位。訂位已完成（09:00），當天準時抵達即可。", map:"炉端ノいとおかし"},
       {type:"晚餐建議", name:"大山牛腸鍋（天神 ONE BLDG. 店／KITTE博多店）", note:"博多招牌牛腸鍋名店，交通方便，逛街後順路。", map:"博多もつ鍋 おおやま 天神"},
